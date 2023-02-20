@@ -4,7 +4,7 @@ const { createEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/select-menu');
-
+const movie_details = '/movie';
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -51,12 +51,15 @@ module.exports = {
 		collector.on('collect', async i => {
 			const selected = i.values[0];
 			// console.log(selected);
-			const movie = movieTitles.find(m => m.id == selected);
+			// const movie = movieTitles.find(m => m.id == selected);
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
+			const movie = movieResponse.data;
+			console.log(movie);
 			const movieEmbed = createEmbed(0x0099FF, `${movie.title}`, 'https://discord.js.org/', `${movie.overview}`);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
 
 
-			i.update({ embeds:[movieEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
+			i.update({ embeds:[embed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
 
 
 		});
