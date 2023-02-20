@@ -95,7 +95,7 @@ module.exports = {
 		dates = response.data.dates;
 
 		const canFitOnOnePage = moviesUpcoming.length <= listSize;
-		const embedMessage = await interaction.channel.send({
+		const embedMessage = await interaction.reply({
 			embeds: [await generateEmbed(0)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 		});
