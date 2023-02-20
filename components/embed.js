@@ -9,6 +9,13 @@ function createEmbed(color = 0x0099FF, title = 'Some title', url = 'https://disc
 		.setDescription(description);
 
 }
+function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
+	return new EmbedBuilder()
+		.setColor(color)
+		.setTitle(title)
+		.setDescription(description);
+}
+
 
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 	return {
@@ -17,7 +24,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 		url: `https://www.imdb.com/title/${movie.imdb_id}/`,
 		author: {
 			name: user.username,
-			icon_url: user.displayAvatarURL(), 
+			icon_url: user.displayAvatarURL(),
 			// url: "https://discord.js.org",
 		},
 		description: movie.overview,
@@ -77,4 +84,4 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 
-module.exports = { createEmbed, createMovieDetailEmbed };
+module.exports = { createEmbed, createNoResultEmbed, createMovieDetailEmbed };

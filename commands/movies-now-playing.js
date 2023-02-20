@@ -2,8 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle, Colors
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { noResultEmbed } = require('../components/noResultEmbed.js');
 const { countryDict, languageDict } = require('../load-data.js');
+const { createNoResultEmbed } = require('../components/embed');
 const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en&page=1&region=us
@@ -38,7 +38,7 @@ const listSize = 5;
 
 const generateEmbed = async start => {
 	if (!moviesNowPlaying.length) {
-		return noResultEmbed();
+		return createNoResultEmbed();
 	}
 
 	const current = moviesNowPlaying.slice(start, start + listSize);

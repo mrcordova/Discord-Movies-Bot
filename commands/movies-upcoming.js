@@ -3,7 +3,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
-const { noResultEmbed } = require('../components/noResultEmbed.js');
+const { createNoResultEmbed } = require('../components/embed');
 const movie_upcoming = '/movie/upcoming';
 
 
@@ -25,7 +25,7 @@ const listSize = 5;
 
 const generateEmbed = async start => {
 	if (!moviesUpcoming.length) {
-		return noResultEmbed();
+		return createNoResultEmbed();
 	}
 
 	const current = moviesUpcoming.slice(start, start + listSize);
