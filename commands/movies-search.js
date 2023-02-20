@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ComponentType, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ComponentType, StringSelectMenuBuilder, ColorResolvable, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/select-menu');
+const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const movie_details = '/movie';
 
 module.exports = {
@@ -54,7 +55,75 @@ module.exports = {
 			// const movie = movieTitles.find(m => m.id == selected);
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
 			const movie = movieResponse.data;
-			console.log(movie);
+
+			const formatter = createCurrencyFormatter();
+			const prod = getProductionCompany(movie['production_companies']);
+			const directors = getCrewMember(movie.credits['crew'], 'director');
+			const actors = getCast(movie.credits['cast'], 3);
+
+			const exampleEmbed = { 
+				color: Colors.Red, title: movie.original_title, 
+				url: `https://www.imdb.com/title/${movie.imdb_id}/`,
+				author: {
+					name: i['user'].username,
+					icon_url: i['user'].displayAvatarURL(),
+				  // url: "https://discord.js.org",
+				},
+				description: movie.overview,
+				// thumbnail: {
+				//   url: `${base_url}${logo_sizes[1]}${prod.logo_path}`,
+				// },
+				fields: [
+				  {
+						name: 'Directed by',
+						value: directors.join(' & '),
+						inline: true,
+				  },
+				  {
+						name: 'Starring',
+						value: actors.join(', '),
+						inline: true,
+				  },
+				  {
+						name: 'Release Date',
+						value: movie.release_date,
+						inline: true,
+				  },
+				  {
+						name: 'Status',
+						value: movie.status,
+						inline: true,
+				  },
+				  {
+						name: 'Runtime',
+						value: `${movie.runtime}`,
+						inline: true,
+				  },
+				  {
+						name: 'Budget',
+						value: `${formatter.format(movie.budget)}`,
+						inline: true,
+				  },
+				  {
+						name: 'Revenue',
+						value: `${formatter.format(movie.revenue)}`,
+						inline: true,
+					},
+				  {
+						name: 'Rating',
+						value: `${movie.vote_average}/10`,
+						inline: true,
+					},
+				],
+				// image: {
+				//   url: `${base_url}${poster_sizes[5]}${movie.poster_path}`,
+				// },
+				timestamp: new Date(),
+				footer: {
+				  text: `${prod.name}`,
+				  // icon_url: "https://i.imgur.com/AfFp7pu.png",
+				},
+			  };
 			const movieEmbed = createEmbed(0x0099FF, `${movie.title}`, 'https://discord.js.org/', `${movie.overview}`);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
 
