@@ -29,7 +29,6 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const response = await searchForMovie(query);
 		const movieTitles = response.data.results;
-		// console.log(movieTitles);
 
 		const options = [];
 
@@ -41,7 +40,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(0x0099FF, 'Movie will apear here', 'https://discord.js.org/', 'Some description here');
+		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'https://discord.js.org/', 'Some description here');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -50,9 +49,7 @@ module.exports = {
 		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
 		collector.on('collect', async i => {
-			// i.deferUpdate();
 			if (!i.isStringSelectMenu()) return;
-			// await i.deferUpdate();
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
@@ -67,7 +64,7 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
 
 
-			await i.update({ content: 'Selected Movie', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
+			await i.update({ content: 'Selected Movie:', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
 			// collector.resetTimer([{time: 15000}]);
 		});
 
@@ -75,9 +72,7 @@ module.exports = {
 			console.log(`dispose: ${i}`);
 		});
 		collector.on('end', async (c, r) => {
-
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
-
 		});
 		collector.on('ignore', args => {
 			console.log(`ignore: ${args}`);

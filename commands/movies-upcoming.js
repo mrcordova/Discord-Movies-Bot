@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle, Colors } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
@@ -31,7 +31,7 @@ const generateEmbed = async start => {
 	const current = moviesUpcoming.slice(start, start + listSize);
 	const { minimum, maximum } = dates;
 	return new EmbedBuilder({
-		color: 0x0099ff,
+		color: Colors.Blue,
 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesUpcoming.length}\nFrom ${minimum} to ${maximum}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
 		),
