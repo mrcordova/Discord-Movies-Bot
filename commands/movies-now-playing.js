@@ -4,6 +4,7 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
 const { createNoResultEmbed } = require('../components/embed');
+const { MyEvents } = require('../events/DMB-Events');
 const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en&page=1&region=us
@@ -103,7 +104,7 @@ module.exports = {
 		const response = await axios.get(`${api_url}${movie_now_playing}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
 		moviesNowPlaying = response.data.results;
 		const canFitOnOnePage = moviesNowPlaying.length <= listSize;
-		const embedMessage = await interaction.channel.send({
+		const embedMessage = await interaction.reply({
 			embeds: [await generateEmbed(0)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 		});
@@ -119,7 +120,7 @@ module.exports = {
 		});
 
 		let currentIndex = 0;
-		collector.on('collect', async m => {
+		collector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);

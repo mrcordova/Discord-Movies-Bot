@@ -4,6 +4,7 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
 const { createNoResultEmbed } = require('../components/embed');
+const { MyEvents } = require('../events/DMB-Events');
 const movie_upcoming = '/movie/upcoming';
 
 
@@ -110,7 +111,7 @@ module.exports = {
 		});
 
 		let currentIndex = 0;
-		collector.on('collect', async m => {
+		collector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);

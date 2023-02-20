@@ -5,6 +5,7 @@ const { searchForMovie } = require('../helpers/search-movie.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
+const { MyEvents } = require('../events/DMB-Events');
 const movie_details = '/movie';
 
 module.exports = {
@@ -48,7 +49,7 @@ module.exports = {
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
 		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
-		collector.on('collect', async i => {
+		collector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
@@ -68,13 +69,13 @@ module.exports = {
 			// collector.resetTimer([{time: 15000}]);
 		});
 
-		collector.on('dispose', i => {
+		collector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
-		collector.on('end', async (c, r) => {
+		collector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
-		collector.on('ignore', args => {
+		collector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
 		});
 
