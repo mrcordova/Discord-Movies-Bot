@@ -15,7 +15,7 @@ function getCast(cast, amountOfCast) {
 
 function getProductionCompany(production_companies) {
 	return production_companies.reduce((prev, curr) =>
-		prev.id < curr.id ? prev : curr);
+		prev.id < curr.id ? prev : curr, '');
 }
 
 function createCurrencyFormatter(language = 'en-US', currency = 'USD', minimumFractionDigits = 0, maximumFractionDigits = 0) {
