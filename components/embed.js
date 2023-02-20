@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 
-function createEmbed(color = 0x0099FF, title = 'Some title', url = 'https://discord.js.org/', description = 'Some description here') {
+function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
 	return new EmbedBuilder()
 		.setColor(color)
 		.setTitle(title)
