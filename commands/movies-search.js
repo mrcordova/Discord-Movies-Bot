@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ComponentType, StringSelectMenuBuilder, ColorResolvable, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createMovieDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
@@ -29,7 +29,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const response = await searchForMovie(query);
 		const movieTitles = response.data.results;
-
+		// console.log(movieTitles);
 
 		const options = [];
 
@@ -47,11 +47,13 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
-		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', time: 15000 });
+		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
 		collector.on('collect', async i => {
+			// i.deferUpdate();
+			if (!i.isStringSelectMenu()) return;
+			// await i.deferUpdate();
 			const selected = i.values[0];
-			// console.log(selected);
 			// const movie = movieTitles.find(m => m.id == selected);
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
 			const movie = movieResponse.data;
@@ -60,14 +62,25 @@ module.exports = {
 			const prod = getProductionCompany(movie['production_companies']);
 			const directors = getCrewMember(movie.credits['crew'], 'director');
 			const actors = getCast(movie.credits['cast'], 3);
-			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Red });
-			// const movieEmbed = createEmbed(0x0099FF, `${movie.title}`, 'https://discord.js.org/', `${movie.overview}`);
+
+			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Aqua });
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
 
 
-			i.update({ embeds:[movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
+			await i.update({ content: 'Selected Movie', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
+			// collector.resetTimer([{time: 15000}]);
+		});
 
+		collector.on('dispose', i => {
+			console.log(`dispose: ${i}`);
+		});
+		collector.on('end', async (c, r) => {
 
+			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+
+		});
+		collector.on('ignore', args => {
+			console.log(`ignore: ${args}`);
 		});
 
 	},
