@@ -3,14 +3,13 @@ const countryDictionary = JSON.parse(fs.readFileSync('data/countries.json', 'utf
 const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'utf8'));
 let countryCodeDict = {};
 
-(() => {
-	countryCodeDict = countryDictionary.reduce((obj, item) => {
-		obj[item.value] = item.name;
-		return obj;
-	}, {});
-})();
+// (() => {
+countryCodeDict = countryDictionary.reduce((obj, item) => {
+	obj[item.value] = item.name; return obj;
+}, {});
+// })();
 
-// console.log(country);
+// console.log(countryCodeDict);
 // // Create an empty dictionary object
 // const countriesDict = {};
 
