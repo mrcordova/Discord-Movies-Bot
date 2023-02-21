@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
-const { createNoResultEmbed } = require('../components/embed');
+const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_top_rated = '/movie/top_rated';
 
@@ -19,25 +19,25 @@ const forwardId = 'forward';
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
-let moviesTopRated;
-// let dates = {};
-const listSize = 5;
+// let moviesTopRated;
+// // let dates = {};
+// const listSize = 5;
 
 
-const generateEmbed = async start => {
-	if (!moviesTopRated.length) {
-		return createNoResultEmbed();
-	}
+// const generateEmbed = async start => {
+// 	if (!moviesTopRated.length) {
+// 		return createNoResultEmbed();
+// 	}
 
-	const current = moviesTopRated.slice(start, start + listSize);
-	// const { minimum, maximum } = dates;
-	return new EmbedBuilder({
-		color: Colors.Blue,
-		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesTopRated.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
-		),
-	});
-};
+// 	const current = moviesTopRated.slice(start, start + listSize);
+// 	// const { minimum, maximum } = dates;
+// 	return new EmbedBuilder({
+// 		color: Colors.Blue,
+// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesTopRated.length}`,
+// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
+// 		),
+// 	});
+// };
 
 
 module.exports = {
@@ -91,12 +91,14 @@ module.exports = {
 		// const page = interaction.options.getInteger('page') ?? 1;
 		// -${region.toUpperCase()}
 		const response = await axios.get(`${api_url}${movie_top_rated}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
-		moviesTopRated = response.data.results;
+		const moviesTopRated = response.data.results;
+		const listSize = 5;
+		let currentIndex = 0;
 		// dates = response.data.dates;
 
 		const canFitOnOnePage = moviesTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
-			embeds: [await generateEmbed(0)],
+			embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 		});
 
@@ -110,7 +112,6 @@ module.exports = {
 			filter: filter,
 		});
 
-		let currentIndex = 0;
 		collector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 
@@ -118,7 +119,7 @@ module.exports = {
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				embeds: [await generateEmbed(currentIndex)],
+				embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
 					...(currentIndex ? [backButton] : []),

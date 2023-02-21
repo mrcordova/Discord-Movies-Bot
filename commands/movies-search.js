@@ -8,6 +8,16 @@ const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } 
 const { MyEvents } = require('../events/DMB-Events');
 const movie_details = '/movie';
 
+
+// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
+// language en-US optional
+// query String required
+// page 1 optional
+// include_adult false optional
+// region String optional
+// year Integer optional
+// primary_release_year Integer optional
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('movies-search')
@@ -20,13 +30,7 @@ module.exports = {
 		// handle the autocompletion response (more on how to do that below)
 	},
 	async execute(interaction) {
-		// language en-US optional
-		// query String required
-		// page 1 optional
-		// include_adult false optional
-		// region String optional
-		// year Integer optional
-		// primary_release_year Integer optional
+
 		const query = interaction.options.getString('title');
 		const response = await searchForMovie(query);
 		const movieTitles = response.data.results;
