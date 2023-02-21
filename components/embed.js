@@ -17,7 +17,7 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 	const current = moviesList.slice(start, start + listSize);
 	return new EmbedBuilder({
 		color: color,
-		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
 		),
 	});
