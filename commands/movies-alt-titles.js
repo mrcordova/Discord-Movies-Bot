@@ -6,35 +6,36 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
-const movie_details = '/movie';
+const movie_route = '/movie';
+const movie_alt = '/alternative_titles';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional
-// primary_release_year Integer optional
+// https://api.themoviedb.org/3/movie/{movie_id}/alternative_titles?api_key=<<api_key>>&country=v%20vc%20
+// country string optional
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-search')
-		.setDescription('Search for movies based on a text query.')
+		.setName('movies-alt-title')
+		.setDescription('Get alternative titles for a movie.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
-				.setRequired(true)),
+				.setRequired(true))
+		.addStringOption(option =>
+			option.setName('country')
+				.setDescription('Search speific country.')
+				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 	},
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
-		const response = await searchForMovie(query);
+		// console.log(query);
+		const response = await axios.get(`${api_url}/search/movie?api_key=${MOVIE_API_KEY}&query=${query}&include_adult=false`);
+		// console.log(response);
 		const movieTitles = response.data.results;
-
+		console.log(movieTitles);
 		const options = [];
 
 		for (const movieObject of movieTitles) {
@@ -45,6 +46,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
+		// stop here
 		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
 
 
@@ -57,7 +59,7 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}/${movie_alt}?api_key=${MOVIE_API_KEY}`);
 			const movie = movieResponse.data;
 
 			const formatter = createCurrencyFormatter();

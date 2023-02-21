@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
-const { createNoResultEmbed, createListEmbed } = require('../components/embed');
+const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_upcoming = '/movie/upcoming';
 
