@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, languageDict } = require('../load-data.js');
-const { createNoResultEmbed } = require('../components/embed');
+const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_now_playing = '/movie/now_playing';
 
@@ -33,23 +33,37 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '�
 // 	.setStyle(ButtonStyle.Secondary)
 // 	.setEmoji('➡️');
 
-let moviesNowPlaying;
-const listSize = 5;
+// let moviesNowPlaying;
+// const listSize = 5;
 
 
-const generateEmbed = async start => {
-	if (!moviesNowPlaying.length) {
-		return createNoResultEmbed();
-	}
+// const generateEmbed = async start => {
+// 	if (!moviesNowPlaying.length) {
+// 		return createNoResultEmbed();
+// 	}
 
-	const current = moviesNowPlaying.slice(start, start + listSize);
-	return new EmbedBuilder({
-		color: Colors.Blue,
-		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesNowPlaying.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
-		),
-	});
-};
+// 	const current = moviesNowPlaying.slice(start, start + listSize);
+// 	return new EmbedBuilder({
+// 		color: Colors.Blue,
+// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesNowPlaying.length}`,
+// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
+// 		),
+// 	});
+// };
+
+// const createListEmbed = async (start, listSize, moviesList) => {
+// 	if (!moviesList.length) {
+// 		return createNoResultEmbed();
+// 	}
+
+// 	const current = moviesList.slice(start, start + listSize);
+// 	return new EmbedBuilder({
+// 		color: Colors.Blue,
+// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
+// 		),
+// 	});
+// };
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -102,10 +116,12 @@ module.exports = {
 		// const page = interaction.options.getInteger('page') ?? 1;
 		// -${region.toUpperCase()}
 		const response = await axios.get(`${api_url}${movie_now_playing}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
-		moviesNowPlaying = response.data.results;
+		const moviesNowPlaying = response.data.results;
+		const listSize = 5;
 		const canFitOnOnePage = moviesNowPlaying.length <= listSize;
+		let currentIndex = 0;
 		const embedMessage = await interaction.reply({
-			embeds: [await generateEmbed(0)],
+			embeds: [await createListEmbed(currentIndex, listSize, moviesNowPlaying)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 		});
 
@@ -119,7 +135,7 @@ module.exports = {
 			filter: filter,
 		});
 
-		let currentIndex = 0;
+
 		collector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 
@@ -127,7 +143,7 @@ module.exports = {
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				embeds: [await generateEmbed(currentIndex)],
+				embeds: [await createListEmbed(currentIndex, listSize, moviesNowPlaying)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
 					...(currentIndex ? [backButton] : []),

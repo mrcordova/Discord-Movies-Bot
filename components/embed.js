@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, Colors } = require('discord.js');
 
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
@@ -7,8 +7,22 @@ function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some
 		.setTitle(title)
 		.setURL(url)
 		.setDescription(description);
-
 }
+
+const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = moviesList.slice(start, start + listSize);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
+		),
+	});
+};
+
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
 		.setColor(color)
@@ -84,4 +98,4 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 
-module.exports = { createEmbed, createNoResultEmbed, createMovieDetailEmbed };
+module.exports = { createEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
