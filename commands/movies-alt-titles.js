@@ -35,7 +35,7 @@ module.exports = {
 		const response = await axios.get(`${api_url}/search/movie?api_key=${MOVIE_API_KEY}&query=${query}&include_adult=false`);
 		// console.log(response);
 		const movieTitles = response.data.results;
-		console.log(movieTitles);
+		// console.log(movieTitles);
 		const options = [];
 
 		for (const movieObject of movieTitles) {
@@ -59,9 +59,10 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
-			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}/${movie_alt}?api_key=${MOVIE_API_KEY}`);
-			const movie = movieResponse.data;
-
+			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=alternative_titles`);
+			const movie = movieResponse.data.alternative_titles;
+			// console.log(movie);
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
 			const directors = getCrewMember(movie.credits['crew'], 'director');
