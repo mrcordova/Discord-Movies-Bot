@@ -60,7 +60,7 @@ module.exports = {
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
 			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
-			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=alternative_titles`);
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
 			const movie = movieResponse.data.alternative_titles;
 			// console.log(movie);
 			const formatter = createCurrencyFormatter();
