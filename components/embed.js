@@ -19,10 +19,10 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 		obj[item.value] = item.name;
 		return obj;
 	}, {});
-	console.log(country);
+	// console.log(country);
 	return new EmbedBuilder({
 		color: color,
-		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `${movie.iso_3166_1} - ${ country[movie.iso_3166_1]} - ${movie.type}` })),
 		),
 	});
