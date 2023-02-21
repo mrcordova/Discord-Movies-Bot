@@ -1,7 +1,16 @@
 const fs = require('fs');
 const countryDictionary = JSON.parse(fs.readFileSync('data/countries.json', 'utf8'));
 const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'utf8'));
+let countryCodeDict = {};
 
+(() => {
+	countryCodeDict = countryDictionary.reduce((obj, item) => {
+		obj[item.value] = item.name;
+		return obj;
+	}, {});
+})();
+
+// console.log(country);
 // // Create an empty dictionary object
 // const countriesDict = {};
 
@@ -13,4 +22,5 @@ const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'ut
 module.exports = {
 	countryDict: countryDictionary,
 	languageDict: languageDictionary,
+	countryCodeDict,
 };

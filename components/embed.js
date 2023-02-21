@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors } = require('discord.js');
-const { countryDict } = require('../load-data.js');
+const { countryCodeDict } = require('../load-data.js');
 
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
@@ -15,15 +15,15 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 	}
 
 	const current = moviesList.slice(start, start + listSize);
-	const country = countryDict.reduce((obj, item) => {
-		obj[item.value] = item.name;
-		return obj;
-	}, {});
+	// const country = countryDict.reduce((obj, item) => {
+	// 	obj[item.value] = item.name;
+	// 	return obj;
+	// }, {});
 	// console.log(country);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `${movie.iso_3166_1} - ${ country[movie.iso_3166_1]} - ${movie.type}` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `${movie.iso_3166_1} - ${ countryCodeDict[movie.iso_3166_1] ?? 'Not Aviable'} ${movie.type ?? ''}` })),
 		),
 	});
 };
