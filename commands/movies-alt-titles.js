@@ -1,13 +1,13 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createListEmbed, createAltListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_route = '/movie';
-const movie_alt = '/alternative_titles';
+const movie_alt = 'alternative_titles';
 
 
 // https://api.themoviedb.org/3/movie/{movie_id}/alternative_titles?api_key=<<api_key>>&country=v%20vc%20
@@ -62,16 +62,17 @@ module.exports = {
 			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
 			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
 			const movie = movieResponse.data.alternative_titles;
-			// console.log(movie);
-			const formatter = createCurrencyFormatter();
-			const prod = getProductionCompany(movie['production_companies']);
-			const directors = getCrewMember(movie.credits['crew'], 'director');
-			const actors = getCast(movie.credits['cast'], 3);
+			const movieTitle = movieResponse.data.title;
+			// console.log(movieResponse.data);
+			// const formatter = createCurrencyFormatter();
+			// const prod = getProductionCompany(movie['production_companies']);
+			// const directors = getCrewMember(movie.credits['crew'], 'director');
+			// const actors = getCast(movie.credits['cast'], 3);
 
-			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Aqua });
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
+			const movieDetailsEmbed = await createAltListEmbed(0, 5, movie.titles);
+			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
-
+			// console.log(movieDetailsEmbed.data.fields);
 			await i.update({ content: 'Selected Movie:', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
 			// collector.resetTimer([{time: 15000}]);
 		});

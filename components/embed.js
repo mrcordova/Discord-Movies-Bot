@@ -1,4 +1,5 @@
 const { EmbedBuilder, Colors } = require('discord.js');
+const { countryDict } = require('../load-data.js');
 
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
@@ -8,6 +9,24 @@ function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some
 		.setURL(url)
 		.setDescription(description);
 }
+const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = moviesList.slice(start, start + listSize);
+	const country = countryDict.reduce((obj, item) => {
+		obj[item.value] = item.name;
+		return obj;
+	}, {});
+	console.log(country);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `${movie.iso_3166_1} - ${ country[movie.iso_3166_1]} - ${movie.type}` })),
+		),
+	});
+};
 
 const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -98,4 +117,4 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 
-module.exports = { createEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
+module.exports = { createEmbed, createAltListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
