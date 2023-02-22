@@ -1,10 +1,8 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed, createListEmbed, createAltListEmbed } = require('../components/embed.js');
-const { searchForMovie } = require('../helpers/search-movie.js');
+const { createEmbed, createAltListEmbed } = require('../components/embed.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const movie_route = '/movie';
@@ -60,7 +58,7 @@ module.exports = {
 		const listSize = 5;
 		let currentIndex = 0;
 		let firstTime = true;
-		let Previousid;
+		let prevSelected;
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
@@ -72,8 +70,8 @@ module.exports = {
 			if (i.isStringSelectMenu()) {
 				selected = i.values[0];
 			}
-			if (Previousid != selected && selected != undefined) {
-				Previousid = selected;
+			if (prevSelected != selected && selected != undefined) {
+				prevSelected = selected;
 				currentIndex = 0;
 				firstTime = true;
 			}
@@ -86,22 +84,12 @@ module.exports = {
 
 			// const movie = movieTitles.find(m => m.id == selected);
 			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
-			const movieResponse = await axios.get(`${api_url}${movie_route}/${Previousid}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${prevSelected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
 			const movie = movieResponse.data.alternative_titles;
 			const movieTitle = movieResponse.data.title;
-			const canFitOnOnePage = movie.length <= listSize;
-			console.log(movie.length);
-			// const formatter = createCurrencyFormatter();
-			// const prod = getProductionCompany(movie['production_companies']);
-			// const directors = getCrewMember(movie.credits['crew'], 'director');
-			// const actors = getCast(movie.credits['cast'], 3);
-
-
+			// const canFitOnOnePage = movie.length <= listSize;
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
-			// console.log(currentIndex);
-			// console.log(movieDetailsEmbed.data.fields);
-			// new ActionRowBuilder().addComponents(newSelectMenu),
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
 			// console.log(altListEmbed);
 			await i.update({ content: 'Selected Movie:',
