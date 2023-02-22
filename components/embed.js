@@ -11,6 +11,7 @@ function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some
 }
 const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
+		// console.log(moviesList.length)
 		return createNoResultEmbed();
 	}
 
@@ -19,7 +20,7 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 	// 	obj[item.value] = item.name;
 	// 	return obj;
 	// }, {});
-	// console.log(country);
+	console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
@@ -34,6 +35,7 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 	}
 
 	const current = moviesList.slice(start, start + listSize);
+	console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,

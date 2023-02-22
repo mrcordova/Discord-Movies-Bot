@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createMovieDetailEmbed, createListEmbed, createAltListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
@@ -6,12 +6,20 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
+const { createButton } = require('../components/button');
 const movie_route = '/movie';
 const movie_alt = 'alternative_titles';
 
 
 // https://api.themoviedb.org/3/movie/{movie_id}/alternative_titles?api_key=<<api_key>>&country=v%20vc%20
 // country string optional
+
+const backId = 'back';
+const forwardId = 'forward';
+
+const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
+const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -49,32 +57,64 @@ module.exports = {
 		// TODO: work on buttons and display of alt titles for choosen film.
 		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
 
+		const listSize = 5;
+		let currentIndex = 0;
+		let firstTime = true;
+		let Previousid;
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
-		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
+		const collector = message.createMessageComponentCollector({ filter, idle: 30000 });
 
 		collector.on(MyEvents.Collect, async i => {
-			if (!i.isStringSelectMenu()) return;
-			const selected = i.values[0];
+			let selected;
+			if (i.isStringSelectMenu()) {
+				selected = i.values[0];
+			}
+			if (Previousid != selected && selected != undefined) {
+				Previousid = selected;
+				currentIndex = 0;
+				firstTime = true;
+			}
+			if (firstTime) {
+				firstTime = false;
+			}
+			else {
+				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+			}
+
 			// const movie = movieTitles.find(m => m.id == selected);
 			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
-			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${Previousid}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
 			const movie = movieResponse.data.alternative_titles;
 			const movieTitle = movieResponse.data.title;
-			// console.log(movieResponse.data);
+			const canFitOnOnePage = movie.length <= listSize;
+			console.log(movie.length);
 			// const formatter = createCurrencyFormatter();
 			// const prod = getProductionCompany(movie['production_companies']);
 			// const directors = getCrewMember(movie.credits['crew'], 'director');
 			// const actors = getCast(movie.credits['cast'], 3);
 
-			const movieDetailsEmbed = await createAltListEmbed(0, 5, movie.titles);
+
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
+			// console.log(currentIndex);
 			// console.log(movieDetailsEmbed.data.fields);
-			await i.update({ content: 'Selected Movie:', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
-			// collector.resetTimer([{time: 15000}]);
+			// new ActionRowBuilder().addComponents(newSelectMenu),
+			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
+			// console.log(altListEmbed);
+			await i.update({ content: 'Selected Movie:',
+				embeds: [altListEmbed],
+				components: [
+					new ActionRowBuilder().addComponents(newSelectMenu),
+					new ActionRowBuilder({ components:  [
+						// back button if it isn't the start
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < movie.titles.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] })],
+			});
 		});
 
 		collector.on(MyEvents.Dispose, i => {
