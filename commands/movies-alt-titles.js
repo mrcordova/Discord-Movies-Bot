@@ -55,8 +55,7 @@ module.exports = {
 		// TODO: work on buttons and display of alt titles for choosen film.
 		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
 
-		
-	
+
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
@@ -100,6 +99,7 @@ module.exports = {
 		selectMenuCollector.on(MyEvents.Ignore, args => {
 			console.log(`select menu ignore: ${args}`);
 		});
+		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
@@ -132,6 +132,7 @@ module.exports = {
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`button ignore: ${args}`);
 		});
+		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
