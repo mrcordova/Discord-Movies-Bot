@@ -76,6 +76,7 @@ module.exports = {
 		collector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
+		// eslint-disable-next-line no-unused-vars
 		collector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
