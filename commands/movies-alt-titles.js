@@ -87,6 +87,7 @@ module.exports = {
 					] }),
 				],
 			});
+			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 		selectMenuCollector.on(MyEvents.Dispose, i => {
 			console.log(`select menu dispose: ${i}`);
@@ -115,6 +116,7 @@ module.exports = {
 						...(currentIndex + listSize < movie.titles.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] })],
 			});
+			selectMenuCollector.resetTimer([{ idle: 30000 }]);
 		});
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`button dispose: ${i}`);

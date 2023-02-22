@@ -3,6 +3,7 @@ const axios = require('axios');
 const fs = require('fs');
 const { api_url, MOVIE_API_KEY } = require('./config.json');
 const watch_provider_regions = '/watch/providers/regions';
+const config_countries = '/configuration/countries';
 const config_lang = '/configuration/languages';
 const watch_provider_movies = '/watch/providers/movie';
 const watch_provider_tvs = '/watch/providers/tv';
@@ -69,6 +70,26 @@ const config = '/configuration';
 // 	.catch(error => console.error(error));
 
 
+// countries used throughout tmdb
+axios.get(`${api_url}${config_countries}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+
+		const countries = [];
+		// console.log(response);
+
+		for (const country of response.data) {
+			countries.push({ name: country.english_name, value: country.iso_3166_1, native_name: country.native_name });
+		}
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(countries, null, 2);
+		fs.writeFile('data/countries.json', json, (err) => {
+			if (err) throw err;
+			console.log('Country data written to file');
+		});
+
+	})
+	.catch(error => console.error(error));
+
 // watch providers region
 axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
@@ -81,7 +102,7 @@ axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
 		}
 		// null and 2 are for indentation and formatting
 		const json = JSON.stringify(countries, null, 2);
-		fs.writeFile('data/countries.json', json, (err) => {
+		fs.writeFile('data/watch-countries.json', json, (err) => {
 			if (err) throw err;
 			console.log('Country data written to file');
 		});
