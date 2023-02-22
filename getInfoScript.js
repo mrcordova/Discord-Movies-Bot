@@ -2,12 +2,16 @@ const axios = require('axios');
 // const cheerio = require('cheerio');
 const fs = require('fs');
 const { api_url, MOVIE_API_KEY } = require('./config.json');
-const watch_provider_regions = '/watch/providers/regions';
+
+const config = '/configuration';
 const config_countries = '/configuration/countries';
+const config_jobs = '/configuration/jobs';
 const config_lang = '/configuration/languages';
+const config_trans = '/configuration/primary_translations';
+const config_timezones = '/configuration/timezones';
 const watch_provider_movies = '/watch/providers/movie';
 const watch_provider_tvs = '/watch/providers/tv';
-const config = '/configuration';
+const watch_provider_regions = '/watch/providers/regions';
 
 // countries
 // axios.get('https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes')
@@ -69,8 +73,26 @@ const config = '/configuration';
 // 	})
 // 	.catch(error => console.error(error));
 
+// Get the system wide configuration information.
+// Some elements of the API require some knowledge of this configuration data.
+// The purpose of this is to try and keep the actual API responses as light as possible.
+// It is recommended you cache this data within your application and check for updates every few days.
+axios.get(`${api_url}${config}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		const json = JSON.stringify({ images: response.data['images'] }, null, 2);
+		fs.writeFile('data/images.json', json, (err) => {
+			if (err) throw err;
+			console.log('Images data written to file');
+		});
+		const changeKeyJson = JSON.stringify({ change_keys: response.data['change_keys']}, null, 2);
+		fs.writeFile('data/change-keys.json', changeKeyJson, (err) => {
+			if (err) throw err;
+			console.log('Change key data written to file');
+		});
+	})
+	.catch(error => console.error(error));
 
-// countries used throughout tmdb
+// Get the list of countries (ISO 3166-1 tags) used throughout TMDB.
 axios.get(`${api_url}${config_countries}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -90,26 +112,21 @@ axios.get(`${api_url}${config_countries}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
-// watch providers region
-axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
+// Get a list of the jobs and departments we use on TMDB.
+axios.get(`${api_url}${config_jobs}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
-
-		const countries = [];
-
-
-		for (const country of response.data.results) {
-			countries.push({ name: country.english_name, value: country.iso_3166_1 });
-		}
 		// null and 2 are for indentation and formatting
-		const json = JSON.stringify(countries, null, 2);
-		fs.writeFile('data/watch-countries.json', json, (err) => {
+		const json = JSON.stringify(response.data, null, 2);
+		fs.writeFile('data/jobs.json', json, (err) => {
 			if (err) throw err;
-			console.log('Country data written to file');
+			console.log('Jobs data written to file');
 		});
 
 	})
 	.catch(error => console.error(error));
-// Avaivible Languages
+
+
+// Get the list of languages (ISO 639-1 tags) used throughout TMDB.
 axios.get(`${api_url}${config_lang}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -128,7 +145,54 @@ axios.get(`${api_url}${config_lang}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
-// Movie Providers
+// Get a list of the officially supported translations on TMDB.
+axios.get(`${api_url}${config_trans}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(response.data, null, 2);
+		fs.writeFile('data/primary-translations.json', json, (err) => {
+			if (err) throw err;
+			console.log('Primary Translations data written to file');
+		});
+
+	})
+	.catch(error => console.error(error));
+
+// Get the list of timezones used throughout TMDB.
+axios.get(`${api_url}${config_timezones}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(response.data, null, 2);
+		fs.writeFile('data/timezones.json', json, (err) => {
+			if (err) throw err;
+			console.log('Timezones data written to file');
+		});
+
+	})
+	.catch(error => console.error(error));
+
+// Returns a list of all of the countries we have watch provider (OTT/streaming) data for.
+axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+
+		const countries = [];
+
+
+		for (const country of response.data.results) {
+			countries.push({ name: country.english_name, value: country.iso_3166_1 });
+		}
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(countries, null, 2);
+		fs.writeFile('data/watch-countries.json', json, (err) => {
+			if (err) throw err;
+			console.log('Country data written to file');
+		});
+
+	})
+	.catch(error => console.error(error));
+
+// Returns a list of the watch provider (OTT/streaming) data we have available for movies.
+// You can specify a watch_region param if you want to further filter the list by country.
 axios.get(`${api_url}${watch_provider_movies}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -141,7 +205,8 @@ axios.get(`${api_url}${watch_provider_movies}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
-// Tv providers
+// Returns a list of the watch provider (OTT/streaming) data we have available for TV series. 
+// You can specify a watch_region param if you want to further filter the list by country.
 axios.get(`${api_url}${watch_provider_tvs}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -151,21 +216,6 @@ axios.get(`${api_url}${watch_provider_tvs}?api_key=${MOVIE_API_KEY}`)
 			console.log('TV providers data written to file');
 		});
 
-	})
-	.catch(error => console.error(error));
-
-axios.get(`${api_url}${config}?api_key=${MOVIE_API_KEY}`)
-	.then(response => {
-		const json = JSON.stringify({ images: response.data['images'] }, null, 2);
-		fs.writeFile('data/images.json', json, (err) => {
-			if (err) throw err;
-			console.log('Images data written to file');
-		});
-		const changeKeyJson = JSON.stringify({ change_keys: response.data['change_keys']}, null, 2);
-		fs.writeFile('data/change-keys.json', changeKeyJson, (err) => {
-			if (err) throw err;
-			console.log('Change key data written to file');
-		});
 	})
 	.catch(error => console.error(error));
 
