@@ -20,51 +20,6 @@ const forwardId = 'forward';
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
-// const backButton = new ButtonBuilder()
-// 	.setCustomId(backId)
-// 	.setLabel('Previous')
-// 	.setStyle(ButtonStyle.Secondary)
-// 	.setEmoji('⬅️');
-
-
-// const forwardButton = new ButtonBuilder()
-// 	.setCustomId(forwardId)
-// 	.setLabel('Next')
-// 	.setStyle(ButtonStyle.Secondary)
-// 	.setEmoji('➡️');
-
-// let moviesNowPlaying;
-// const listSize = 5;
-
-
-// const generateEmbed = async start => {
-// 	if (!moviesNowPlaying.length) {
-// 		return createNoResultEmbed();
-// 	}
-
-// 	const current = moviesNowPlaying.slice(start, start + listSize);
-// 	return new EmbedBuilder({
-// 		color: Colors.Blue,
-// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesNowPlaying.length}`,
-// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
-// 		),
-// 	});
-// };
-
-// const createListEmbed = async (start, listSize, moviesList) => {
-// 	if (!moviesList.length) {
-// 		return createNoResultEmbed();
-// 	}
-
-// 	const current = moviesList.slice(start, start + listSize);
-// 	return new EmbedBuilder({
-// 		color: Colors.Blue,
-// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
-// 		),
-// 	});
-// };
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('movies-now-playing')

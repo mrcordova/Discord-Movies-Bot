@@ -19,26 +19,6 @@ const forwardId = 'forward';
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
-// let moviesTopRated;
-// // let dates = {};
-// const listSize = 5;
-
-
-// const generateEmbed = async start => {
-// 	if (!moviesTopRated.length) {
-// 		return createNoResultEmbed();
-// 	}
-
-// 	const current = moviesTopRated.slice(start, start + listSize);
-// 	// const { minimum, maximum } = dates;
-// 	return new EmbedBuilder({
-// 		color: Colors.Blue,
-// 		title: `Showing Movies Now Playing ${start + 1}-${start + current.length} out of ${moviesTopRated.length}`,
-// 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
-// 		),
-// 	});
-// };
-
 
 module.exports = {
 	data: new SlashCommandBuilder()
