@@ -6,6 +6,8 @@ const watch_provider_regions = '/watch/providers/regions';
 const config_lang = '/configuration/languages';
 const watch_provider_movies = '/watch/providers/movie';
 const watch_provider_tvs = '/watch/providers/tv';
+const config = '/configuration';
+
 // countries
 // axios.get('https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes')
 // 	.then(response => {
@@ -66,6 +68,8 @@ const watch_provider_tvs = '/watch/providers/tv';
 // 	})
 // 	.catch(error => console.error(error));
 
+
+// watch providers region
 axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -84,7 +88,7 @@ axios.get(`${api_url}${watch_provider_regions}?api_key=${MOVIE_API_KEY}`)
 
 	})
 	.catch(error => console.error(error));
-
+// Avaivible Languages
 axios.get(`${api_url}${config_lang}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -103,6 +107,7 @@ axios.get(`${api_url}${config_lang}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
+// Movie Providers
 axios.get(`${api_url}${watch_provider_movies}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -115,6 +120,7 @@ axios.get(`${api_url}${watch_provider_movies}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
+// Tv providers
 axios.get(`${api_url}${watch_provider_tvs}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
 
@@ -124,6 +130,21 @@ axios.get(`${api_url}${watch_provider_tvs}?api_key=${MOVIE_API_KEY}`)
 			console.log('TV providers data written to file');
 		});
 
+	})
+	.catch(error => console.error(error));
+
+axios.get(`${api_url}${config}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		const json = JSON.stringify({ images: response.data['images'] }, null, 2);
+		fs.writeFile('data/images.json', json, (err) => {
+			if (err) throw err;
+			console.log('Images data written to file');
+		});
+		const changeKeyJson = JSON.stringify({ change_keys: response.data['change_keys']}, null, 2);
+		fs.writeFile('data/change-keys.json', changeKeyJson, (err) => {
+			if (err) throw err;
+			console.log('Change key data written to file');
+		});
 	})
 	.catch(error => console.error(error));
 

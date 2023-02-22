@@ -1,6 +1,7 @@
 const fs = require('fs');
 const countryDictionary = JSON.parse(fs.readFileSync('data/countries.json', 'utf8'));
 const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'utf8'));
+const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
 let countryCodeDict = {};
 
 // (() => {
@@ -22,4 +23,5 @@ module.exports = {
 	countryDict: countryDictionary,
 	languageDict: languageDictionary,
 	countryCodeDict,
+	images,
 };
