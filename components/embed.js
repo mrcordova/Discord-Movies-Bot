@@ -20,7 +20,7 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 	// 	obj[item.value] = item.name;
 	// 	return obj;
 	// }, {});
-	console.log(current);
+	// console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
