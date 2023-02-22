@@ -18,6 +18,7 @@ function getProductionCompany(production_companies) {
 		prev.id < curr.id ? prev : curr, '');
 }
 
+// eslint-disable-next-line no-unused-vars
 function createCurrencyFormatter(language = 'en-US', currency = 'USD', minimumFractionDigits = 0, maximumFractionDigits = 0) {
 	const formatter = new Intl.NumberFormat(language, {
 		style: 'currency',
