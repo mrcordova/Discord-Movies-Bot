@@ -65,21 +65,16 @@ module.exports = {
 		const listSize = 5;
 		let currentIndex = 0;
 		let movie;
-		// let movieTitle;
 
 		selectMenuCollector.on(MyEvents.Collect, async i => {
 			const selected = i.values[0];
 			currentIndex = 0;
-			// const movie = movieTitles.find(m => m.id == selected);
-			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
 			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}`);
 			movie = movieResponse.data.alternative_titles;
 			const movieTitle = movieResponse.data.title;
-			// const canFitOnOnePage = movie.length <= listSize;
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
-			// console.log(altListEmbed);
 			await i.update({ content: 'Selected Movie:',
 				embeds: [altListEmbed],
 				components: [
@@ -107,13 +102,8 @@ module.exports = {
 
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			// const movie = movieTitles.find(m => m.id == selected);
-			// https://api.themoviedb.org/3/movie/550?api_key=fa6d2f27fc88f5bea6f896c7c38a58b4&append_to_response=alternative_titles
-
-			// const canFitOnOnePage = movie.length <= listSize;
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
-			// const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
-			// console.log(i.message.components[0]);
+
 			await i.update({ content: 'Selected Movie:',
 				embeds: [altListEmbed],
 				components: [
