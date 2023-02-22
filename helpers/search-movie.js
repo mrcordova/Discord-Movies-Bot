@@ -1,9 +1,6 @@
-// const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-// const { createButton } = require('../components/button.js');
-// const { countryDict, languageDict } = require('../load-data.js');
-// const { noResultEmbed } = require('../components/noResultEmbed.js');
+
 const search_movie = '/search/movie';
 // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
 // language en-US optional
