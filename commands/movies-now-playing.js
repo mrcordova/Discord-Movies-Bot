@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
@@ -93,12 +93,15 @@ module.exports = {
 		// Collect button interactions (when a user clicks a button),
 		// but only when the button as clicked by the original message author
 		const filter = ({ user }) => interaction.user.id == user.id;
-		const collector = embedMessage.createMessageComponentCollector({
+		const buttonCollector = embedMessage.createMessageComponentCollector({
 			filter: filter,
+			componentType: ComponentType.Button,
+			customId:'list',
+			idle: 30000,
 		});
 
 
-		collector.on(MyEvents.Collect, async m => {
+		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
@@ -115,6 +118,17 @@ module.exports = {
 			});
 		});
 
+
+		buttonCollector.on(MyEvents.Dispose, i => {
+			console.log(`dispose: ${i}`);
+		});
+		// eslint-disable-next-line no-unused-vars
+		buttonCollector.on(MyEvents.End, async (c, r) => {
+			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+		});
+		buttonCollector.on(MyEvents.Ignore, args => {
+			console.log(`ignore: ${args}`);
+		});
 
 	},
 };

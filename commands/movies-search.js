@@ -94,16 +94,16 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
-		const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
+		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
-		collector.on(MyEvents.Collect, async i => {
+		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
 			// console.log(language);
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=credits&language=${language}`);
 			const movie = movieResponse.data;
-			console.log(movie);
+			// console.log(movie);
 
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
@@ -118,14 +118,14 @@ module.exports = {
 			// collector.resetTimer([{time: 15000}]);
 		});
 
-		collector.on(MyEvents.Dispose, i => {
+		selectMenucollector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
 		// eslint-disable-next-line no-unused-vars
-		collector.on(MyEvents.End, async (c, r) => {
+		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
-		collector.on(MyEvents.Ignore, args => {
+		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
 		});
 
