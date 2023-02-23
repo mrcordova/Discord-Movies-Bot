@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { countryDict, languageDict } = require('../load-data.js');
+const { countryDict, languageDict, translationsCodeDict } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_top_rated = '/movie/top_rated';
@@ -44,7 +44,7 @@ module.exports = {
 		let choices;
 
 		if (focusedOption.name === 'language') {
-			choices = languageDict;
+			choices = translationsCodeDict;
 		}
 		if (focusedOption.name === 'region') {
 			choices = countryDict;
@@ -61,11 +61,16 @@ module.exports = {
 		let language;
 		let region;
 		try {
-			language = languageDict.find(lang => lang.name === languageName || lang.value === languageName).value;
-			region = countryDict.find(country => country.name === regionName || country.value === regionName).value.toUpperCase();
+			language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
 		}
 		catch {
-			language = 'en';
+			language = 'en-US';
+		}
+		try {
+			region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
+
+		}
+		catch {
 			region = 'US';
 		}
 		// const page = interaction.options.getInteger('page') ?? 1;

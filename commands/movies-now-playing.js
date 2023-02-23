@@ -61,11 +61,16 @@ module.exports = {
 		let language;
 		let region;
 		try {
-			language = languageDict.find(lang => lang.name === languageName || lang.value === languageName).value;
-			region = countryDict.find(country => country.name === regionName || country.value === regionName).value.toUpperCase();
+			language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
 		}
 		catch {
-			language = 'en';
+			language = 'en-US';
+		}
+		try {
+			region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
+
+		}
+		catch {
 			region = 'US';
 		}
 		// const page = interaction.options.getInteger('page') ?? 1;
