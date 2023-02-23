@@ -37,11 +37,8 @@ module.exports = {
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
-		// console.log(query);
 		const response = await axios.get(`${api_url}/search/movie?api_key=${MOVIE_API_KEY}&query=${query}&include_adult=false`);
-		// console.log(response);
 		const movieTitles = response.data.results;
-		// console.log(movieTitles);
 		const options = [];
 
 		for (const movieObject of movieTitles) {

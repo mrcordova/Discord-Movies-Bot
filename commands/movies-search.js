@@ -25,7 +25,11 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
-				.setRequired(true)),
+				.setRequired(true))
+		.addStringOption(option =>
+			option.setName('language')
+				.setDescription('Search for the desired translation.')
+				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 	},
