@@ -16,8 +16,8 @@ const movie_details = '/movie';
 // page 1 optional
 // include_adult false optional
 // region String optional
-// year Integer optional same as primary release year
-// primary_release_year Integer optional
+// year Integer optional  includes dvd, blu-ray  dates ect
+// primary_release_year Integer optional - oldest release date
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -99,13 +99,12 @@ module.exports = {
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
-			// const movie = movieTitles.find(m => m.id == selected);
-			// console.log(language);
+
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
-			const movieRating = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region)['release_dates'].find(({ type }) => type == 3).certification;
+			const movieRating = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region)['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
 			movie.rating = movieRating;
-			// console.log(movie.rating);
+
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
 			const directors = getCrewMember(movie.credits['crew'], 'director');
