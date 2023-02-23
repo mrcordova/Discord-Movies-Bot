@@ -101,10 +101,11 @@ module.exports = {
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
 			// console.log(language);
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=credits&language=${language}`);
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
-			// console.log(movie);
-
+			const movieRating = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region)['release_dates'].find(({ type }) => type == 3).certification;
+			movie.rating = movieRating;
+			// console.log(movie.rating);
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
 			const directors = getCrewMember(movie.credits['crew'], 'director');

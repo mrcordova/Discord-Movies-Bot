@@ -82,6 +82,11 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 				inline: true,
 			},
 			{
+				name: 'Content Rating',
+				value: `${movie.rating}`,
+				inline: true,
+			},
+			{
 				name: 'Runtime',
 				value: `${movie.runtime}`,
 				inline: true,
@@ -97,7 +102,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 				inline: true,
 			},
 			{
-				name: 'Rating',
+				name: 'User Rating',
 				value: `${movie.vote_average}/10`,
 				inline: true,
 			},
