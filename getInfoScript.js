@@ -79,12 +79,12 @@ const watch_provider_regions = '/watch/providers/regions';
 // It is recommended you cache this data within your application and check for updates every few days.
 axios.get(`${api_url}${config}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {
-		const json = JSON.stringify({ images: response.data['images'] }, null, 2);
+		const json = JSON.stringify(response.data['images'], null, 2);
 		fs.writeFile('data/images.json', json, (err) => {
 			if (err) throw err;
 			console.log('Images data written to file');
 		});
-		const changeKeyJson = JSON.stringify({ change_keys: response.data['change_keys']}, null, 2);
+		const changeKeyJson = JSON.stringify(response.data['change_keys'], null, 2);
 		fs.writeFile('data/change-keys.json', changeKeyJson, (err) => {
 			if (err) throw err;
 			console.log('Change key data written to file');

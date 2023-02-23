@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors } = require('discord.js');
-const { countryCodeDict } = require('../load-data.js');
+const { countryCodeDict, images } = require('../load-data.js');
 
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
@@ -57,9 +57,9 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 			// url: "https://discord.js.org",
 		},
 		description: movie.overview,
-		// thumbnail: {
-		//   url: `${base_url}${logo_sizes[1]}${prod.logo_path}`,
-		// },
+		thumbnail: {
+			url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		},
 		fields: [
 			{
 				name: 'Directed by',
@@ -102,9 +102,9 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 				inline: true,
 			},
 		],
-		// image: {
-		//   url: `${base_url}${poster_sizes[5]}${movie.poster_path}`,
-		// },
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${movie.poster_path}`,
+		},
 		timestamp: new Date(),
 		footer: {
 			text: `${prod.name}`,
