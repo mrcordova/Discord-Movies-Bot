@@ -52,27 +52,29 @@ module.exports = {
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.name })),
+			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
 		);
 	},
 	async execute(interaction) {
-		const languageName = interaction.options.getString('language') ?? 'English';
-		const regionName = interaction.options.getString('region') ?? 'United States of America (the)';
-		let language;
-		let region;
-		try {
-			language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
-		}
-		catch {
-			language = 'en-US';
-		}
-		try {
-			region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
+		const language = interaction.options.getString('language') ?? 'en-US';
+		const region = interaction.options.getString('region') ?? 'US';
+		// const languageName = interaction.options.getString('language') ?? 'English';
+		// const regionName = interaction.options.getString('region') ?? 'United States of America (the)';
+		// let language;
+		// let region;
+		// try {
+		// 	language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
+		// }
+		// catch {
+		// 	language = 'en-US';
+		// }
+		// try {
+		// 	region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
 
-		}
-		catch {
-			region = 'US';
-		}
+		// }
+		// catch {
+		// 	region = 'US';
+		// }
 		// const page = interaction.options.getInteger('page') ?? 1;
 
 		const response = await axios.get(`${api_url}${movie_upcoming}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
