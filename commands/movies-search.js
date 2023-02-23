@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict } = require('../load-data.js');
 const axios = require('axios');
@@ -84,6 +84,10 @@ module.exports = {
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
 
+		if (!movieTitles.length) {
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that year', 'Please make a new command with a different year')] });
+			return;
+		}
 		const options = [];
 
 		for (const movieObject of movieTitles) {
@@ -99,6 +103,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
+		// if no film is found for certain year.
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
@@ -109,7 +114,7 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
 			// console.log(movie.release_dates);
-			const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+			const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
 			// console.log(movieRating);
 			movie.rating = movieRating;
 

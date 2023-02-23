@@ -58,25 +58,7 @@ module.exports = {
 	async execute(interaction) {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		// const languageName = interaction.options.getString('language') ?? 'English';
-		// const regionName = interaction.options.getString('region') ?? 'United States of America (the)';
-		// let language;
-		// let region;
-		// try {
-		// 	language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
-		// }
-		// catch {
-		// 	language = 'en-US';
-		// }
-		// try {
-		// 	region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
 
-		// }
-		// catch {
-		// 	region = 'US';
-		// }
-		// const page = interaction.options.getInteger('page') ?? 1;
-		// -${region.toUpperCase()}
 		const response = await axios.get(`${api_url}${movie_top_rated}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
 		const moviesTopRated = response.data.results;
 		const listSize = 5;
