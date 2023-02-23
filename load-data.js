@@ -1,6 +1,7 @@
 const fs = require('fs');
 const countryDictionary = JSON.parse(fs.readFileSync('data/countries.json', 'utf8'));
 const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'utf8'));
+const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
 const transArry = JSON.parse(fs.readFileSync('data/primary-translations.json', 'utf8'));
 const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
 let countryCodeDict = {};
@@ -16,7 +17,12 @@ const translationsCodeDict = transArry.reduce((objArry, item) => {
 	objArry.push({ name:  langTemp.name, value: item });
 	return objArry;
 }, []);
-// console.log(translationsCodeDict);
+
+const depts = jobsArry.reduce((arry, item) => {
+	arry.push(item.department);
+	return arry;
+}, []);
+// console.log(depts);
 // // Create an empty dictionary object
 // const countriesDict = {};
 
@@ -31,4 +37,5 @@ module.exports = {
 	countryCodeDict,
 	images,
 	translationsCodeDict,
+	depts,
 };
