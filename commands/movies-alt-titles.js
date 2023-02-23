@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createAltListEmbed } = require('../components/embed.js');
+const { createEmbed, createAltListEmbed, createNoResultEmbed } = require('../components/embed.js');
 const { countryDict } = require('../load-data.js');
 
 const axios = require('axios');
@@ -57,12 +57,19 @@ module.exports = {
 		const country = interaction.options.getString('country') ?? '';
 		const response = await axios.get(`${api_url}/search/movie?api_key=${MOVIE_API_KEY}&query=${query}&include_adult=false`);
 		const movieTitles = response.data.results;
+
+		if (!movieTitles.length) {
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies with that title.', 'Please make a new command with a different year')] });
+			return;
+		}
+
 		const options = [];
 
 		for (const movieObject of movieTitles) {
 			const description = movieObject.overview.slice(0, 50);
 			options.push({ label: `${movieObject.title} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
 		}
+
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
