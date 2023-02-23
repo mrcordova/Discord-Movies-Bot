@@ -2,6 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createMovieDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
+const { countryDict, translationsCodeDict } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
@@ -29,14 +30,52 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
+				.setAutocomplete(true))
+		.addStringOption(option =>
+			option.setName('region')
+				.setDescription('Search for the desired region.')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
+		const focusedOption = interaction.options.getFocused(true);
+
+		let choices;
+
+		if (focusedOption.name === 'language') {
+			choices = translationsCodeDict;
+		}
+		if (focusedOption.name === 'region') {
+			choices = countryDict;
+		}
+
+		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+		await interaction.respond(
+			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+		);
 	},
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
-		const response = await searchForMovie(query);
+		const language = interaction.options.getString('language') ?? 'en-US';
+		const region = interaction.options.getString('region') ?? 'US';
+		// console.log(languageName);
+		// let language;
+		// let region;
+		// try {
+		// 	language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
+		// }
+		// catch {
+		// 	language = 'en-US';
+		// }
+		// try {
+		// 	region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
+
+		// }
+		// catch {
+		// 	region = 'US';
+		// }
+
+		const response = await searchForMovie(query, language, region);
 		const movieTitles = response.data.results;
 
 		const options = [];
@@ -61,8 +100,10 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			// const movie = movieTitles.find(m => m.id == selected);
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&langauage=en&append_to_response=credits`);
+			// console.log(language);
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=credits&language=${language}`);
 			const movie = movieResponse.data;
+			console.log(movie);
 
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
