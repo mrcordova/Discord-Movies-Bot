@@ -4,10 +4,10 @@ const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'ut
 const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
 const transArry = JSON.parse(fs.readFileSync('data/primary-translations.json', 'utf8'));
 const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
-let countryCodeDict = {};
+// let countryCodeDict = {};
 
 // (() => {
-countryCodeDict = countryDictionary.reduce((obj, item) => {
+const countryCodeDict = countryDictionary.reduce((obj, item) => {
 	obj[item.value] = item.name; return obj;
 }, {});
 // })();
