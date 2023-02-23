@@ -64,22 +64,6 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		// console.log(languageName);
-		// let language;
-		// let region;
-		// try {
-		// 	language = translationsCodeDict.find(lang => lang.name.toLowerCase() === languageName.toLowerCase() || lang.value.toLowerCase() === languageName.toLowerCase()).value;
-		// }
-		// catch {
-		// 	language = 'en-US';
-		// }
-		// try {
-		// 	region = countryDict.find(country => country.name.toLowerCase() === regionName.toLowerCase() || country.value.toLowerCase() === regionName.toLowerCase()).value.toUpperCase();
-
-		// }
-		// catch {
-		// 	region = 'US';
-		// }
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
