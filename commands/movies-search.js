@@ -91,7 +91,6 @@ module.exports = {
 			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
 		}
 
-		console.log(options);
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
@@ -109,7 +108,9 @@ module.exports = {
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
-			const movieRating = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region)['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+			// console.log(movie.release_dates);
+			const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+			// console.log(movieRating);
 			movie.rating = movieRating;
 
 			const formatter = createCurrencyFormatter();
@@ -118,7 +119,7 @@ module.exports = {
 			const actors = getCast(movie.credits['cast'], 3);
 
 			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Aqua });
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title, 1, options);
+			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 
 			await i.update({ content: 'Selected Movie:', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
