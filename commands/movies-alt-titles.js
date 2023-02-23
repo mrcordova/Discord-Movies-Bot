@@ -72,7 +72,8 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
-			await i.update({ content: 'Selected Movie:',
+			await i.update({
+				content: 'Selected Movie:',
 				embeds: [altListEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -102,7 +103,8 @@ module.exports = {
 
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
 
-			await i.update({ content: 'Selected Movie:',
+			await i.update({ 
+				content: 'Selected Movie:',
 				embeds: [altListEmbed],
 				components: [
 					i.message.components[0],

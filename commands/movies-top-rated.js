@@ -85,6 +85,7 @@ module.exports = {
 
 		const canFitOnOnePage = moviesTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
+			content: 'Top Rated Movies',
 			embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 		});
@@ -103,11 +104,11 @@ module.exports = {
 		});
 		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
-
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
+				content: 'Top Rated Movies',
 				embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
