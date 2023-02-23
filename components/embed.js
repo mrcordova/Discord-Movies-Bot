@@ -49,7 +49,7 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 	return {
 		color: color,
-		title: movie.original_title,
+		title: movie.title,
 		url: `https://www.imdb.com/title/${movie.imdb_id}/`,
 		author: {
 			name: user.username,
