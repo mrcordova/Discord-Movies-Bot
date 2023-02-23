@@ -9,6 +9,10 @@ const config_jobs = '/configuration/jobs';
 const config_lang = '/configuration/languages';
 const config_trans = '/configuration/primary_translations';
 const config_timezones = '/configuration/timezones';
+
+const certification_movie = '/certification/movie/list';
+const certification_tv = '/certification/tv/list';
+
 const watch_provider_movies = '/watch/providers/movie';
 const watch_provider_tvs = '/watch/providers/tv';
 const watch_provider_regions = '/watch/providers/regions';
@@ -168,6 +172,30 @@ axios.get(`${api_url}${config_timezones}?api_key=${MOVIE_API_KEY}`)
 			console.log('Timezones data written to file');
 		});
 
+	})
+	.catch(error => console.error(error));
+
+// Get an up to date list of the officially supported movie certifications on TMDB.
+axios.get(`${api_url}${certification_movie}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(response.data, null, 2);
+		fs.writeFile('data/movie-ratings.json', json, (err) => {
+			if (err) throw err;
+			console.log('Movie certifications data written to file');
+		});
+	})
+	.catch(error => console.error(error));
+
+// Get an up to date list of the officially supported movie certifications on TMDB.
+axios.get(`${api_url}${certification_tv}?api_key=${MOVIE_API_KEY}`)
+	.then(response => {
+		// null and 2 are for indentation and formatting
+		const json = JSON.stringify(response.data, null, 2);
+		fs.writeFile('data/tv-ratings.json', json, (err) => {
+			if (err) throw err;
+			console.log('Tv certifications data written to file');
+		});
 	})
 	.catch(error => console.error(error));
 
