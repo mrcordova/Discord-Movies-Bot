@@ -16,7 +16,7 @@ const movie_details = '/movie';
 // page 1 optional
 // include_adult false optional
 // region String optional
-// year Integer optional
+// year Integer optional same as primary release year
 // primary_release_year Integer optional
 
 module.exports = {
