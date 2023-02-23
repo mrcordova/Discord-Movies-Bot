@@ -47,6 +47,7 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 
 
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
+
 	return {
 		color: color,
 		title: movie.title,

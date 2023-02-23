@@ -11,8 +11,8 @@ const search_movie = '/search/movie';
 // year Integer optional
 // primary_release_year Integer optional
 
-async function searchForMovie(query, language = 'en-US', region = 'US', year = 0, primaryReleaseYear = 0, page = 1) {
-	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query}&page=${page}&include_adult=false&year=${year}&primary_release_year=${primaryReleaseYear}`);
+async function searchForMovie(query, language = 'en-US', region = 'US', primaryReleaseYear = 0, page = 1) {
+	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
 }
 
 module.exports = { searchForMovie };

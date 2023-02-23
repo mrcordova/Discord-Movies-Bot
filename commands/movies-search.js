@@ -34,7 +34,12 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
-				.setAutocomplete(true)),
+				.setAutocomplete(true))
+		.addIntegerOption(option =>
+			option.setName('release-year')
+				.setDescription('Search for the desired year.')
+				.setMinValue(1800)
+				.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -58,6 +63,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		// console.log(languageName);
 		// let language;
 		// let region;
@@ -75,16 +81,17 @@ module.exports = {
 		// 	region = 'US';
 		// }
 
-		const response = await searchForMovie(query, language, region);
+		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
 
 		const options = [];
 
 		for (const movieObject of movieTitles) {
 			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
+			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
 		}
 
+		console.log(options);
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
