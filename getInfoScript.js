@@ -205,7 +205,7 @@ axios.get(`${api_url}${watch_provider_movies}?api_key=${MOVIE_API_KEY}`)
 	})
 	.catch(error => console.error(error));
 
-// Returns a list of the watch provider (OTT/streaming) data we have available for TV series. 
+// Returns a list of the watch provider (OTT/streaming) data we have available for TV series.
 // You can specify a watch_region param if you want to further filter the list by country.
 axios.get(`${api_url}${watch_provider_tvs}?api_key=${MOVIE_API_KEY}`)
 	.then(response => {

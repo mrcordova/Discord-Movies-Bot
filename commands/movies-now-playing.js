@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle } = require('discord.
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { countryDict, languageDict } = require('../load-data.js');
+const { countryDict, languageDict, translationsCodeDict } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const movie_now_playing = '/movie/now_playing';
@@ -26,7 +26,7 @@ module.exports = {
 		.setDescription(' Get a list of movies currently playing.')
 		.addStringOption(option =>
 			option.setName('language')
-				.setDescription('Search for the desired language.')
+				.setDescription('Search for the desired translation.')
 				.setMinLength(2)
 				.setAutocomplete(true))
 		// .addIntegerOption(option =>
@@ -44,7 +44,7 @@ module.exports = {
 		let choices;
 
 		if (focusedOption.name === 'language') {
-			choices = languageDict;
+			choices = translationsCodeDict;
 		}
 		if (focusedOption.name === 'region') {
 			choices = countryDict;
