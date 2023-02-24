@@ -59,7 +59,6 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		.setDescription(description);
 }
 
-
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
 	return {
@@ -132,5 +131,78 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 		},
 	};
 }
+function createPersonDetailEmbed(person, user) {
 
-module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
+	return {
+		color: Colors.Blurple,
+		title: person.name,
+		url: `https://www.imdb.com/name/${person.imdb_id}/`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: person.biography.slice(0, 100),
+		thumbnail: {
+			url: `${images.base_url}${images.logo_sizes[1]}${person.profile_path}`,
+		},
+		fields: [
+			{
+				name: 'Birthday',
+				value: person.birthday,
+				inline: true,
+			},
+			{
+				name: 'Death',
+				value: person.deathday ?? 'N/A',
+				inline: true,
+			},
+			{
+				name: 'Known For: ',
+				value: person.known_for_department,
+				inline: true,
+			},
+			{
+				name: 'Place of birth',
+				value: person.place_of_birth,
+				inline: true,
+			},
+			{
+				name: 'Gender',
+				value: `${person.gender}`,
+				inline: true,
+			},
+			// {
+			// 	name: 'Runtime',
+			// 	value: `${movie.runtime}`,
+			// 	inline: true,
+			// },
+			// {
+			// 	name: 'Budget',
+			// 	value: `${formatter.format(movie.budget)}`,
+			// 	inline: true,
+			// },
+			// {
+			// 	name: 'Revenue',
+			// 	value: `${formatter.format(movie.revenue)}`,
+			// 	inline: true,
+			// },
+			// {
+			// 	name: 'User Rating',
+			// 	value: `${movie.vote_average}/10`,
+			// 	inline: true,
+			// },
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${person.poster_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			// text: `${prod.name}`,
+			// icon_url: "https://i.imgur.com/AfFp7pu.png",
+		},
+	};
+}
+
+
+module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };

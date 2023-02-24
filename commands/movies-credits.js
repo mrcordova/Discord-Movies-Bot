@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { translationsCodeDict, depts, deptEmojis } = require('../load-data.js');
 const axios = require('axios');
@@ -169,12 +169,20 @@ module.exports = {
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
 				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
-				// console.log(creditResponse);
+
 				const person_id = creditResponse.data.person.id;
-				const peopleResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&append_to_response=movie_credits`);
-				// console.log(peopleResponse);
-				const peopleDetils = peopleResponse.data;
-				const movieCredits = peopleResponse.data.movie_credits;
+				//  add language option?
+				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=movie_credits`);
+				const personDetials = personResponse.data;
+				const movieCredits = personResponse.data.movie_credits;
+
+				const personCreditsEmbed = createPersonDetailEmbed(personDetials, i.user);
+
+				await i.update({
+					content: 'Person\'s Detail',
+					embeds: [personCreditsEmbed],
+					components: [],
+				});
 			}
 			else {
 
