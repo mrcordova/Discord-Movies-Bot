@@ -104,15 +104,16 @@ module.exports = {
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
-        const reactFilter = (reaction, user) => user.id === interaction.user.id;
+		// const reactFilter = (reaction, user) => user.id === interaction.user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row], fetchReply: true });
+		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
-		const reactionCollector = message.createReactionCollector({ filter: reactFilter, customId: 'react', idle: 30000 });
+		// const reactionCollector = message.createReactionCollector({ filter: reactFilter, customId: 'react' });
 
-
+        //1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟
+        // :one:
         // await message.react('1️⃣');
         // message.react('🍎')
 		// 	.then(() => message.react('🍊'))
@@ -123,14 +124,13 @@ module.exports = {
 	// .catch(collected => {
 	// 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
 	// });
-
-		const listSize = 5;
+		const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+		const listSize = Math.min(5, 10);
 		let currentIndex = 0;
 		let credits;
-        // for(let i = 0; i < listSize; i++) {
-        //     await message.react('🍎');
-        // }
-        // message.react('👍').then(() => message.react('👎'));
+		// for (let i = 0; i < listSize; i++) {
+		// 	await message.react(numberEmoji[i]);
+		// }
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
@@ -146,6 +146,12 @@ module.exports = {
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
+			const moreDetailBtns = [];
+			const amountOfListMemebers = Math.min(listSize, credits.length);
+			for (let j = 0; j < amountOfListMemebers; j++) {
+				moreDetailBtns.push(createButton(`${credits[j].name}`, ButtonStyle.Secondary, `${credits[j].job}_${credits[j].name}`, numberEmoji[j]));
+			}
+
 			await i.update({
 				content: `Department: ${dept}`,
 				embeds: [movieCreditsEmbed],
@@ -157,9 +163,21 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
+					new ActionRowBuilder({ components:  moreDetailBtns }),
 				],
 			});
+			// const reactMessage = await i.fetchReply();
+			// reactMessage.react(numberEmoji[0]);
+			// reactMessage.react('2️⃣');
+			// reactMessage.react('3️⃣');
+			// reactMessage.react('4️⃣');
+			// reactMessage.react('5️⃣');
 
+			// const choices = Math.min(listSize, credits.length);
+			// for (let choice = 1; i <= list; choice++) {
+			// 	// console.log(numberEmoji[choice]);
+			// 	reactMessage.react('1️⃣');
+			// }
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 
 			// collector.resetTimer([{time: 15000}]);
@@ -180,6 +198,11 @@ module.exports = {
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
+			// const amountOfListMemebers = Math.min(listSize, credits.length);
+			const current = credits.slice(currentIndex, currentIndex + listSize);
+			// for (let j = 0; j < amountOfListMemebers; j++) {
+			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, numberEmoji[index]));
+			// }
 
 			await i.update({
 				content: `Department: ${dept}`,
@@ -191,7 +214,9 @@ module.exports = {
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
 						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] })],
+					] }),
+					new ActionRowBuilder({ components:  moreDetailBtns }),
+				],
 			});
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
@@ -206,12 +231,12 @@ module.exports = {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
 		});
 
-		reactionCollector.on(MyEvents.Collect, (reaction, user) => {
-			console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
-		});
+		// reactionCollector.on(MyEvents.Collect, (reaction, user) => {
+		// 	console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+		// });
 
-		reactionCollector.on(MyEvents.End, collected => {
-			console.log(`Collected ${collected.size} items`);
-		});
+		// reactionCollector.on(MyEvents.End, collected => {
+		// 	console.log(`Collected ${collected.size} items`);
+		// });
 	},
 };
