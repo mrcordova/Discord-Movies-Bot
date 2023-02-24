@@ -132,7 +132,6 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 function createPersonDetailEmbed(person, user) {
-
 	return {
 		color: Colors.Blurple,
 		title: person.name,
@@ -142,7 +141,7 @@ function createPersonDetailEmbed(person, user) {
 			icon_url: user.displayAvatarURL(),
 			// url: "https://discord.js.org",
 		},
-		description: person.biography.slice(0, 100),
+		description: person.biography,
 		thumbnail: {
 			url: `${images.base_url}${images.logo_sizes[1]}${person.profile_path}`,
 		},
@@ -194,7 +193,7 @@ function createPersonDetailEmbed(person, user) {
 			// },
 		],
 		image: {
-			url: `${images.base_url}${images.poster_sizes[5]}${person.poster_path}`,
+			url: `${images.base_url}${images.poster_sizes[5]}${person.profile_path}`,
 		},
 		timestamp: new Date(),
 		footer: {
