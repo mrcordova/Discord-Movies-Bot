@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyl
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict, depts, deptEmojis } = require('../load-data.js');
+const { translationsCodeDict, depts, deptEmojis } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
@@ -48,15 +48,15 @@ module.exports = {
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
 				.setAutocomplete(true)),
-		// .addStringOption(option =>
-		// 	option.setName('region')
-		// 		.setDescription('Search for the desired region.')
-		// 		.setAutocomplete(true))
-		// .addIntegerOption(option =>
-		// 	option.setName('release-year')
-		// 		.setDescription('Search for the desired year.')
-		// 		.setMinValue(1800)
-		// 		.setMaxValue(3000)),
+	// .addStringOption(option =>
+	// 	option.setName('region')
+	// 		.setDescription('Search for the desired region.')
+	// 		.setAutocomplete(true))
+	// .addIntegerOption(option =>
+	// 	option.setName('release-year')
+	// 		.setDescription('Search for the desired year.')
+	// 		.setMinValue(1800)
+	// 		.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -105,33 +105,16 @@ module.exports = {
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
-		// const reactFilter = (reaction, user) => user.id === interaction.user.id;
 
-		// if no film is found for certain year.
 		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
-		// const reactionCollector = message.createReactionCollector({ filter: reactFilter, customId: 'react' });
 
-        //1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟
-        // :one:
-        // await message.react('1️⃣');
-        // message.react('🍎')
-		// 	.then(() => message.react('🍊'))
-		// 	.then(() => message.react('🍇'))
-		// 	.catch(error => console.error('One of the emojis failed to react:', error));
-    //     message.awaitReactions({ filter, max: 4, time: 60000, errors: ['time'] })
-	// .then(collected => console.log(collected.size))
-	// .catch(collected => {
-	// 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
-	// });
-		// const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+
 		const listSize = Math.min(5, 10);
 		let currentIndex = 0;
 		let credits;
-		// for (let i = 0; i < listSize; i++) {
-		// 	await message.react(numberEmoji[i]);
-		// }
+
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
@@ -168,7 +151,6 @@ module.exports = {
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 
-			// collector.resetTimer([{time: 15000}]);
 		});
 
 		selectMenucollector.on(MyEvents.Dispose, i => {
@@ -190,7 +172,9 @@ module.exports = {
 				// console.log(creditResponse);
 				const person_id = creditResponse.data.person.id;
 				const peopleResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&append_to_response=movie_credits`);
-				console.log(peopleResponse);
+				// console.log(peopleResponse);
+				const peopleDetils = peopleResponse.data;
+				const movieCredits = peopleResponse.data.movie_credits;
 			}
 			else {
 
