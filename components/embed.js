@@ -23,6 +23,20 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 		),
 	});
 };
+const createCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = moviesList.slice(start, start + listSize);
+
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (member, index) => ({ name: `${ start + (index + 1)}. ${member.name}`, value: `${member.job}` })),
+		),
+	});
+};
 
 const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -119,4 +133,4 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 
-module.exports = { createEmbed, createAltListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
+module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed };
