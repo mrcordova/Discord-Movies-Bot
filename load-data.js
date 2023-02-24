@@ -23,6 +23,33 @@ const depts = jobsArry.reduce((arry, item) => {
 	return arry;
 }, []);
 // console.log(depts);
+const deptEmojis = {
+	'Camera' : '📷',
+	'Crew' : '👷‍♂️',
+	'Directing' : '🎬',
+	'Costume & Make-Up' : '💄',
+	'Actors' : '🎭',
+	'Writing' : '✍️',
+	'Visual Effects' : '🔮',
+	'Lighting' : '💡',
+	'Art' : '🎨',
+	'Editing' : '🎞️',
+	'Sound' : '🔊',
+	'Production' : '🎥',
+};
+
+const numberEmojis = {
+	1 : '1️⃣',
+	2 : '2️⃣',
+	3 : '3️⃣',
+	4 : '4️⃣',
+	5 : '5️⃣',
+	6 : '6️⃣',
+	7 : '7️⃣',
+	8 : '8️⃣',
+	9 : '9️⃣',
+	10 : '🔟',
+};
 // // Create an empty dictionary object
 // const countriesDict = {};
 
@@ -38,4 +65,6 @@ module.exports = {
 	images,
 	translationsCodeDict,
 	depts,
+	deptEmojis,
+	numberEmojis,
 };

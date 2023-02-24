@@ -1,12 +1,13 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle,  EmojiResolvable, ReactionEmoji } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict, depts } = require('../load-data.js');
+const { countryDict, translationsCodeDict, depts, deptEmojis } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
+const { getEmoji } = require('../helpers/get-emoji');
 const movie_details = '/movie';
 
 
@@ -124,7 +125,7 @@ module.exports = {
 	// .catch(collected => {
 	// 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
 	// });
-		const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+		// const numberEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 		const listSize = Math.min(5, 10);
 		let currentIndex = 0;
 		let credits;
@@ -146,14 +147,11 @@ module.exports = {
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
-			const moreDetailBtns = [];
-			const amountOfListMemebers = Math.min(listSize, credits.length);
-			for (let j = 0; j < amountOfListMemebers; j++) {
-				moreDetailBtns.push(createButton(`${credits[j].name}`, ButtonStyle.Secondary, `${credits[j].job}_${credits[j].name}`, numberEmoji[j]));
-			}
+			const current = credits.slice(currentIndex, currentIndex + listSize);
+			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, getEmoji(currentIndex + (index + 1))));
 
 			await i.update({
-				content: `Department: ${dept}`,
+				content: `Department: ${dept} ${deptEmojis[dept]}`,
 				embeds: [movieCreditsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -198,14 +196,12 @@ module.exports = {
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-			// const amountOfListMemebers = Math.min(listSize, credits.length);
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// for (let j = 0; j < amountOfListMemebers; j++) {
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, numberEmoji[index]));
-			// }
+			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, getEmoji(currentIndex + (index + 1))));
+
 
 			await i.update({
-				content: `Department: ${dept}`,
+				content: `Department: ${dept}${deptEmojis[dept]}`,
 				embeds: [movieCreditsEmbed],
 				components: [
 					i.message.components[0],
