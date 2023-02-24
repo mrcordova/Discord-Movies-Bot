@@ -131,7 +131,10 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 		},
 	};
 }
-function createPersonDetailEmbed(person, user) {
+function createPersonDetailEmbed(person, movieCredits, user) {
+	const team = movieCredits.cast.concat(movieCredits.crew);
+	const crewVote = team.sort((a, b) => a.vote_average < b.vote_average).slice(0, 3);
+	console.log(crewVote);
 	return {
 		color: Colors.Blurple,
 		title: person.name,
@@ -158,7 +161,7 @@ function createPersonDetailEmbed(person, user) {
 			},
 			{
 				name: 'Known For: ',
-				value: person.known_for_department,
+				value: crewVote.map(({ title }) => title).join(', '),
 				inline: true,
 			},
 			{

@@ -172,11 +172,11 @@ module.exports = {
 
 				const person_id = creditResponse.data.person.id;
 				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=movie_credits`);
+				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 				const personDetials = personResponse.data;
-				const movieCredits = personResponse.data.movie_credits;
+				const movieCredits = personResponse.data.combined_credits;
 
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, i.user);
+				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
 
 				await i.update({
 					content: 'Person\'s Detail',
