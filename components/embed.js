@@ -132,9 +132,11 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 function createPersonDetailEmbed(person, movieCredits, user) {
-	const team = movieCredits.cast.concat(movieCredits.crew);
-	const crewVote = team.sort((a, b) => a.vote_average < b.vote_average).slice(0, 3);
-	console.log(crewVote);
+	// const team = movieCredits.cast.concat(movieCredits.crew);
+	// const crewVote = team.sort((a, b) => a.vote_average < b.vote_average).slice(0, 3);
+	// console.log(movieCredits);
+	const known_for = movieCredits.sort((a, b) => b.vote_average - a.vote_average).map(movie => movie.title).join(', ');
+	// console.log(known_for);
 	return {
 		color: Colors.Blurple,
 		title: person.name,
@@ -161,7 +163,7 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 			},
 			{
 				name: 'Known For: ',
-				value: crewVote.map(({ title }) => title).join(', '),
+				value: known_for,
 				inline: true,
 			},
 			{

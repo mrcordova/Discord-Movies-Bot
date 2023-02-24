@@ -21,7 +21,7 @@ const translationsCodeDict = transArry.reduce((objArry, item) => {
 const depts = jobsArry.reduce((arry, item) => {
 	arry.push(item.department);
 	return arry;
-}, []);
+}, ['Acting']);
 // console.log(depts);
 const deptEmojis = {
 	'Camera' : '📷',

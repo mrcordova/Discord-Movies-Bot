@@ -124,6 +124,7 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
 			const movie = movieResponse.data;
 
+			// console.log(dept);
 			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
 			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew);
@@ -172,9 +173,13 @@ module.exports = {
 
 				const person_id = creditResponse.data.person.id;
 				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
+				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
-				const movieCredits = personResponse.data.combined_credits;
+				// console.log(personDetials.imdb_id);
+				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=en-US&external_source=imdb_id`);
+				// console.log(imdbResponse.data);
+				// undefined error for person results
+				const movieCredits = imdbResponse.data.person_results[0].known_for;
 
 				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
 
