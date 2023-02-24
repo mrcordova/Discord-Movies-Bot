@@ -148,7 +148,8 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, getEmoji(currentIndex + (index + 1))));
+			// console.log(current);
+			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
@@ -164,18 +165,7 @@ module.exports = {
 					new ActionRowBuilder({ components:  moreDetailBtns }),
 				],
 			});
-			// const reactMessage = await i.fetchReply();
-			// reactMessage.react(numberEmoji[0]);
-			// reactMessage.react('2️⃣');
-			// reactMessage.react('3️⃣');
-			// reactMessage.react('4️⃣');
-			// reactMessage.react('5️⃣');
 
-			// const choices = Math.min(listSize, credits.length);
-			// for (let choice = 1; i <= list; choice++) {
-			// 	// console.log(numberEmoji[choice]);
-			// 	reactMessage.react('1️⃣');
-			// }
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 
 			// collector.resetTimer([{time: 15000}]);
@@ -193,27 +183,40 @@ module.exports = {
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 
-			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+			// console.log(i.customId);
+			if (i.customId != backId && i.customId != forwardId) {
+				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
+				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
+				// console.log(creditResponse);
+				const person_id = creditResponse.data.person.id;
+				const peopleResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&append_to_response=movie_credits`);
+				console.log(peopleResponse);
+			}
+			else {
 
-			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-			const current = credits.slice(currentIndex, currentIndex + listSize);
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.job}_${credit.name}`, getEmoji(currentIndex + (index + 1))));
+
+				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+				const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
+				const current = credits.slice(currentIndex, currentIndex + listSize);
+				const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 
 
-			await i.update({
-				content: `Department: ${dept}${deptEmojis[dept]}`,
-				embeds: [movieCreditsEmbed],
-				components: [
-					i.message.components[0],
-					new ActionRowBuilder({ components:  [
-						// back button if it isn't the start
-						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-						// forward button if it isn't the end
-						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns }),
-				],
-			});
+				await i.update({
+					content: `Department: ${dept}${deptEmojis[dept]}`,
+					embeds: [movieCreditsEmbed],
+					components: [
+						i.message.components[0],
+						new ActionRowBuilder({ components:  [
+							// back button if it isn't the start
+							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+							// forward button if it isn't the end
+							...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						] }),
+						new ActionRowBuilder({ components:  moreDetailBtns }),
+					],
+				});
+			}
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
 		buttonCollector.on(MyEvents.Dispose, i => {
