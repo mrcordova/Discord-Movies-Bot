@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle,  EmojiResolvable, ReactionEmoji } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
@@ -65,9 +65,9 @@ module.exports = {
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+		// if (focusedOption.name === 'region') {
+		// 	choices = countryDict;
+		// }
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 		await interaction.respond(
@@ -75,6 +75,7 @@ module.exports = {
 		);
 	},
 	async execute(interaction) {
+
 
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
@@ -103,20 +104,38 @@ module.exports = {
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
+        const reactFilter = (reaction, user) => user.id === interaction.user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row], fetchReply: true });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-        const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+		const reactionCollector = message.createReactionCollector({ filter: reactFilter, customId: 'react', idle: 30000 });
 
-        const listSize = 5;
+
+        // await message.react('1️⃣');
+        // message.react('🍎')
+		// 	.then(() => message.react('🍊'))
+		// 	.then(() => message.react('🍇'))
+		// 	.catch(error => console.error('One of the emojis failed to react:', error));
+    //     message.awaitReactions({ filter, max: 4, time: 60000, errors: ['time'] })
+	// .then(collected => console.log(collected.size))
+	// .catch(collected => {
+	// 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
+	// });
+
+		const listSize = 5;
 		let currentIndex = 0;
-        let credits;
+		let credits;
+        // for(let i = 0; i < listSize; i++) {
+        //     await message.react('🍎');
+        // }
+        // message.react('👍').then(() => message.react('👎'));
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
-            currentIndex = 0;
+			currentIndex = 0;
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
 			const movie = movieResponse.data;
@@ -140,6 +159,7 @@ module.exports = {
 					] }),
 				],
 			});
+
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 
 			// collector.resetTimer([{time: 15000}]);
@@ -184,6 +204,14 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+		});
+
+		reactionCollector.on(MyEvents.Collect, (reaction, user) => {
+			console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+		});
+
+		reactionCollector.on(MyEvents.End, collected => {
+			console.log(`Collected ${collected.size} items`);
 		});
 	},
 };
