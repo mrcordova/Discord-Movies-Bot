@@ -132,9 +132,8 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
+			// console.log(credits);
 			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
-
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
 				embeds: [movieCreditsEmbed],
@@ -146,7 +145,7 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No credits found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 			});
 
@@ -165,7 +164,7 @@ module.exports = {
 			console.log(`ignore: ${args}`);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
-
+			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
@@ -178,6 +177,7 @@ module.exports = {
 				// console.log(personDetials);
 				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=en-US&external_source=imdb_id`);
 				// console.log(imdbResponse.data);
+				
 				// undefined error for person results
 				const movieCredits = imdbResponse.data.person_results[0].known_for;
 
