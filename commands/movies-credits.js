@@ -177,9 +177,14 @@ module.exports = {
 				// console.log(personDetials);
 				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=en-US&external_source=imdb_id`);
 				// console.log(imdbResponse.data);
-				
-				// undefined error for person results
-				const movieCredits = imdbResponse.data.person_results[0].known_for;
+				let movieCredits;
+				try {
+					// undefined error for person results
+					movieCredits = imdbResponse.data.person_results[0].known_for;
+				}
+				catch {
+					movieCredits = [{ title: 'N/A', vote_average: -1 }];
+				}
 
 				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
 
