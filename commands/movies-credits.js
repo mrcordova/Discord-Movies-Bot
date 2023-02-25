@@ -175,7 +175,7 @@ module.exports = {
 				//  add language option?
 				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
-				// console.log(personDetials.imdb_id);
+				console.log(personDetials);
 				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=en-US&external_source=imdb_id`);
 				// console.log(imdbResponse.data);
 				// undefined error for person results

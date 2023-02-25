@@ -153,7 +153,7 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 		fields: [
 			{
 				name: 'Birthday',
-				value: person.birthday,
+				value: person.birthday ?? 'N/A',
 				inline: true,
 			},
 			{
@@ -163,17 +163,17 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 			},
 			{
 				name: 'Known For: ',
-				value: known_for,
+				value: known_for ?? 'N/A',
 				inline: true,
 			},
 			{
 				name: 'Place of birth',
-				value: person.place_of_birth,
+				value: person.place_of_birth ?? 'N/A',
 				inline: true,
 			},
 			{
 				name: 'Gender',
-				value: `${person.gender}`,
+				value: `${person.gender ?? 'N/A'}`,
 				inline: true,
 			},
 			// {
