@@ -59,6 +59,37 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		.setDescription(description);
 }
 
+function createImageEmbed(title, movieImage, user) {
+	if (!movieImage.length) {
+		return createNoResultEmbed();
+	}
+
+
+	return {
+		color: Colors.DarkGrey,
+		title: title,
+		// url: `https://www.imdb.com/title/${movie.imdb_id}/`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		// description: movie.overview,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+		},
+		timestamp: new Date(),
+		// footer: {
+		// 	text: `${prod.name}`,
+		// 	// icon_url: "https://i.imgur.com/AfFp7pu.png",
+		// },
+	};
+}
+
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
 	return {
@@ -206,4 +237,4 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 }
 
 
-module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };
+module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };
