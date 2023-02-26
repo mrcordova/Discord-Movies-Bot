@@ -94,13 +94,13 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_lists}&country=${language}`);
 			movie = movieResponse.data.lists;
 			const movieTitle = movieResponse.data.title;
-            // console.log(movie);
+
 
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
 
 			const listsEmbed = await createListsEmbed(currentIndex, listSize, movie.results);
-            console.log(listsEmbed);
+
 			await i.update({
 				content: 'Selected Movie:',
 				embeds: [listsEmbed],
