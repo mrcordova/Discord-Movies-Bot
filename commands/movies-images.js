@@ -124,9 +124,10 @@ module.exports = {
 			// console.log(movieRating);
 			// movie.rating = movieRating;
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
-            // console.log(current);
+			// console.log(current);
+			const title = `${movie.title.slice(0, 81)}   Showing Movie Poster ${currentIndex + current.length} out of ${movieImages.length}`;
 
-			const movieImageEmbed = createImageEmbed(movie.title.slice(0, 81), current, i.user);
+			const movieImageEmbed = createImageEmbed(title, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 
@@ -164,21 +165,24 @@ module.exports = {
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
-            console.log(m);
-			const movieCreditsEmbed = createImageEmbed(m.message.embeds[0].title, current, m.user);
 
+
+			const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Poster ${currentIndex + current.length} out of ${movieImages.length}`;
+			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
+
+			// console.log(currentIndex);
 			// Respond to interaction by updating message with new embed
 			await m.update({
 				content: 'Showing Movie Images',
 				embeds: [movieCreditsEmbed],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
-					...(currentIndex ? [backButton] : []),
+					...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 					// forward button if it isn't the end
-					...(currentIndex + listSize < movieImages.length ? [forwardButton] : []),
+					...(currentIndex + listSize < movieImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 				] }) ],
 			});
-            selectMenucollector.resetTimer([{ idle: 30000 }]);
+			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
 
 

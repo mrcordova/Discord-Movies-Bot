@@ -67,7 +67,7 @@ function createImageEmbed(title, movieImage, user) {
 
 	return {
 		color: Colors.DarkGrey,
-		title: title,
+		title: `${title}`,
 		// url: `https://www.imdb.com/title/${movie.imdb_id}/`,
 		author: {
 			name: user.username,
