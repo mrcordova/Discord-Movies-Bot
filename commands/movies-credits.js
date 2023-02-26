@@ -111,7 +111,7 @@ module.exports = {
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
-		const listSize = Math.min(5, 10);
+		const listSize = 5;
 		let currentIndex = 0;
 		let credits;
 
