@@ -4,15 +4,14 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict } = require('../load-data.js');
-const { createListEmbed, createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
-const movie_now_playing = '/movie/now_playing';
+// const movie_now_playing = '/movie/now_playing';
 
-// https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en&page=1&region=us
-// language optional
-// page optional
-// region optional
+// https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
+// language string optional
+// include_image_language string optional
 
 
 // Constants
