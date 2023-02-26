@@ -53,7 +53,7 @@ module.exports = {
 		const focusedOption = interaction.options.getFocused(true);
 		let choices;
 
-		if (focusedOption.name === 'language') {
+		if (focusedOption.name === 'language' || focusedOption.name === 'image_language') {
 			choices = translationsCodeDict;
 		}
 		if (focusedOption.name === 'region') {
@@ -69,7 +69,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		const imgLang = interaction.options.getString('image_language') ?? 'en';
+		const imgLang = (interaction.options.getString('image_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
 		const response = await searchForMovie(query, language, region, releaseYear);
@@ -100,14 +100,6 @@ module.exports = {
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
-		// Collect button interactions (when a user clicks a button),
-		// but only when the button as clicked by the original message author
-		// const buttonCollector = embedMessage.createMessageComponentCollector({
-		// 	filter: filter,
-		// 	componentType: ComponentType.Button,
-		// 	customId:'list',
-		// 	idle: 30000,
-		// });
 		const listSize = 1;
 		let currentIndex = 0;
 		let movieImages;
@@ -119,12 +111,8 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
 			const movie = movieResponse.data;
 			movieImages = movie.images.posters.concat(movie.images.posters.backdrops).filter((obj) => obj);
-			// console.log(movieImages);
-			// const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
-			// console.log(movieRating);
-			// movie.rating = movieRating;
+
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
 			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 
 			const movieImageEmbed = createImageEmbed(title, current, i.user);
