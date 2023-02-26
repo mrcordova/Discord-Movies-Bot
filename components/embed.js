@@ -51,6 +51,20 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 		),
 	});
 };
+const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+
+	const current = moviesList.slice(start, start + listSize);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (Item Count: ${movie.item_count}) - ${movie.iso_639_1}`, value: movie.description })),
+		),
+	});
+};
 
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
@@ -237,4 +251,4 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 }
 
 
-module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };
+module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createListsEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };
