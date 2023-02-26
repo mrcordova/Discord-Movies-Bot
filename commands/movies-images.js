@@ -125,7 +125,7 @@ module.exports = {
 			// movie.rating = movieRating;
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const title = `${movie.title.slice(0, 81)}   Showing Movie Poster ${currentIndex + current.length} out of ${movieImages.length}`;
+			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 
 			const movieImageEmbed = createImageEmbed(title, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
@@ -167,7 +167,7 @@ module.exports = {
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 
 
-			const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Poster ${currentIndex + current.length} out of ${movieImages.length}`;
+			const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
 
 			// console.log(currentIndex);
@@ -175,12 +175,14 @@ module.exports = {
 			await m.update({
 				content: 'Showing Movie Images',
 				embeds: [movieCreditsEmbed],
-				components: [new ActionRowBuilder({ components: [
+				components: [
+					m.message.components[0],
+					new ActionRowBuilder({ components: [
 					// back button if it isn't the start
-					...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-					// forward button if it isn't the end
-					...(currentIndex + listSize < movieImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-				] }) ],
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < movieImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] }) ],
 			});
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
