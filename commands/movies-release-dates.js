@@ -75,6 +75,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+        const country = interaction.options.getString('region') ?? 'All';
 		const releaseType = interaction.options.getInteger('release-type');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
@@ -115,9 +116,10 @@ module.exports = {
 			currentIndex = 0;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=release_dates`);
 			const movie = movieResponse.data;
-			movieReleaseDates = movie.release_dates.results;
+			movieReleaseDates = movie.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
+            // console.log(current);
 			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
 
 			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
@@ -135,7 +137,6 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < movieReleaseDates.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Images found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 			});
 
