@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed, createMovieDetailEmbed, createListEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { translationsCodeDict } = require('../load-data.js');
+const { translationsCodeDict, countryDict } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
@@ -61,9 +61,9 @@ module.exports = {
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
+		if (focusedOption.name === 'region') {
+			choices = countryDict;
+		}
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 		await interaction.respond(
