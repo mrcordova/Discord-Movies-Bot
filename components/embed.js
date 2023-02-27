@@ -267,17 +267,20 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 		fields: await Promise.all(current.map(async (movie, index) => {
 			const release = movie.release_dates.find(({ type }) => releaseType == type) ?? { release_date: 'N/A', certification: 'N/A' };
 			let ratingMeaning;
+			let releaseRating;
 			try {
-			console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
+			// console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
 				ratingMeaning = ratings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
+				releaseRating = release.certification;
 			}
 			catch {
 				ratingMeaning = 'N/A';
+				releaseRating = 'N/A';
 			}
 			// console.log(ratings.certifications[movie.iso_3166_1])
 			return {
 				name: `${start + (index + 1)}. ${countryCodeDict[movie.iso_3166_1] ?? 'N/A'}`,
-				value: `Release Date: ${release.release_date}\nRating: ${release.certification} - ${ratingMeaning}`,
+				value: `Release Date: ${release.release_date}\nRating: ${releaseRating}\nRating meaning: ${ratingMeaning}`,
 			};
 		})),
 	});
