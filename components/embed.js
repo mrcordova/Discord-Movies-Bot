@@ -271,10 +271,14 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 			try {
 			// console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
 				ratingMeaning = ratings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
-				releaseRating = release.certification;
 			}
 			catch {
 				ratingMeaning = 'N/A';
+			}
+			try {
+				releaseRating = release.certification.length ? release.certification : 'N/A';
+			}
+			catch {
 				releaseRating = 'N/A';
 			}
 			// console.log(ratings.certifications[movie.iso_3166_1])
