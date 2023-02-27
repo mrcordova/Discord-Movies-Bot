@@ -118,14 +118,14 @@ module.exports = {
 			movieReleaseDates = movie.release_dates.results;
 
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
-			const title = `Showing Movie Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
+			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
 
 			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 
 			await i.update({
-				content: `Selected Movie ${movie.title.slice(0, 81)}`,
+				content: `${new ReleaseTypes(releaseType).toString} releases for ${movie.title.slice(0, 81)}`,
 				embeds: [movieReleaseDateEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -158,7 +158,7 @@ module.exports = {
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize);
-			const title = `Showing Movie Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
+			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
 
 			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
 			// const newSelectMenu = createSelectMenu('List of Movies', m.message.components[0].placeHolderText, 1, options);

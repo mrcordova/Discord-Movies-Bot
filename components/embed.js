@@ -1,6 +1,6 @@
 const { EmbedBuilder, Colors } = require('discord.js');
 const { ReleaseTypes } = require('../events/DMB-Events.js');
-const { countryCodeDict, images } = require('../load-data.js');
+const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
@@ -260,20 +260,38 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 
 	const current = moviesList;
 
-	console.log(moviesList);
-// [
-//   { iso_3166_1: 'FI', release_dates: [ [Object] ] },
-//   { iso_3166_1: 'US', release_dates: [ [Object], [Object] ] },
-//   { iso_3166_1: 'PT', release_dates: [ [Object] ] },
-//   { iso_3166_1: 'TW', release_dates: [ [Object] ] },
-//   { iso_3166_1: 'KR', release_dates: [ [Object] ] }
-// ]
+// console.log(current)
 	return new EmbedBuilder({
 		color: color,
 		title: title,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}`, value: `Country: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${new ReleaseTypes(movie.release_dates.find(({ type }) => releaseType == type).type).toString}` })),
-		),
+		fields: await Promise.all(current.map(async (movie, index) => {
+			const release = movie.release_dates.find(({ type }) => releaseType == type) ?? { release_date: 'N/A', certification: 'N/A' };
+			let ratingMeaning;
+			try {
+			console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
+				ratingMeaning = ratings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
+			}
+			catch {
+				ratingMeaning = 'N/A';
+			}
+			// console.log(ratings.certifications[movie.iso_3166_1])
+			return {
+				name: `${start + (index + 1)}. ${countryCodeDict[movie.iso_3166_1] ?? 'N/A'}`,
+				value: `Release Date: ${release.release_date}\nRating: ${release.certification} - ${ratingMeaning}`,
+			};
+		})),
 	});
 };
 
-module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createListsEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed, createReleaseDatesEmbed };
+module.exports = {
+	createEmbed,
+	createAltListEmbed,
+	createCreditListEmbed,
+	createListEmbed,
+	createListsEmbed,
+	createImageEmbed,
+	createNoResultEmbed,
+	createMovieDetailEmbed,
+	createPersonDetailEmbed,
+	createReleaseDatesEmbed,
+};

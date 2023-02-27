@@ -4,6 +4,7 @@ const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'ut
 const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
 const transArry = JSON.parse(fs.readFileSync('data/primary-translations.json', 'utf8'));
 const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
+const ratings = JSON.parse(fs.readFileSync('data/movie-ratings.json', 'utf8'));
 // let countryCodeDict = {};
 
 // (() => {
@@ -52,7 +53,7 @@ const numberEmojis = {
 };
 // // Create an empty dictionary object
 // const countriesDict = {};
-
+// console.log(ratings)
 // // Loop through the array and create dictionary entries
 // for (let i = 0; i < dictionary.length; i++) {
 // 	const item = dictionary[i];
@@ -67,4 +68,5 @@ module.exports = {
 	depts,
 	deptEmojis,
 	numberEmojis,
+	ratings,
 };
