@@ -1,24 +1,19 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createCreditListEmbed, createMovieDetailEmbed, createListEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { translationsCodeDict, depts, deptEmojis } = require('../load-data.js');
+const { translationsCodeDict } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
+const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
 const movie_details = '/movie';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
+// https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=credits
 // language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
 
 
 const backId = 'back';
@@ -29,34 +24,34 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '�
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-credits')
-		.setDescription('Search for a movie\'s cast and crew')
+		.setName('movies-recommendations')
+		.setDescription('Get a list of recommended movies for a movie.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
 				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('department')
-				.setDescription('Choose desired dept.')
-				.setChoices(
-					...depts.reduce((arry, dept) => {
-						arry.push({ name: dept, value: dept });
-						return arry;
-					}, []))
-				.setRequired(true))
+		// .addStringOption(option =>
+		// 	option.setName('department')
+		// 		.setDescription('Choose desired dept.')
+		// 		.setChoices(
+		// 			...depts.reduce((arry, dept) => {
+		// 				arry.push({ name: dept, value: dept });
+		// 				return arry;
+		// 			}, []))
+		// 		.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true)),
-	// .addStringOption(option =>
-	// 	option.setName('region')
-	// 		.setDescription('Search for the desired region.')
-	// 		.setAutocomplete(true))
-	// .addIntegerOption(option =>
-	// 	option.setName('release-year')
-	// 		.setDescription('Search for the desired year.')
-	// 		.setMinValue(1800)
-	// 		.setMaxValue(3000)),
+				.setAutocomplete(true))
+		.addStringOption(option =>
+			option.setName('region')
+				.setDescription('Search for the desired region.')
+				.setAutocomplete(true))
+		.addIntegerOption(option =>
+			option.setName('release-year')
+				.setDescription('Search for the desired year.')
+				.setMinValue(1800)
+				.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -82,13 +77,13 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const dept = interaction.options.getString('department') ?? '';
+		// const dept = interaction.options.getString('department') ?? '';
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different year')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different options')] });
 			return;
 		}
 		const options = [];
@@ -106,14 +101,14 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Recommended Movies matching your query. :smiley:', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
 		const listSize = 5;
 		let currentIndex = 0;
-		let credits;
+		let recommendations;
 
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
@@ -121,31 +116,31 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=recommendations`);
 			const movie = movieResponse.data;
 
-			// console.log(dept);
-			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
-			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
-			credits = cast.concat(crew);
-			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
+			recommendations = movie.recommendations.results;
+
+			const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, recommendations);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
-			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// console.log(credits);
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+			// console.log(recommendations);
+
+			const current = recommendations.slice(currentIndex, currentIndex + listSize);
+			console.log(current);
+			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
-				content: `Department: ${dept} ${deptEmojis[dept]}`,
-				embeds: [movieCreditsEmbed],
+				content: `Recommendations for ${movie.title.slice(0, 81)}`,
+				embeds: [movieRecommendsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < recommendations.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No credits found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Movies found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 			});
 
@@ -168,29 +163,22 @@ module.exports = {
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
+				const creditResponse = await axios.get(`${api_url}${movie_details}/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
+				const movieDetails = creditResponse.data;
 
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const personDetials = personResponse.data;
-				// console.log(personDetials);
-				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
-				let movieCredits;
-				try {
-					// undefined error for person results
-					movieCredits = imdbResponse.data.person_results[0].known_for;
-				}
-				catch {
-					movieCredits = [{ title: 'N/A', vote_average: -1 }];
-				}
+				const movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				movieDetails.rating = movieRating;
 
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
+				const formatter = createCurrencyFormatter();
+				const prod = getProductionCompany(movieDetails['production_companies']);
+				const directors = getCrewMember(movieDetails.credits['crew'], 'director');
+				const actors = getCast(movieDetails.credits['cast'], 3);
+
+				const movieDetailssEmbed = createMovieDetailEmbed({ user: i.user, movieDetails, prod, directors, actors, formatter, color: Colors.Aqua });
 
 				await i.update({
-					content: 'Person\'s Detail',
-					embeds: [personCreditsEmbed],
+					content: 'Movie\'s Detail',
+					embeds: [movieDetailssEmbed],
 					components: [],
 				});
 			}
@@ -199,21 +187,21 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-				const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-				const current = credits.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+				const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, recommendations);
+				const current = recommendations.slice(currentIndex, currentIndex + listSize);
+				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
-					content: `Department: ${dept}${deptEmojis[dept]}`,
-					embeds: [movieCreditsEmbed],
+					content: i.message.content,
+					embeds: [movieRecommendsEmbed],
 					components: [
 						i.message.components[0],
 						new ActionRowBuilder({ components:  [
 							// back button if it isn't the start
 							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 							// forward button if it isn't the end
-							...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+							...(currentIndex + listSize < recommendations.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 						] }),
 						new ActionRowBuilder({ components:  moreDetailBtns }),
 					],

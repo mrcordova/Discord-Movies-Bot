@@ -11,7 +11,7 @@ const movie_route = '/movie';
 const movie_lists = 'lists';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}/alternative_titles?api_key=<<api_key>>&country=v%20vc%20
+// https://api.themoviedb.org/3/movie/{movie_id}/lists?api_key=<<api_key>>&country=v%20vc%20
 // country string optional
 
 const backId = 'back';
