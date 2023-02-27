@@ -3,7 +3,7 @@ class MyEvents {
     static Dispose = 'dispose';
     static Ignore = 'ignore';
     static End = 'end';
-  }
+}
 
 class ReleaseTypes {
     static Premiere = new ReleaseTypes(1)
@@ -35,7 +35,7 @@ class ReleaseTypes {
           console.log('season not defined')
       }
     }
-  }
+}
 // console.log(new ReleaseTypes(1).toString);
   // const ReleaseTypes = Object.freeze({
   //   Premiere : 1,
