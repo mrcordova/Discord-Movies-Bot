@@ -4,7 +4,7 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createImageEmbed, createReleaseDatesEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 // const movie_now_playing = '/movie/now_playing';
@@ -75,7 +75,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-        const country = interaction.options.getString('region') ?? 'All';
+		const country = interaction.options.getString('region') ?? 'All';
 		const releaseType = interaction.options.getInteger('release-type');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
@@ -118,9 +118,9 @@ module.exports = {
 			const movie = movieResponse.data;
 			movieReleaseDates = movie.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 
-            
+
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
-            // console.log(current);
+			// console.log(current);
 			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
 
 			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);

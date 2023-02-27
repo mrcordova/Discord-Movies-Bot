@@ -1,5 +1,4 @@
 const { EmbedBuilder, Colors } = require('discord.js');
-const { ReleaseTypes } = require('../events/DMB-Events.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 
@@ -260,7 +259,7 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 
 	const current = moviesList;
 
-// console.log(current)
+	// console.log(current)
 	return new EmbedBuilder({
 		color: color,
 		title: title,
