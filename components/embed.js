@@ -255,7 +255,7 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 }
 const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, color = Colors.Blue) => {
 	if (!moviesList.length) {
-		return createNoResultEmbed();
+		return createNoResultEmbed(Colors.Red, 'No Movie Found', 'No release date for speific movie with certain options');
 	}
 
 	const current = moviesList;

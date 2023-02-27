@@ -118,6 +118,7 @@ module.exports = {
 			const movie = movieResponse.data;
 			movieReleaseDates = movie.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 
+            
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
             // console.log(current);
 			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
