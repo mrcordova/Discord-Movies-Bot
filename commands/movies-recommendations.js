@@ -30,15 +30,6 @@ module.exports = {
 			option.setName('title')
 				.setDescription('Search for the desired film.')
 				.setRequired(true))
-		// .addStringOption(option =>
-		// 	option.setName('department')
-		// 		.setDescription('Choose desired dept.')
-		// 		.setChoices(
-		// 			...depts.reduce((arry, dept) => {
-		// 				arry.push({ name: dept, value: dept });
-		// 				return arry;
-		// 			}, []))
-		// 		.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired translation.')

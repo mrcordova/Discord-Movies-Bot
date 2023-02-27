@@ -7,10 +7,13 @@ const { token } = require('./config.json');
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions] });
 
+// https://discordjs.guide/slash-commands/response-methods.html#localized-responses
+// add lcalized respnse in content
 
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
+// get folders and concat together
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('js'));
 
 
