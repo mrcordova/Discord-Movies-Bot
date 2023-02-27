@@ -1,4 +1,5 @@
 const { EmbedBuilder, Colors } = require('discord.js');
+const { ReleaseTypes } = require('../events/DMB-Events.js');
 const { countryCodeDict, images } = require('../load-data.js');
 
 
@@ -23,6 +24,7 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 		),
 	});
 };
+
 const createCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
 		return createNoResultEmbed();
@@ -65,6 +67,7 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 		),
 	});
 };
+
 
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
@@ -248,7 +251,29 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 			// icon_url: "https://i.imgur.com/AfFp7pu.png",
 		},
 	};
+
 }
+const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
 
+	const current = moviesList;
 
-module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createListsEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed };
+	console.log(moviesList);
+// [
+//   { iso_3166_1: 'FI', release_dates: [ [Object] ] },
+//   { iso_3166_1: 'US', release_dates: [ [Object], [Object] ] },
+//   { iso_3166_1: 'PT', release_dates: [ [Object] ] },
+//   { iso_3166_1: 'TW', release_dates: [ [Object] ] },
+//   { iso_3166_1: 'KR', release_dates: [ [Object] ] }
+// ]
+	return new EmbedBuilder({
+		color: color,
+		title: title,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}`, value: `Country: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${new ReleaseTypes(movie.release_dates.find(({ type }) => releaseType == type).type).toString}` })),
+		),
+	});
+};
+
+module.exports = { createEmbed, createAltListEmbed, createCreditListEmbed, createListEmbed, createListsEmbed, createImageEmbed, createNoResultEmbed, createMovieDetailEmbed, createPersonDetailEmbed, createReleaseDatesEmbed };

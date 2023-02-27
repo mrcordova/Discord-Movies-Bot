@@ -36,6 +36,10 @@ class ReleaseTypes {
       }
     }
 }
+// const releaseTypeValues = Object.values(ReleaseTypes);
+// const releaseTypeNames = releaseTypeValues.map(releaseType => releaseType.toString);
+
+// console.log(releaseTypeValues)
 // console.log(new ReleaseTypes(1).toString);
   // const ReleaseTypes = Object.freeze({
   //   Premiere : 1,
