@@ -127,7 +127,7 @@ module.exports = {
 			// console.log(recommendations);
 
 			const current = recommendations.slice(currentIndex, currentIndex + listSize);
-			console.log(current);
+			// console.log(current);
 			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Recommendations for ${movie.title.slice(0, 81)}`,
@@ -174,7 +174,7 @@ module.exports = {
 				const directors = getCrewMember(movieDetails.credits['crew'], 'director');
 				const actors = getCast(movieDetails.credits['cast'], 3);
 
-				const movieDetailssEmbed = createMovieDetailEmbed({ user: i.user, movieDetails, prod, directors, actors, formatter, color: Colors.Aqua });
+				const movieDetailssEmbed = createMovieDetailEmbed({ user: i.user, movie: movieDetails, prod, directors, actors, formatter, color: Colors.Aqua });
 
 				await i.update({
 					content: 'Movie\'s Detail',
