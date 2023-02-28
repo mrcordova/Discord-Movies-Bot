@@ -450,7 +450,6 @@ function createVideoEmbed(title, movieVideo, user) {
 	return {
 		color: Colors.DarkGrey,
 		title: `${title}`,
-		// url: `https://www.imdb.com/title/${movie.imdb_id}/`,
 		author: {
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
@@ -474,7 +473,7 @@ function createVideoEmbed(title, movieVideo, user) {
 			},
 			{
 				name: 'Offical',
-				value: `${movieVideo[0].official ? '✅ ' : '❌'}`,
+				value: `${movieVideo[0].official ? '✅' : '❌'}`,
 			},
 			{
 				name: 'Published',
