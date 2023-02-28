@@ -212,15 +212,13 @@ module.exports = {
 			// console.log(m.customId);
 			if (m.customId != backId && m.customId != forwardId) {
 				const sites = {
-					"Youtube": 'https://www.youtube.com/watch?v=',
-					"Vimeo": 'https://vimeo.com/',
+					'youtube': 'https://www.youtube.com/watch?v=',
+					'vimeo': 'https://vimeo.com/',
 				};
 				const videoLink = movieVideos.find(video => m.customId == video.id);
-                const siteName = videoLink.site;
-                console.log(sites[siteName], videoLink.site.toString());
 
 				await m.update({
-					content: `${sites[videoLink.site]}${videoLink.key}`,
+					content: `${sites[videoLink.site.toLowerCase()]}${videoLink.key}`,
 					embeds: [],
 					components: [],
 				});
@@ -236,7 +234,7 @@ module.exports = {
 
 				const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
 				const movieCreditsEmbed = createVideoEmbed(title, current, m.user);
-                const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 				// Respond to interaction by updating message with new embed
