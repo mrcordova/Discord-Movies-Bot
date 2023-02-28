@@ -156,9 +156,10 @@ module.exports = {
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
 				const translationDetailEmbed = createTranslateDetailEmbed(selectedTranslation, i.user);
+				const content = i.message.content.split('Translation').join('Translation Detail');
 
 				await i.update({
-					content: 'Translation\'s Detail',
+					content: `${content}`,
 					embeds: [translationDetailEmbed],
 					components: [],
 				});

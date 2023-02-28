@@ -371,7 +371,6 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		return createNoResultEmbed();
 	}
 
-
 	return {
 		color: Colors.DarkGrey,
 		title: `${translationDetails.data.title}`,
@@ -387,13 +386,23 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		// },
 		fields: [
 			{
-				name: 'Name',
+				name: 'Tagline',
+				value: `${translationDetails.data.tagline == '' ? 'N/A' : translationDetails.data.tagline}`,
+				inline: true,
+			},
+			{
+				name: 'Runtime',
+				value: `${translationDetails.data.runtime}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
 				value: `${translationDetails.name}`,
 				inline: true,
 			},
 			{
-				name: 'English Name',
-				value: `${translationDetails.english_name}}`,
+				name: 'English Translation',
+				value: `${translationDetails.english_name}`,
 				inline: true,
 			},
 			{
