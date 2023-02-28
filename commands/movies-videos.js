@@ -212,11 +212,12 @@ module.exports = {
 			// console.log(m.customId);
 			if (m.customId != backId && m.customId != forwardId) {
 				const sites = {
-					'Youtube': 'https://www.youtube.com/watch?v=',
-					'Vimeo': 'https://vimeo.com/',
+					"Youtube": 'https://www.youtube.com/watch?v=',
+					"Vimeo": 'https://vimeo.com/',
 				};
 				const videoLink = movieVideos.find(video => m.customId == video.id);
-
+                const siteName = videoLink.site;
+                console.log(sites[siteName], videoLink.site.toString());
 
 				await m.update({
 					content: `${sites[videoLink.site]}${videoLink.key}`,

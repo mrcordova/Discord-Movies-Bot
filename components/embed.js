@@ -474,7 +474,7 @@ function createVideoEmbed(title, movieVideo, user) {
 			},
 			{
 				name: 'Offical',
-				value: `${movieVideo[0].offical ? ':check:' : ':xmark:'}`,
+				value: `${movieVideo[0].offical ? '✅ ' : '❌'}`,
 			},
 			{
 				name: 'Published',
