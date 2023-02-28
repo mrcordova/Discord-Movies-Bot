@@ -108,7 +108,6 @@ function createImageEmbed(title, movieImage, user) {
 }
 
 
-
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
 	return {
