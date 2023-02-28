@@ -231,14 +231,14 @@ module.exports = {
 
 
 				const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
-				const movieCreditsEmbed = createVideoEmbed(title, current, m.user);
+				const movieVideoEmbed = createVideoEmbed(title, current, m.user);
 				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 				// Respond to interaction by updating message with new embed
 				await m.update({
 					content: 'Showing Movie Videos',
-					embeds: [movieCreditsEmbed],
+					embeds: [movieVideoEmbed],
 					components: [
 						m.message.components[0],
 						new ActionRowBuilder({ components: [
