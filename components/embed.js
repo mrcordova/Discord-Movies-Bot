@@ -283,9 +283,25 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 			// console.log(ratings.certifications[movie.iso_3166_1])
 			return {
 				name: `${start + (index + 1)}. ${countryCodeDict[movie.iso_3166_1] ?? 'N/A'}`,
-				value: `Release Date: ${release.release_date}\nRating: ${releaseRating}\nRating meaning: ${ratingMeaning}`,
+				value: `Release Date: ${release.release_date.split('T')[0]}\nRating: ${releaseRating}\nRating meaning: ${ratingMeaning}`,
 			};
 		})),
+	});
+};
+
+
+const createReviewEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+
+	const current = moviesList.slice(start, start + listSize);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.author_details.username} rated: ${movie.author_details.rating ?? 'No Rating'}`, value: `${movie.content.slice(0, 1021)}...` })),
+		),
 	});
 };
 
@@ -300,4 +316,5 @@ module.exports = {
 	createMovieDetailEmbed,
 	createPersonDetailEmbed,
 	createReleaseDatesEmbed,
+	createReviewEmbed,
 };

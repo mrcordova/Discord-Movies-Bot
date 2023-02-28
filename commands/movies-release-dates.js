@@ -9,10 +9,7 @@ const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 // const movie_now_playing = '/movie/now_playing';
 
-// https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
-// language string optional
-// include_image_language string optional
-
+// https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>
 
 // Constants
 const backId = 'back';
