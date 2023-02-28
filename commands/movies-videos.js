@@ -4,7 +4,7 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createImageEmbed, createVideoEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
@@ -120,7 +120,7 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const mediaType = interaction.options.getString('media-type') ?? 'All';
+		const videoType = interaction.options.getString('video-type') ?? 'All';
 		const site = interaction.options.getString('site') ?? 'All';
 
 		const response = await searchForMovie(query, language, region, releaseYear);
@@ -161,8 +161,8 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
 
-			// console.log(movie);
-			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == mediaType.toLowerCase() || mediaType == 'All').filter(video => video.site == site || site == 'All');
+			// console.log(videoType);
+			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == videoType.toLowerCase() || videoType == 'All').filter(video => video.site == site || site == 'All');
 
 			// console.log(movieVideos);
 
@@ -247,8 +247,8 @@ module.exports = {
 							// forward button if it isn't the end
 							...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 						] }),
-                        new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-                    ],
+						new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					],
 				});
 			}
 

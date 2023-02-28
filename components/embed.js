@@ -464,7 +464,7 @@ function createVideoEmbed(title, movieVideo, user) {
 				value: `${movieVideo[0].site}`,
 			},
 			{
-				name: 'type',
+				name: 'Video Type',
 				value: `${movieVideo[0].type}`,
 			},
 			{
