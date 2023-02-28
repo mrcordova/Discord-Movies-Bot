@@ -446,6 +446,7 @@ function createVideoEmbed(title, movieVideo, user) {
 	//     published_at: '2020-04-23T17:59:57.000Z',
 	//     id: '62299b179a3c490047cc6b52'
 	//   }
+	const dateTime = movieVideo[0].published_at.split('T');
 	return {
 		color: Colors.DarkGrey,
 		title: `${title}`,
@@ -473,11 +474,11 @@ function createVideoEmbed(title, movieVideo, user) {
 			},
 			{
 				name: 'Offical',
-				value: `${movieVideo[0].offical ? '✅ ' : '❌'}`,
+				value: `${movieVideo[0].official ? '✅ ' : '❌'}`,
 			},
 			{
 				name: 'Published',
-				value: `${movieVideo[0].published_at}`,
+				value: `${dateTime[0]} at ${dateTime[1]}`,
 			},
 			{
 				name: 'Size',
