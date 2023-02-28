@@ -24,6 +24,7 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 	});
 };
 
+
 const createCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
 		return createNoResultEmbed();
@@ -350,6 +351,20 @@ const createReviewEmbed = async (start, listSize, moviesList, color = Colors.Blu
 		),
 	});
 };
+const createTranslateListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = moviesList.slice(start, start + listSize);
+
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
+		),
+	});
+};
 
 module.exports = {
 	createEmbed,
@@ -364,4 +379,5 @@ module.exports = {
 	createReleaseDatesEmbed,
 	createReviewDetailEmbed,
 	createReviewEmbed,
+	createTranslateListEmbed,
 };
