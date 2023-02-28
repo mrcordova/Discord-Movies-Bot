@@ -122,7 +122,7 @@ module.exports = {
 			// console.log(credits);
 			const moreDetailBtns = current.map((review, index) => createButton(`${review.author_details.username}`, ButtonStyle.Secondary, `${review.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
-				content: `Reviews fot ${movie.title.slice(0, 81)}`,
+				content: `Reviews for ${movie.title.slice(0, 81)}`,
 				embeds: [movieCreditsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
