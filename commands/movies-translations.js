@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createListEmbed, createTranslateListEmbed, createTranslateDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict } = require('../load-data.js');
 const axios = require('axios');
@@ -8,7 +8,6 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
-const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
 const movie_details = '/movie';
 
 
@@ -24,8 +23,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-recommendations')
-		.setDescription('Get a list of recommended movies for a movie.')
+		.setName('movies-translations')
+		.setDescription('Get a list of translations that have been created for a movie.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
@@ -87,7 +86,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie credits will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Movie Translations will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -110,16 +109,17 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=translations`);
 			const movie = movieResponse.data;
 
-			translations = movie.translations.results;
+			translations = movie.translations.translations;
+            // console.log(movie)
 
-			const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, translations);
+			const movieRecommendsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			// console.log(recommendations);
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${movie.title.slice(0, 81)}`,
 				embeds: [movieRecommendsEmbed],
@@ -153,30 +153,17 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}${movie_details}/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
-				const movieDetails = creditResponse.data;
-				let movieRating;
-				try {
-					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
-				}
-				catch {
-					movieRating = 'N/A';
-				}
-				movieDetails.rating = movieRating;
 
-				const formatter = createCurrencyFormatter();
-				const prod = getProductionCompany(movieDetails['production_companies']);
-				const directors = getCrewMember(movieDetails.credits['crew'], 'director');
-				const actors = getCast(movieDetails.credits['cast'], 3);
+				const selectedTranslation = translations.find((translation) => i.customId == translation.english_name);
 
-				const movieDetailssEmbed = createMovieDetailEmbed({ user: i.user, movie: movieDetails, prod, directors, actors, formatter, color: Colors.Aqua });
+				const translationDetailEmbed = createTranslateDetailEmbed(selectedTranslation, i.user);
 
 				await i.update({
-					content: 'Movie\'s Detail',
-					embeds: [movieDetailssEmbed],
+					content: 'Translation\'s Detail',
+					embeds: [translationDetailEmbed],
 					components: [],
 				});
+
 			}
 			else {
 
@@ -185,7 +172,7 @@ module.exports = {
 
 				const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, translations);
 				const current = translations.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({

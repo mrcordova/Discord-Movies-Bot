@@ -361,10 +361,63 @@ const createTranslateListEmbed = async (start, listSize, moviesList, color = Col
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
 		),
 	});
 };
+
+function createTranslateDetailEmbed(translationDetails, user) {
+	if (!translationDetails) {
+		return createNoResultEmbed();
+	}
+
+
+	return {
+		color: Colors.DarkGrey,
+		title: `${translationDetails.data.title}`,
+		url: `${translationDetails.data.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: translationDetails.data.overview,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Name',
+				value: `${translationDetails.name}`,
+				inline: true,
+			},
+			{
+				name: 'English Name',
+				value: `${translationDetails.english_name}}`,
+				inline: true,
+			},
+			{
+				name: 'Region',
+				value: `${translationDetails.iso_3166_1}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
+				value: `${translationDetails.iso_639_1}`,
+				inline: true,
+			},
+
+		],
+		// image: {
+		// 	url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+		// },
+		timestamp: new Date(),
+		// footer: {
+		// 	text: `${prod.name}`,
+		// 	// icon_url: "https://i.imgur.com/AfFp7pu.png",
+		// },
+	};
+}
 
 module.exports = {
 	createEmbed,
@@ -380,4 +433,5 @@ module.exports = {
 	createReviewDetailEmbed,
 	createReviewEmbed,
 	createTranslateListEmbed,
+	createTranslateDetailEmbed,
 };
