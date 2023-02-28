@@ -361,7 +361,7 @@ const createTranslateListEmbed = async (start, listSize, moviesList, color = Col
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`, value: `ISO Codes: ${movie.iso_3166_1}-${movie.iso_639_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
 		),
 	});
 };

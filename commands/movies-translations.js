@@ -118,7 +118,7 @@ module.exports = {
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
+			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${movie.title.slice(0, 81)}`,
 				embeds: [movieTranslationsEmbed],
@@ -153,7 +153,7 @@ module.exports = {
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 
-				const selectedTranslation = translations.find((translation) => i.customId == translation.english_name);
+				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
 				const translationDetailEmbed = createTranslateDetailEmbed(selectedTranslation, i.user);
 
@@ -169,9 +169,9 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-				const movieTranslationsEmbed = await createListEmbed(currentIndex, listSize, translations);
+				const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 				const current = translations.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
