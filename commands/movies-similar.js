@@ -157,13 +157,13 @@ module.exports = {
 				const creditResponse = await axios.get(`${api_url}${movie_details}/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 				const movieDetails = creditResponse.data;
 
-                let movieRating;
-                try {
-                    movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
-                }
-                catch {
-                    movieRating = 'N/A';
-                }
+				let movieRating;
+				try {
+					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				}
+				catch {
+					movieRating = 'N/A';
+				}
 				movieDetails.rating = movieRating;
 
 				const formatter = createCurrencyFormatter();
