@@ -121,7 +121,7 @@ module.exports = {
 			// console.log(current);
 			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
-				content: `Recommendations for ${movie.title.slice(0, 81)}`,
+				content: `Similar to ${movie.title.slice(0, 81)}`,
 				embeds: [movieRecommendsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
