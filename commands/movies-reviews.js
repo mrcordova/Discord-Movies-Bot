@@ -108,7 +108,12 @@ module.exports = {
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=reviews`);
 			const movie = movieResponse.data;
-			reviews = movie.reviews.results;
+			reviews = movie.reviews.results.sort((a, b) => {
+				const dateA = new Date(a.updated_at);
+				const dateB = new Date(b.updated_at);
+				return dateB - dateA;
+			});
+
 
 			const movieCreditsEmbed = await createReviewEmbed(currentIndex, listSize, reviews);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
