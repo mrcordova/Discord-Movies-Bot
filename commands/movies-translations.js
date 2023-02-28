@@ -110,9 +110,8 @@ module.exports = {
 			const movie = movieResponse.data;
 
 			translations = movie.translations.translations;
-            // console.log(movie)
 
-			const movieRecommendsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
+			const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			// console.log(recommendations);
@@ -122,7 +121,7 @@ module.exports = {
 			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${movie.title.slice(0, 81)}`,
-				embeds: [movieRecommendsEmbed],
+				embeds: [movieTranslationsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
@@ -170,14 +169,14 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-				const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, translations);
+				const movieTranslationsEmbed = await createListEmbed(currentIndex, listSize, translations);
 				const current = translations.slice(currentIndex, currentIndex + listSize);
 				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.english_name}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
 					content: i.message.content,
-					embeds: [movieRecommendsEmbed],
+					embeds: [movieTranslationsEmbed],
 					components: [
 						i.message.components[0],
 						new ActionRowBuilder({ components:  [
