@@ -4,16 +4,17 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createImageEmbed, createVideoEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
+const { getEmoji } = require('../helpers/get-emoji');
 // const movie_now_playing = '/movie/now_playing';
 
-// 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY    
-// 2 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR      
-// 3 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de,pt    
-// 4 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de   
-// 5 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&include_video_language=en,fr,es,de,pt  
+// 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
+// 2 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR
+// 3 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de,pt
+// 4 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de
+// 5 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&include_video_language=en,fr,es,de,pt
 // 1 - If you don't use &language= parameter, it gets the default in English. en.
 // 2 - If you only use the &language= parameter, receive in the chosen language
 // 3 - If you also use the &include_video_language= parameter, you receive only in the languages specified in that parameter,
@@ -38,22 +39,31 @@ module.exports = {
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('media-type')
-				.setDescription('Select the type of release')				.setChoices(
+				.setDescription('Select the type of release')
+				.setChoices(
 					{
 						name: 'Trailer',
-						value: 'trl',
+						value: 'Trailer',
 					},
 					{
 						name: 'Behind the Scenes',
-						value: 'bts',
+						value: 'Behind the Scenes',
 					},
 					{
 						name: 'Bloopers',
-						value: 'blp',
+						value: 'Bloopers',
 					},
 					{
 						name: 'Clip',
-						value: 'clp',
+						value: 'Clip',
+					},
+					{
+						name: 'Teaser',
+						value: 'Teaser',
+					},
+					{
+						name: 'Featurette',
+						value: 'Featurette',
 					},
 				))
 		.addStringOption(option =>
@@ -110,8 +120,8 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const mediaType = interaction.options.getString('media-type');
-		const site = interaction.options.getString('site');
+		const mediaType = interaction.options.getString('media-type') ?? 'All';
+		const site = interaction.options.getString('site') ?? 'All';
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -144,37 +154,33 @@ module.exports = {
 		let currentIndex = 0;
 		let movieVideos;
 
-		selectMenucollector.on(MyEvents.Collect, async i => {
-			if (!i.isStringSelectMenu()) return;
-			const selected = i.values[0];
+		selectMenucollector.on(MyEvents.Collect, async m => {
+			if (!m.isStringSelectMenu()) return;
+			const selected = m.values[0];
 			currentIndex = 0;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
-			movieVideos = movie.videos.results;
 
-			// {
-			//     iso_639_1: 'en',
-			//     iso_3166_1: 'US',
-			//     name: 'Joker Transformation Scene',
-			//     key: 'GIiyHPZ8H98',
-			//     site: 'YouTube',
-			//     size: 1080,
-			//     type: 'Clip',
-			//     official: true,
-			//     published_at: '2020-04-23T17:59:57.000Z',
-			//     id: '62299b179a3c490047cc6b52'
-			//   }
+            // console.log(movie);
+			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == mediaType.toLowerCase() || mediaType == 'All').filter(video => video.site == site || site == 'All');
+            
+            // console.log(movieVideos);
+
+	
 
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
-			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
+			const title = `${movie.title.slice(0, 81)}   Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
 
-			const movieImageEmbed = createImageEmbed(title, current, i.user);
+			const movieVideoEmbed = createVideoEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
+			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
-			await i.update({
+
+
+			await m.update({
 				content: 'Selected Movie Video: ',
-				embeds: [movieImageEmbed],
+				embeds: [movieVideoEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
@@ -183,15 +189,15 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Images found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 
-		selectMenucollector.on(MyEvents.Dispose, i => {
-			console.log(`dispose: ${i}`);
+		selectMenucollector.on(MyEvents.Dispose, m => {
+			console.log(`dispose: ${m}`);
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
@@ -202,35 +208,59 @@ module.exports = {
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
-			// Increase/decrease index
-			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+			if (m.customId == 'empty') return;
+			// console.log(m.customId);
+			if (m.customId != backId && m.customId != forwardId) {
+				const sites = {
+					'Youtube': 'https://www.youtube.com/watch?v=',
+					'Vimeo': 'https://vimeo.com/',
+				};
+				const videoLink = movieVideos.find(video => m.customId == video.id);
 
-			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
+
+				await m.update({
+					content: `${sites[videoLink.site]}${videoLink.key}`,
+					embeds: [],
+					components: [],
+				});
+
+			}
+			else {
+
+				// Increase/decrease index
+				m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+				const current = movieVideos.slice(currentIndex, currentIndex + listSize);
 
 
-			const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
-			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
+				const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
+				const movieCreditsEmbed = createVideoEmbed(title, current, m.user);
+                const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
-			// console.log(currentIndex);
-			// Respond to interaction by updating message with new embed
-			await m.update({
-				content: 'Showing Movie Images',
-				embeds: [movieCreditsEmbed],
-				components: [
-					m.message.components[0],
-					new ActionRowBuilder({ components: [
-					// back button if it isn't the start
-						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-						// forward button if it isn't the end
-						...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] }) ],
-			});
+
+				// Respond to interaction by updating message with new embed
+				await m.update({
+					content: 'Showing Movie Videos',
+					embeds: [movieCreditsEmbed],
+					components: [
+						m.message.components[0],
+						new ActionRowBuilder({ components: [
+							// back button if it isn't the start
+							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+							// forward button if it isn't the end
+							...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						] }),
+                        new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+                    ],
+				});
+			}
+
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
 
 
-		buttonCollector.on(MyEvents.Dispose, i => {
-			console.log(`dispose: ${i}`);
+		buttonCollector.on(MyEvents.Dispose, m => {
+			console.log(`dispose: ${m}`);
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {

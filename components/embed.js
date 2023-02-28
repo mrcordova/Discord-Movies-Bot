@@ -107,6 +107,8 @@ function createImageEmbed(title, movieImage, user) {
 	};
 }
 
+
+
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
 	return {
@@ -428,6 +430,66 @@ function createTranslateDetailEmbed(translationDetails, user) {
 	};
 }
 
+function createVideoEmbed(title, movieVideo, user) {
+	if (!movieVideo.length) {
+		return createNoResultEmbed();
+	}
+
+	// {
+	//     iso_639_1: 'en',
+	//     iso_3166_1: 'US',
+	//     name: 'Joker Transformation Scene',
+	//     key: 'GIiyHPZ8H98',
+	//     site: 'YouTube',
+	//     size: 1080,
+	//     type: 'Clip',
+	//     official: true,
+	//     published_at: '2020-04-23T17:59:57.000Z',
+	//     id: '62299b179a3c490047cc6b52'
+	//   }
+	return {
+		color: Colors.DarkGrey,
+		title: `${title}`,
+		// url: `https://www.imdb.com/title/${movie.imdb_id}/`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+		},
+		fields: [
+			{
+				name: 'Name',
+				value: `${movieVideo[0].name}`,
+			},
+			{
+				name: 'Site',
+				value: `${movieVideo[0].site}`,
+			},
+			{
+				name: 'type',
+				value: `${movieVideo[0].type}`,
+			},
+			{
+				name: 'Language',
+				value: `${movieVideo[0].iso_639_1}-${movieVideo[0].iso_3166_1}`,
+			},
+			{
+				name: 'Offical',
+				value: `${movieVideo[0].offical ? ':check:' : ':xmark:'}`,
+			},
+			{
+				name: 'Published',
+				value: `${movieVideo[0].published_at}`,
+			},
+			{
+				name: 'Size',
+				value: `${movieVideo[0].size}`,
+			},
+		],
+		timestamp: new Date(),
+
+	};
+}
+
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
@@ -443,4 +505,5 @@ module.exports = {
 	createReviewEmbed,
 	createTranslateListEmbed,
 	createTranslateDetailEmbed,
+	createVideoEmbed,
 };
