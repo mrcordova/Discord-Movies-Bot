@@ -38,7 +38,7 @@ module.exports = {
 				.setDescription('Search for the desired film.')
 				.setRequired(true))
 		.addStringOption(option =>
-			option.setName('media-type')
+			option.setName('video-type')
 				.setDescription('Select the type of release')
 				.setChoices(
 					{
@@ -161,12 +161,11 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
 
-            // console.log(movie);
+			// console.log(movie);
 			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == mediaType.toLowerCase() || mediaType == 'All').filter(video => video.site == site || site == 'All');
-            
-            // console.log(movieVideos);
 
-	
+			// console.log(movieVideos);
+
 
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 81)}   Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
@@ -175,7 +174,6 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
-
 
 
 			await m.update({
