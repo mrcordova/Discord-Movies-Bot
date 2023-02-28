@@ -156,8 +156,13 @@ module.exports = {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
 				const creditResponse = await axios.get(`${api_url}${movie_details}/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 				const movieDetails = creditResponse.data;
-
-				const movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				let movieRating;
+				try {
+					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				}
+				catch {
+					movieRating = 'N/A';
+				}
 				movieDetails.rating = movieRating;
 
 				const formatter = createCurrencyFormatter();
