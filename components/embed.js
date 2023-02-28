@@ -314,13 +314,13 @@ function createReviewDetailEmbed(review) {
 				inline: true,
 			},
 			{
-				name: 'Created at',
-				value: `Date: ${createAtArry[0]} at ${createAtArry[1]}`,
+				name: 'Created',
+				value: `${createAtArry[0]} at ${createAtArry[1]}`,
 				inline: true,
 			},
 			{
-				name: 'Updated at',
-				value: `Date: ${updateAtArry[0]} at ${updateAtArry[1]}`,
+				name: 'Updated',
+				value: `${updateAtArry[0]} at ${updateAtArry[1]}`,
 				inline: true,
 			},
 		],
