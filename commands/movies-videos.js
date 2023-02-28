@@ -95,7 +95,7 @@ module.exports = {
 				.setMaxValue(3000))
 		.addStringOption(option =>
 			option.setName('video_language')
-				.setDescription('Search for the desired image language.')
+				.setDescription('Search for the desired video language.')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
@@ -140,7 +140,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Movie will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -161,7 +161,8 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
 
-			// console.log(videoType);
+			// console.log(movie.videos.results);
+			// console.log('--------------------------');
 			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == videoType.toLowerCase() || videoType == 'All').filter(video => video.site == site || site == 'All');
 
 			// console.log(movieVideos);
