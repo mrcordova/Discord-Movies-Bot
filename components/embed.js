@@ -268,7 +268,7 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 			let ratingMeaning;
 			let releaseRating;
 			try {
-			// console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
+				// console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
 				ratingMeaning = ratings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
 			}
 			catch {
@@ -289,6 +289,52 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 	});
 };
 
+function createReviewDetailEmbed(review) {
+
+
+	const createAtArry = review.created_at.split('T');
+	const updateAtArry = review.updated_at.split('T');
+	return {
+		color: Colors.Blurple,
+		title: review.author_details.username,
+		url: `${review.url}`,
+		// author: {
+		// 	name: user.username,
+		// 	icon_url: user.displayAvatarURL(),
+		// 	// url: "https://discord.js.org",
+		// },
+		description: review.content,
+		thumbnail: {
+			url: `${images.base_url}${images.logo_sizes[1]}${review.author_details.avatar_path}`,
+		},
+		fields: [
+			{
+				name: 'Rating',
+				value: `${review.author_details.rating ?? 0}`,
+				inline: true,
+			},
+			{
+				name: 'Created at',
+				value: `Date: ${createAtArry[0]} at ${createAtArry[1]}`,
+				inline: true,
+			},
+			{
+				name: 'Updated at',
+				value: `Date: ${updateAtArry[0]} at ${updateAtArry[1]}`,
+				inline: true,
+			},
+		],
+		// image: {
+		// 	url: `${images.base_url}${images.poster_sizes[5]}${person.profile_path}`,
+		// },
+		timestamp: new Date(),
+		footer: {
+			// text: `${prod.name}`,
+			// icon_url: "https://i.imgur.com/AfFp7pu.png",
+		},
+	};
+
+}
 
 const createReviewEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -316,5 +362,6 @@ module.exports = {
 	createMovieDetailEmbed,
 	createPersonDetailEmbed,
 	createReleaseDatesEmbed,
+	createReviewDetailEmbed,
 	createReviewEmbed,
 };

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createPersonDetailEmbed, createReviewEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createReviewEmbed, createReviewDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict } = require('../load-data.js');
 const axios = require('axios');
@@ -149,30 +149,15 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
+				// https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key=<<api_key>>&language=en-US&page=1
 
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const personDetials = personResponse.data;
-				// console.log(personDetials);
-				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
-				let movieCredits;
-				try {
-					// undefined error for person results
-					movieCredits = imdbResponse.data.person_results[0].known_for;
-				}
-				catch {
-					movieCredits = [{ title: 'N/A', vote_average: -1 }];
-				}
+				const userReview = reviews.find((review) => i.customId == review.id);
 
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
+				const reviewDetailEmbed = createReviewDetailEmbed(userReview);
 
 				await i.update({
-					content: 'Person\'s Detail',
-					embeds: [personCreditsEmbed],
+					content: 'Review\'s Detail',
+					embeds: [reviewDetailEmbed],
 					components: [],
 				});
 			}
