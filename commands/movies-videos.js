@@ -9,9 +9,16 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 // const movie_now_playing = '/movie/now_playing';
 
-// https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
-// language string optional
-// include_image_language string optional
+// 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY    
+// 2 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR      
+// 3 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de,pt    
+// 4 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de   
+// 5 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&include_video_language=en,fr,es,de,pt  
+// 1 - If you don't use &language= parameter, it gets the default in English. en.
+// 2 - If you only use the &language= parameter, receive in the chosen language
+// 3 - If you also use the &include_video_language= parameter, you receive only in the languages specified in that parameter,
+// 4 - and don't receive the referring to &language= if the language is not in the list of &include_video_language=
+// 5 - If you only use the &include_video_language= parameter, receive in the languages specified in that par
 
 
 // Constants
@@ -31,9 +38,7 @@ module.exports = {
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('media-type')
-				.setDescription('Select the type of release')
-				.setRequired(true)
-				.setChoices(
+				.setDescription('Select the type of release')				.setChoices(
 					{
 						name: 'Trailer',
 						value: 'trl',
@@ -45,6 +50,23 @@ module.exports = {
 					{
 						name: 'Bloopers',
 						value: 'blp',
+					},
+					{
+						name: 'Clip',
+						value: 'clp',
+					},
+				))
+		.addStringOption(option =>
+			option.setName('site')
+				.setDescription('Select the type of site')
+				.setChoices(
+					{
+						name: 'Youtube',
+						value: 'https://www.youtube.com/watch?v=',
+					},
+					{
+						name: 'Vimeo',
+						value: 'https://vimeo.com/',
 					},
 				))
 		.addStringOption(option =>
@@ -89,6 +111,7 @@ module.exports = {
 		const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		const mediaType = interaction.options.getString('media-type');
+		const site = interaction.options.getString('site');
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -128,6 +151,19 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
 			movieVideos = movie.videos.results;
+
+			// {
+			//     iso_639_1: 'en',
+			//     iso_3166_1: 'US',
+			//     name: 'Joker Transformation Scene',
+			//     key: 'GIiyHPZ8H98',
+			//     site: 'YouTube',
+			//     size: 1080,
+			//     type: 'Clip',
+			//     official: true,
+			//     published_at: '2020-04-23T17:59:57.000Z',
+			//     id: '62299b179a3c490047cc6b52'
+			//   }
 
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
