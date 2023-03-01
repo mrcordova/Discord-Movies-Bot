@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors, AttachmentBuilder } = require('discord.js');
+const { EmbedBuilder, Colors } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 

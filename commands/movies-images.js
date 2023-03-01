@@ -3,7 +3,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
@@ -113,7 +113,7 @@ module.exports = {
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 80)} Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 
-			const file = new AttachmentBuilder('./images/TMDb-logo.png');
+			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const movieImageEmbed = createImageEmbed(title, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createMovieDetailEmbed, createNoResultEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
@@ -69,7 +69,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that year', 'Please make a new command with a different year')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that year', 'Please make a new command with a different year')], files: [file] });
 			return;
 		}
 		const options = [];

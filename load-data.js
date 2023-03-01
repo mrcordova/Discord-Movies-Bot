@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { AttachmentBuilder } = require('discord.js');
 const countryDictionary = JSON.parse(fs.readFileSync('data/countries.json', 'utf8'));
 const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'utf8'));
 const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
@@ -51,6 +52,9 @@ const numberEmojis = {
 	9 : '9️⃣',
 	10 : '🔟',
 };
+
+const file = new AttachmentBuilder('./images/TMDb-logo.png');
+
 // // Create an empty dictionary object
 // const countriesDict = {};
 // console.log(ratings)
@@ -69,4 +73,5 @@ module.exports = {
 	deptEmojis,
 	numberEmojis,
 	ratings,
+	file,
 };
