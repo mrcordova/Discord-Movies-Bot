@@ -73,7 +73,11 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 	return new EmbedBuilder()
 		.setColor(color)
 		.setTitle(title)
-		.setDescription(description);
+		.setDescription(description)
+		.setFooter({
+			text: 'The Movie Database (TMDb)',
+			iconURL: 'attachment://TMDb-logo.png',
+		});
 }
 
 function createImageEmbed(title, movieImage, user) {
