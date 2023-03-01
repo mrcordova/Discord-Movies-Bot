@@ -111,7 +111,12 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 
-			await i.update({ content: 'Selected Movie:', embeds: [movieDetailsEmbed], components: [new ActionRowBuilder().addComponents(newSelectMenu)] });
+			await i.update({
+				content: 'Selected Movie:',
+				embeds: [movieDetailsEmbed],
+				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
+				files: [file],
+			});
 			// collector.resetTimer([{time: 15000}]);
 		});
 

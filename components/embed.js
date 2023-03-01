@@ -1,6 +1,7 @@
 const { EmbedBuilder, Colors } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
+const tmdbIconUrl = 'attachment://TMDb-logo.png';
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
 	return new EmbedBuilder()
@@ -76,7 +77,7 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		.setDescription(description)
 		.setFooter({
 			text: 'The Movie Database (TMDb)',
-			iconURL: 'attachment://TMDb-logo.png',
+			iconURL: tmdbIconUrl,
 		});
 }
 
@@ -106,7 +107,7 @@ function createImageEmbed(title, movieImage, user) {
 		timestamp: new Date(),
 		footer: {
 			text: 'The Movie Database (TMDb)',
-			icon_url: 'attachment://TMDb-logo.png',
+			icon_url: tmdbIconUrl,
 		},
 	};
 }
@@ -180,7 +181,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 		timestamp: new Date(),
 		footer: {
 			text: `${prod.name}`,
-			// icon_url: "https://i.imgur.com/AfFp7pu.png",
+			icon_url: tmdbIconUrl,
 		},
 	};
 }
