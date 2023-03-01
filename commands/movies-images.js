@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors, AttachmentBuilder } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
@@ -113,9 +113,10 @@ module.exports = {
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 
+			const file = new AttachmentBuilder('./images/TMDb-logo.png');
+
 			const movieImageEmbed = createImageEmbed(title, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
-
 
 			await i.update({
 				content: 'Selected Movie Images: ',
@@ -130,6 +131,7 @@ module.exports = {
 					] }),
 					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Images found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
+				files: [file],
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);

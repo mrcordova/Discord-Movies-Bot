@@ -57,6 +57,5 @@ process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);
 });
 
-
 // Log in to Discord with your client's token
 client.login(token);
