@@ -111,12 +111,12 @@ module.exports = {
 			movieImages = movie.images.posters.concat(movie.images.posters.backdrops).filter((obj) => obj);
 
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
-			const title = `${movie.title.slice(0, 81)}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
+			const title = `${movie.title.slice(0, 80)} Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 
 			const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const movieImageEmbed = createImageEmbed(title, current, i.user);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
 
 			await i.update({
 				content: 'Selected Movie Images: ',
@@ -155,7 +155,7 @@ module.exports = {
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 
 
-			const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
+			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
 
 			// console.log(currentIndex);
