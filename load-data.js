@@ -52,7 +52,7 @@ const numberEmojis = {
 	9 : '9️⃣',
 	10 : '🔟',
 };
-
+// images/justwatch-small-yellow-logo.png
 const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 // // Create an empty dictionary object

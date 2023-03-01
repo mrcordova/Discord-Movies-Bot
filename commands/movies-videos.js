@@ -200,7 +200,13 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			if (r == 'Done') {
+				await interaction.editReply({ content: 'Done!', embeds:[], components: [] });
+				return;
+			}
+
+			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [] });
+
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
@@ -223,6 +229,10 @@ module.exports = {
 					components: [],
 					ephemeral: false,
 				});
+				buttonCollector.stop('Done');
+				selectMenucollector.stop('Done');
+				// await interaction.deleteReply();
+
 
 			}
 			else {
@@ -265,7 +275,18 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// console.log(r);
+			if (r == 'Done') {
+				await interaction.editReply({ content: 'Done!', embeds:[], components: [] });
+				return;
+			}
+
+			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [] });
+			// try {
+
+			// 	await interaction.deleteReply();
+			// }
+			// catch { /* empty */ }
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
