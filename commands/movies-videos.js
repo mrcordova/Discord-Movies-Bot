@@ -172,9 +172,9 @@ module.exports = {
 			const title = `${movie.title.slice(0, 81)}   Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
 
 			const movieVideoEmbed = createVideoEmbed(title, current, m.user);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
 
-			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 			await m.update({
@@ -231,10 +231,11 @@ module.exports = {
 				const current = movieVideos.slice(currentIndex, currentIndex + listSize);
 
 
-				const title = `${m.message.embeds[0].title.split(' ')[0]}   Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
+				// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
+				// console.log(m.message.components[0].components[0].placeholder)
+				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
 				const movieVideoEmbed = createVideoEmbed(title, current, m.user);
-				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
-
+				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 				// Respond to interaction by updating message with new embed
 				await m.update({
