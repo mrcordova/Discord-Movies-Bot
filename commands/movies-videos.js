@@ -169,7 +169,7 @@ module.exports = {
 
 
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
-			const title = `${movie.title.slice(0, 81)}   Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
+			const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
 
 			const movieVideoEmbed = createVideoEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
