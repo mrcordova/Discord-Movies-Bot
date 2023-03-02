@@ -23,7 +23,9 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.title}`,
+			value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
 		),
 		timestamp: new Date(),
 		footer: {
