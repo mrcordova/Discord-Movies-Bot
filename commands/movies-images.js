@@ -7,6 +7,7 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
+const { getEditReply } = require('../helpers/get-reason');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
@@ -75,7 +76,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
 		const options = [];
@@ -142,7 +143,8 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
@@ -181,7 +183,8 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
