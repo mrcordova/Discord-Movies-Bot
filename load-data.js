@@ -31,6 +31,7 @@ const deptEmojis = {
 	'Directing' : '🎬',
 	'Costume & Make-Up' : '💄',
 	'Actors' : '🎭',
+	'Acting' : '🎭',
 	'Writing' : '✍️',
 	'Visual Effects' : '🔮',
 	'Lighting' : '💡',
