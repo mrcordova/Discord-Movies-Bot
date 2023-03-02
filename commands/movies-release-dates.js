@@ -3,10 +3,11 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
+const { getEditReply } = require('../helpers/get-editReply');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>
@@ -80,7 +81,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
 		const options = [];
@@ -136,6 +137,7 @@ module.exports = {
 						...(currentIndex + listSize < movieReleaseDates.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 				],
+				files: [file],
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
@@ -146,7 +148,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
@@ -185,7 +187,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
