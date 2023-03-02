@@ -1,12 +1,13 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createListsEmbed } = require('../components/embed.js');
-const { translationsCodeDict } = require('../load-data.js');
+const { translationsCodeDict, file } = require('../load-data.js');
 
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
+const { getEditReply } = require('../helpers/get-reason');
 const movie_route = '/movie';
 const movie_lists = 'lists';
 
@@ -59,7 +60,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies with that title.', 'Please make a new command with a different options')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies with that title.', 'Please make a new command with a different options')], files: [file] });
 			return;
 		}
 
@@ -113,6 +114,7 @@ module.exports = {
 						...(currentIndex + listSize < movie.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 				],
+				files: [file],
 			});
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
@@ -124,7 +126,9 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
+
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 
@@ -154,7 +158,8 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 	},
 };
