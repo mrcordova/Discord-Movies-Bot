@@ -7,6 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
+const { getEditReply } = require('../helpers/get-editReply');
 const movie_details = '/movie';
 
 
@@ -132,7 +133,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
