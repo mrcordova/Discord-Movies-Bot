@@ -8,6 +8,7 @@ const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../compo
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
+const { getEditReplyWithoutEmebed } = require('../helpers/get-editReply');
 // const movie_now_playing = '/movie/now_playing';
 
 // 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
@@ -201,13 +202,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			if (r == 'Done') {
-				await interaction.editReply({ content: 'Done!', embeds:[], components: [], files: [] });
-				return;
-			}
-
-			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
-
+			await getEditReplyWithoutEmebed(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
@@ -230,8 +225,8 @@ module.exports = {
 					components: [],
 					ephemeral: false,
 				});
-				buttonCollector.stop('Done');
-				selectMenucollector.stop('Done');
+				buttonCollector.stop('Done!');
+				selectMenucollector.stop('Done!');
 				// await interaction.deleteReply();
 
 
@@ -276,18 +271,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// console.log(r);
-			if (r == 'Done') {
-				await interaction.editReply({ content: 'Done!', embeds:[], components: [], files: [] });
-				return;
-			}
-
-			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
-			// try {
-
-			// 	await interaction.deleteReply();
-			// }
-			// catch { /* empty */ }
+			await getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
