@@ -8,7 +8,7 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
-const { getEditReply } = require('../helpers/get-reason');
+const { getEditReply } = require('../helpers/get-editReply');
 const movie_details = '/movie';
 
 

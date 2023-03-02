@@ -5,7 +5,7 @@ const { createButton } = require('../components/button.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply } = require('../helpers/get-reason');
+const { getEditReply } = require('../helpers/get-editReply');
 const movie_popular = '/movie/popular';
 
 
