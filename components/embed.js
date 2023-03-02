@@ -23,6 +23,11 @@ const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Bl
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title}`, value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 
@@ -39,6 +44,11 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (member, index) => ({ name: `${ start + (index + 1)}. ${member.name}`, value: `Credit: ${member.job ?? 'N/A'}` })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 
@@ -53,6 +63,11 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
@@ -67,6 +82,11 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (Movies Count: ${movie.item_count}) - ${movie.iso_639_1}`, value: movie.description })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 
@@ -77,7 +97,7 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		.setTitle(title)
 		.setDescription(description)
 		.setFooter({
-			text: 'The Movie Database (TMDb)',
+			text: tmdbName,
 			iconURL: tmdbIconUrl,
 		});
 }
@@ -254,8 +274,8 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 		},
 		timestamp: new Date(),
 		footer: {
-			// text: `${prod.name}`,
-			// icon_url: "https://i.imgur.com/AfFp7pu.png",
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
 		},
 	};
 
@@ -294,6 +314,11 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 				value: `Release Date: ${release.release_date.split('T')[0]}\nRating: ${releaseRating}\nRating meaning: ${ratingMeaning}`,
 			};
 		})),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 
@@ -337,8 +362,8 @@ function createReviewDetailEmbed(review) {
 		// },
 		timestamp: new Date(),
 		footer: {
-			// text: `${prod.name}`,
-			// icon_url: "https://i.imgur.com/AfFp7pu.png",
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
 		},
 	};
 
@@ -356,6 +381,11 @@ const createReviewEmbed = async (start, listSize, moviesList, color = Colors.Blu
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.author_details.username} rated: ${movie.author_details.rating ?? 'No Rating'}`, value: `${movie.content.slice(0, 1021)}...` })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 const createTranslateListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
@@ -370,6 +400,11 @@ const createTranslateListEmbed = async (start, listSize, moviesList, color = Col
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`, value: `ISO Codes: ${movie.iso_3166_1}-${movie.iso_639_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
 		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	});
 };
 
@@ -428,10 +463,10 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		// 	url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
 		// },
 		timestamp: new Date(),
-		// footer: {
-		// 	text: `${prod.name}`,
-		// 	// icon_url: "https://i.imgur.com/AfFp7pu.png",
-		// },
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
 	};
 }
 

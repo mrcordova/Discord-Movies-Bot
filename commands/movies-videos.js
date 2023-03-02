@@ -190,7 +190,7 @@ module.exports = {
 					] }),
 					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
-				files: [file]
+				files: [file],
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
