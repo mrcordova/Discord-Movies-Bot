@@ -3,7 +3,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict, file } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file, availableProviders } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
@@ -54,10 +54,25 @@ module.exports = {
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
+		const regionOption = interaction.options.getString('region') ?? 'All';
+		const platformOption = interaction.options.getString('platform') ?? 'All';
+
 		let choices;
 
-		if (focusedOption.name === 'language' || focusedOption.name === 'video_language') {
+		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
+		}
+		if (focusedOption.name === 'platform' && regionOption == 'All') {
+			choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : `${provider_id}` }));
+			// availableProviders;
+            // const temp = availableProviders.map((platform) => countryDict.filter(({ value }) => Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
+            // console.log(choices);
+		}
+		else if (focusedOption.name === 'platform' && regionOption != 'All') {
+			choices = countryDict;
+			// availableProviders;
+            choices = availableProviders.map((platform) => countryDict.filter(({ value }) => value.toLowerCase() == regionOption.toLowerCase() && Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
+            // console.log(temp);
 		}
 		if (focusedOption.name === 'region') {
 			choices = countryDict;

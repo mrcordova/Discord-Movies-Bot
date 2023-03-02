@@ -68,6 +68,7 @@ const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
 // 	countriesDict[item.key] = item.value;
 // }
 module.exports = {
+	availableProviders,
 	countryDict: countryDictionary,
 	languageDict: languageDictionary,
 	countryCodeDict,
