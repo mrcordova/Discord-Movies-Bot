@@ -2,12 +2,13 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyl
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { translationsCodeDict, countryDict } = require('../load-data.js');
+const { translationsCodeDict, countryDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
+const { getEditReply } = require('../helpers/get-editReply');
 const movie_details = '/movie';
 
 
@@ -73,7 +74,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different options')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different options')], files:[file] });
 			return;
 		}
 		const options = [];
@@ -132,6 +133,7 @@ module.exports = {
 					] }),
 					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Movies found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
+				files:[file],
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
@@ -143,7 +145,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
@@ -163,6 +165,8 @@ module.exports = {
 					embeds: [translationDetailEmbed],
 					components: [],
 				});
+				buttonCollector.stop('Done!');
+				selectMenucollector.stop('Done!');
 
 			}
 			else {
@@ -200,7 +204,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 	},
 };
