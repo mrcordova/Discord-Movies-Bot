@@ -54,7 +54,8 @@ const numberEmojis = {
 	10 : '🔟',
 };
 
-const file = new AttachmentBuilder('./images/TMDb-logo.png');
+const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
+// const file = new AttachmentBuilder('./images/just-watch-logo.jpg');
 
 // // Create an empty dictionary object
 // const countriesDict = {};

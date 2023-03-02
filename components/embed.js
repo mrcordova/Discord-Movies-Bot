@@ -1,7 +1,9 @@
 const { EmbedBuilder, Colors } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
-const tmdbIconUrl = 'attachment://TMDb-logo.png';
+const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
+// const tmdbIconUrl = 'attachment://just-watch-logo.jpg';
+// const tmdbIconUrl = 'https://www.i.imgur.com/a/wDY1wua.png';
 const tmdbName = 'The Movie Database (TMDb)';
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
