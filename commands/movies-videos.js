@@ -3,7 +3,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
@@ -127,7 +127,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
 		const options = [];
@@ -190,6 +190,7 @@ module.exports = {
 					] }),
 					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
+				files: [file]
 			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
@@ -201,11 +202,11 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			if (r == 'Done') {
-				await interaction.editReply({ content: 'Done!', embeds:[], components: [] });
+				await interaction.editReply({ content: 'Done!', embeds:[], components: [], files: [] });
 				return;
 			}
 
-			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [] });
+			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
@@ -277,11 +278,11 @@ module.exports = {
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			// console.log(r);
 			if (r == 'Done') {
-				await interaction.editReply({ content: 'Done!', embeds:[], components: [] });
+				await interaction.editReply({ content: 'Done!', embeds:[], components: [], files: [] });
 				return;
 			}
 
-			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [] });
+			await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 			// try {
 
 			// 	await interaction.deleteReply();
