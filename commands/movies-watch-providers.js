@@ -42,15 +42,15 @@ module.exports = {
 			option.setName('region')
 				.setDescription('Search for the desired region.')
 				.setAutocomplete(true))
+		.addStringOption(option =>
+			option.setName('platform')
+				.setDescription('Search platform. Hint: Select region first for available options in specific region.')
+				.setAutocomplete(true))
 		.addIntegerOption(option =>
 			option.setName('release-year')
 				.setDescription('Search for the desired year.')
 				.setMinValue(1800)
-				.setMaxValue(3000))
-		.addStringOption(option =>
-			option.setName('video_language')
-				.setDescription('Search for the desired video language.')
-				.setAutocomplete(true)),
+				.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
