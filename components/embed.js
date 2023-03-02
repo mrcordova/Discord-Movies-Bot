@@ -46,7 +46,9 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (member, index) => ({ name: `${ start + (index + 1)}. ${member.name}`, value: `Credit: ${member.job ?? 'N/A'}` })),
+		fields: await Promise.all(current.map(async (member, index) => ({
+			name: `${ start + (index + 1)}. ${member.name}`,
+			value: `Credit: ${member.job ?? 'N/A'}` })),
 		),
 		timestamp: new Date(),
 		footer: {
@@ -65,7 +67,9 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`, value: movie.overview })),
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`,
+			value: movie.overview })),
 		),
 		timestamp: new Date(),
 		footer: {
@@ -84,7 +88,9 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (Movies Count: ${movie.item_count}) - ${movie.iso_639_1}`, value: movie.description })),
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.name} (Movies Count: ${movie.item_count}) - ${movie.iso_639_1}`,
+			value: movie.description })),
 		),
 		timestamp: new Date(),
 		footer: {
@@ -383,7 +389,9 @@ const createReviewEmbed = async (start, listSize, moviesList, color = Colors.Blu
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.author_details.username} rated: ${movie.author_details.rating ?? 'No Rating'}`, value: `${movie.content.slice(0, 1021)}...` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.author_details.username} rated: ${movie.author_details.rating ?? 'No Rating'}`,
+			value: `${movie.content.slice(0, 1021)}...` })),
 		),
 		timestamp: new Date(),
 		footer: {
@@ -402,7 +410,9 @@ const createTranslateListEmbed = async (start, listSize, moviesList, color = Col
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
-		fields: await Promise.all(current.map(async (movie, index) => ({ name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`, value: `ISO Codes: ${movie.iso_3166_1}-${movie.iso_639_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.name} (${movie.english_name})`,
+			value: `ISO Codes: ${movie.iso_3166_1}-${movie.iso_639_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}` })),
 		),
 		timestamp: new Date(),
 		footer: {
