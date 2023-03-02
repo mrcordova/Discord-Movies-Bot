@@ -2,9 +2,10 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = re
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { countryDict, translationsCodeDict } = require('../load-data.js');
+const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
+const { getEditReply } = require('../helpers/get-editReply');
 const movie_upcoming = '/movie/upcoming';
 
 
@@ -71,6 +72,7 @@ module.exports = {
 			content: 'Upcoming Movies',
 			embeds: [await createListEmbed(currentIndex, listSize, moviesUpcoming)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
+			files:[file],
 		});
 
 		// Exit if there is only one page of guilds (no need for all of this)
@@ -108,7 +110,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			await getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
