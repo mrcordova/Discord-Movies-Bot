@@ -158,7 +158,9 @@ module.exports = {
 		const platform = interaction.options.getInteger('platform');
 		const contentType = interaction.options.getString('content-type');
 
-		console.log(platform);
+		// console.log(platform);
+		// console.log(contentType);
+		// console.log(country);
 		// const videoType = interaction.options.getString('video-type') ?? 'All';
 		// const site = interaction.options.getString('site') ?? 'All';
 
@@ -197,24 +199,20 @@ module.exports = {
 			if (!m.isStringSelectMenu()) return;
 			const selected = m.values[0];
 			currentIndex = 0;
-			const movieResponse = await axios.get(`${api_url}/movie/${selected}/watch/providers?api_key=${MOVIE_API_KEY}`);
-			const movie = new Map(Object.entries(movieResponse.data.results));
+			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=watch/providers`);
+			// console.log(movieResponse);
+			const movie = new Map(Object.entries(movieResponse.data['watch/providers'].results));
 			try {
-				// console.log(movie.entries());
-				// const movieArray = Array.from(movie.entries());
-				// movieOptions = new Map(movieArray.filter(([key, val]) => key.trim().toLowerCase() === country.trim().toLowerCase()));
 				for (const k of movie.keys()) {
 					if (!(k.trim().toLowerCase() === country.trim().toLowerCase())) {
 						movie.delete(k);
 					}
 				}
 				movieOptions = movie;
-				// console.log(movieOptions);
 			}
-			catch {
-				console.log(`region: ${country} failed`);
+			catch (err) {
+				console.error(`region: ${country} failed\n${err}`);
 				movieOptions = movie;
-				// console.log(movieOptions);
 			}
 			try {
 				const filteredOptions = new Map();
@@ -228,71 +226,63 @@ module.exports = {
 						filteredOptions.set(key, filteredValue);
 					}
 				}
-				movieOptions = filteredOptions;
-			}
-			catch {
-				console.log(`contenet: ${contentType} failed`);
-			}
-			try {
-				// const filteredOptions = new Map();
-
-				// for (const [key, value] of movieOptions.entries()) {
-				// const filteredContent = new Map();
-				// for (const [contentKey, contentVal] of Object.entries(value)) {
-				// 	if (Array.isArray(contentVal)) {
-				// 	const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
-				// 	if (filteredPlatforms.length > 0) {
-				// 		filteredContent.set(contentKey, filteredPlatforms);
-				// 	}
-				// 	} else if (contentKey === 'link' && filteredContent.size > 1) {
-				// 	filteredContent.set(contentKey, contentVal);
-				// 	}
-				// }
-
-				// if (filteredContent.size > 0) {
-				// 	filteredOptions.set(key, filteredContent);
-				// }
-				// }
-
-				const filteredOptions = new Map();
-
-				for (const [key, value] of movieOptions.entries()) {
-					const values = Object.entries(value).filter(([contentKey, contentVal]) => Array.isArray(contentVal));
-					// const links = Object.entries(value).filter(([contentKey]) => contentKey == 'link');
-					// console.log(links);
-					const filteredContentType = new Map();
-					for (const [contentKey, contentVal] of values) {
-						const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
-						if (Object.keys(filteredPlatforms).length > 0) {
-							filteredContentType.set(contentKey, filteredPlatforms);
-						}
-					}
-					// console.log(filteredContentType);
-					// for (const [contentKey, contentVal] of filteredContentType) {
-					// 	links.find(([key]))
-					// }
-					if (filteredContentType.size > 0) {
-						// console.log(values);
-						// console.log(value['link']);
-						filteredContentType.set(getKey(value, value[TMDB_WATCH_LINK]), value[TMDB_WATCH_LINK]);
-						filteredOptions.set(key, filteredContentType);
-					}
-				}
 				// console.log(filteredOptions);
 				movieOptions = filteredOptions;
 			}
-			catch {
-				console.log(`platform: ${platform} failed`);
-			}
+			catch (err) {
+				console.error(`content: ${contentType} failed\n${err}`);
 
-			// console.log(movie);
+				// console.log(movieOptions);
+			}
+			try {
+
+				if (platform != null) {
+					const filteredOptions = new Map();
+
+					for (const [key, value] of movieOptions.entries()) {
+						const values = Object.entries(value).filter(([, contentVal]) => Array.isArray(contentVal));
+
+						const filteredContentType = new Map();
+						for (const [contentKey, contentVal] of values) {
+							const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
+							if (Object.keys(filteredPlatforms).length > 0) {
+								filteredContentType.set(contentKey, filteredPlatforms);
+							}
+						}
+
+						if (filteredContentType.size > 0) {
+
+							filteredContentType.set(getKey(value, value[TMDB_WATCH_LINK]), value[TMDB_WATCH_LINK]);
+							filteredOptions.set(key, filteredContentType);
+						}
+					}
+					movieOptions = filteredOptions;
+				}
+			}
+			catch (err) {
+				console.error(`platform: ${platform} failed\n${err}`);
+				console.log(movieOptions);
+
+			}
+			console.log(movieOptions);
+
+
+			const movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
+				return {
+					country: key,
+					value,
+				};
+			});
+
+
 			// console.log('--------------------------');
 			// movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == contentType.toLowerCase() || contentType == 'All').filter(video => video.site == site || site == 'All'); 
 
 			// console.log(movieVideos);
 
 
-			// const current = movieOptions.slice(currentIndex, currentIndex + listSize);
+			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
+			// console.log(current);
 			// const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptions.length}`;
 
 			// const movieVideoEmbed = createVideoEmbed(title, current, m.user);
