@@ -193,12 +193,13 @@ module.exports = {
 
 		const listSize = 1;
 		let currentIndex = 0;
-		let movieOptions;
+		let movieOptionsArray;
 
 		selectMenucollector.on(MyEvents.Collect, async m => {
 			if (!m.isStringSelectMenu()) return;
 			const selected = m.values[0];
 			currentIndex = 0;
+			let movieOptions;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=watch/providers`);
 			// console.log(movieResponse);
 			const movieTitle = movieResponse.data.title;
@@ -268,7 +269,7 @@ module.exports = {
 			// console.log(movieOptions);
 
 
-			const movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
+			movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
 				return {
 					country: key,
 					value,
@@ -288,7 +289,7 @@ module.exports = {
 			// console.log(title);
 
 			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
-			const title = `${movieTitle.slice(0, 80)} Showing Providers ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
+			const title = `Showing Country ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
 			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle.slice(0, 80), 1, options);
 
@@ -296,7 +297,7 @@ module.exports = {
 
 
 			await m.update({
-				content: 'Selected Movie Video: ',
+				content: `Selected Movie: ${movieTitle.slice(0, 80)}`,
 				embeds: [movieWatchProviderEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -304,7 +305,7 @@ module.exports = {
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movieOptions.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < movieOptionsArray.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
@@ -327,57 +328,35 @@ module.exports = {
 
 		buttonCollector.on(MyEvents.Collect, async m => {
 			if (m.customId == 'empty') return;
-			// console.log(m.customId);
-			if (m.customId != backId && m.customId != forwardId) {
-				const sites = {
-					'youtube': 'https://www.youtube.com/watch?v=',
-					'vimeo': 'https://vimeo.com/',
-				};
-				const videoLink = movieVideos.find(video => m.customId == video.id);
+
+			// Increase/decrease index
+			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 
 
-				await m.reply({
-					content: `${sites[videoLink.site.toLowerCase()]}${videoLink.key}`,
-					embeds: [],
-					components: [],
-					ephemeral: false,
-				});
-				buttonCollector.stop('Done!');
-				selectMenucollector.stop('Done!');
-				// await interaction.deleteReply();
+			// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
+			// console.log(m.message.components[0].components[0].placeholder)
+			const title = `Showing Country ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
+			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
+			// const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
+			// Respond to interaction by updating message with new embed
+			await m.update({
+				content: m.message.content,
+				embeds: [movieWatchProviderEmbed],
+				components: [
+					m.message.components[0],
+					new ActionRowBuilder({ components: [
+						// back button if it isn't the start
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < movieOptionsArray.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] }),
+					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+				],
+			});
 
-			}
-			else {
-
-				// Increase/decrease index
-				m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
-
-				const current = movieVideos.slice(currentIndex, currentIndex + listSize);
-
-
-				// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
-				// console.log(m.message.components[0].components[0].placeholder)
-				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
-				const movieVideoEmbed = createVideoEmbed(title, current, m.user);
-				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
-
-				// Respond to interaction by updating message with new embed
-				await m.update({
-					content: 'Showing Movie Videos',
-					embeds: [movieVideoEmbed],
-					components: [
-						m.message.components[0],
-						new ActionRowBuilder({ components: [
-							// back button if it isn't the start
-							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-							// forward button if it isn't the end
-							...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-						] }),
-						new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-					],
-				});
-			}
 
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});

@@ -561,8 +561,12 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 	return new EmbedBuilder({
 		color: color,
 		title: title,
-		description: `TMDB URL to actual [deep links](${current[0].value.link}) to the content`,
-		fields: await Promise.all(current.map(async (watchProvider, index) => {
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+		},
+		description: `[TMDB URL](${current[0].value.link})`,
+		fields: await Promise.all(current.map(async (watchProvider) => {
 			let rent;
 			let buy;
 			let flatrate;
@@ -594,6 +598,7 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 		thumbnail: {
 			url: justWatchIconUrl,
 		},
+
 		timestamp: new Date(),
 		footer: {
 			text: tmdbName,
