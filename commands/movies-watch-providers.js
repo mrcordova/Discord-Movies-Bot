@@ -9,6 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReplyWithoutEmebed } = require('../helpers/get-editReply');
+const { getKey, TMDB_WATCH_LINK } = require('../helpers/get-key');
 // const movie_now_playing = '/movie/now_playing';
 
 // flatrate: HBO, DirectTV, Cable TV, Locke etc...
@@ -26,6 +27,16 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 // let selectedRegion
+// Here are some suggestions for a Discord bot slash command and options based on the given information:
+
+// Command name: streaming
+
+// Options:
+
+// movie (required): The name of the movie you want to check the streaming availability for.
+// country (optional): The two-letter country code for the country you want to check the streaming availability in. Defaults to the server's country.
+// provider (optional): The name of the streaming provider you want to check the availability for. If not specified, returns all available providers for the given country.
+// Example usage: /streaming movie="The Matrix" country=US provider="Netflix"
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -44,10 +55,27 @@ module.exports = {
 			option.setName('region')
 				.setDescription('Search for the desired region.')
 				.setAutocomplete(true))
-		.addStringOption(option =>
+		.addIntegerOption(option =>
 			option.setName('platform')
-				.setDescription('Search platform. Hint: Select region first for available options in specific region.')
+				.setDescription('Search with speific platform.')
 				.setAutocomplete(true))
+		.addStringOption(option =>
+			option.setName('content-type')
+				.setDescription('Search availability with specific Content Availability Type')
+				.setChoices(
+					{
+						name: 'Streaming',
+						value: 'flatrate',
+					},
+					{
+						name: 'Rent',
+						value: 'rent',
+					},
+					{
+						name: 'Buy',
+						value: 'buy',
+					},
+				))
 		.addIntegerOption(option =>
 			option.setName('release-year')
 				.setDescription('Search for the desired year.')
@@ -58,12 +86,12 @@ module.exports = {
 		const focusedOption = interaction.options.getFocused(true);
 		// const regionOption = interaction.options.getString('region').value ?? 'All';
 		// const platformOption = interaction.options.getString('platform') ?? 'All';
-    //    const tempRegion = selectedRegion.length ? 'All' : selectedRegion;
-    //    const tempRegion = selectedRegion ?? 'All';
+		//    const tempRegion = selectedRegion.length ? 'All' : selectedRegion;
+		//    const tempRegion = selectedRegion ?? 'All';
 		let choices;
 
-        // console.log(selectedRegion);
-        // console.log(countryDict);
+		// console.log(selectedRegion);
+		// console.log(countryDict);
 
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
@@ -102,11 +130,11 @@ module.exports = {
 
 		try {
 			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-            // if (focusedOption.name == 'region') {
-            //     selectedRegion = choices.find(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).value;
-            //     console.log(selectedRegion);
-            //     // console.log('----------------------------------');
-            // }
+			// if (focusedOption.name == 'region') {
+			//     selectedRegion = choices.find(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).value;
+			//     console.log(selectedRegion);
+			//     // console.log('----------------------------------');
+			// }
 			await interaction.respond(
 				filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
 			);
@@ -115,7 +143,7 @@ module.exports = {
 			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 			// console.log(filtered);
 			await interaction.respond(
-				filtered.map(choice => ({ name: `${choice.name}`, value: `${choice.value}` })),
+				filtered.map(choice => ({ name: `${choice.name}`, value: choice.value })),
 			);
 
 		}
@@ -124,10 +152,15 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
+		const country = interaction.options.getString('region');
+		// const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const videoType = interaction.options.getString('video-type') ?? 'All';
-		const site = interaction.options.getString('site') ?? 'All';
+		const platform = interaction.options.getInteger('platform');
+		const contentType = interaction.options.getString('content-type');
+
+		console.log(platform);
+		// const videoType = interaction.options.getString('video-type') ?? 'All';
+		// const site = interaction.options.getString('site') ?? 'All';
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -158,46 +191,131 @@ module.exports = {
 
 		const listSize = 1;
 		let currentIndex = 0;
-		let movieVideos;
+		let movieOptions;
 
 		selectMenucollector.on(MyEvents.Collect, async m => {
 			if (!m.isStringSelectMenu()) return;
 			const selected = m.values[0];
 			currentIndex = 0;
-			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
-			const movie = movieResponse.data;
+			const movieResponse = await axios.get(`${api_url}/movie/${selected}/watch/providers?api_key=${MOVIE_API_KEY}`);
+			const movie = new Map(Object.entries(movieResponse.data.results));
+			try {
+				// console.log(movie.entries());
+				// const movieArray = Array.from(movie.entries());
+				// movieOptions = new Map(movieArray.filter(([key, val]) => key.trim().toLowerCase() === country.trim().toLowerCase()));
+				for (const k of movie.keys()) {
+					if (!(k.trim().toLowerCase() === country.trim().toLowerCase())) {
+						movie.delete(k);
+					}
+				}
+				movieOptions = movie;
+				// console.log(movieOptions);
+			}
+			catch {
+				console.log(`region: ${country} failed`);
+				movieOptions = movie;
+				// console.log(movieOptions);
+			}
+			try {
+				const filteredOptions = new Map();
 
-			// console.log(movie.videos.results);
+				for (const [key, value] of movieOptions.entries()) {
+					const filteredValue = Object.entries(value)
+						.filter(([k]) => k.trim().toLowerCase() === contentType.trim().toLowerCase() || k.trim().toLocaleLowerCase() === 'link')
+						.reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {});
+
+					if (Object.keys(filteredValue).length > 0) {
+						filteredOptions.set(key, filteredValue);
+					}
+				}
+				movieOptions = filteredOptions;
+			}
+			catch {
+				console.log(`contenet: ${contentType} failed`);
+			}
+			try {
+				// const filteredOptions = new Map();
+
+				// for (const [key, value] of movieOptions.entries()) {
+				// const filteredContent = new Map();
+				// for (const [contentKey, contentVal] of Object.entries(value)) {
+				// 	if (Array.isArray(contentVal)) {
+				// 	const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
+				// 	if (filteredPlatforms.length > 0) {
+				// 		filteredContent.set(contentKey, filteredPlatforms);
+				// 	}
+				// 	} else if (contentKey === 'link' && filteredContent.size > 1) {
+				// 	filteredContent.set(contentKey, contentVal);
+				// 	}
+				// }
+
+				// if (filteredContent.size > 0) {
+				// 	filteredOptions.set(key, filteredContent);
+				// }
+				// }
+
+				const filteredOptions = new Map();
+
+				for (const [key, value] of movieOptions.entries()) {
+					const values = Object.entries(value).filter(([contentKey, contentVal]) => Array.isArray(contentVal));
+					// const links = Object.entries(value).filter(([contentKey]) => contentKey == 'link');
+					// console.log(links);
+					const filteredContentType = new Map();
+					for (const [contentKey, contentVal] of values) {
+						const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
+						if (Object.keys(filteredPlatforms).length > 0) {
+							filteredContentType.set(contentKey, filteredPlatforms);
+						}
+					}
+					// console.log(filteredContentType);
+					// for (const [contentKey, contentVal] of filteredContentType) {
+					// 	links.find(([key]))
+					// }
+					if (filteredContentType.size > 0) {
+						// console.log(values);
+						// console.log(value['link']);
+						filteredContentType.set(getKey(value, value[TMDB_WATCH_LINK]), value[TMDB_WATCH_LINK]);
+						filteredOptions.set(key, filteredContentType);
+					}
+				}
+				// console.log(filteredOptions);
+				movieOptions = filteredOptions;
+			}
+			catch {
+				console.log(`platform: ${platform} failed`);
+			}
+
+			// console.log(movie);
 			// console.log('--------------------------');
-			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == videoType.toLowerCase() || videoType == 'All').filter(video => video.site == site || site == 'All');
+			// movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == contentType.toLowerCase() || contentType == 'All').filter(video => video.site == site || site == 'All'); 
 
 			// console.log(movieVideos);
 
 
-			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
-			const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
+			// const current = movieOptions.slice(currentIndex, currentIndex + listSize);
+			// const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptions.length}`;
 
-			const movieVideoEmbed = createVideoEmbed(title, current, m.user);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
+			// const movieVideoEmbed = createVideoEmbed(title, current, m.user);
+			// const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
 
-			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+			// const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
-			await m.update({
-				content: 'Selected Movie Video: ',
-				embeds: [movieVideoEmbed],
-				components: [
-					new ActionRowBuilder().addComponents(newSelectMenu),
-					new ActionRowBuilder({ components:  [
-						// back button if it isn't the start
-						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-						// forward button if it isn't the end
-						...(currentIndex + listSize < movieVideos.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-				],
-				files: [file],
-			});
+			// await m.update({
+			// 	content: 'Selected Movie Video: ',
+			// 	embeds: [movieVideoEmbed],
+			// 	components: [
+			// 		new ActionRowBuilder().addComponents(newSelectMenu),
+			// 		new ActionRowBuilder({ components:  [
+			// 			// back button if it isn't the start
+			// 			...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+			// 			// forward button if it isn't the end
+			// 			...(currentIndex + listSize < movieOptions.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+			// 		] }),
+			// 		new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+			// 	],
+			// 	files: [file],
+			// });
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
