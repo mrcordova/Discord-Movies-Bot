@@ -25,6 +25,8 @@ const forwardId = 'forward';
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
+// let selectedRegion
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('movies-platforms')
@@ -54,34 +56,69 @@ module.exports = {
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
-		const regionOption = interaction.options.getString('region') ?? 'All';
-		const platformOption = interaction.options.getString('platform') ?? 'All';
-
+		// const regionOption = interaction.options.getString('region').value ?? 'All';
+		// const platformOption = interaction.options.getString('platform') ?? 'All';
+    //    const tempRegion = selectedRegion.length ? 'All' : selectedRegion;
+    //    const tempRegion = selectedRegion ?? 'All';
 		let choices;
+
+        // console.log(selectedRegion);
+        // console.log(countryDict);
 
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
-		if (focusedOption.name === 'platform' && regionOption == 'All') {
-			choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : `${provider_id}` }));
+		if (focusedOption.name === 'platform') {
+			choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : provider_id }));
 			// availableProviders;
-            // const temp = availableProviders.map((platform) => countryDict.filter(({ value }) => Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
-            // console.log(choices);
+			// const temp = availableProviders.map((platform) => countryDict.filter(({ value }) => Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
+			// console.log(choices);
 		}
-		else if (focusedOption.name === 'platform' && regionOption != 'All') {
-			choices = countryDict;
-			// availableProviders;
-            choices = availableProviders.map((platform) => countryDict.filter(({ value }) => value.toLowerCase() == regionOption.toLowerCase() && Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
-            // console.log(temp);
-		}
+		// else if (focusedOption.name === 'platform' && tempRegion != 'All') {
+		// 	// choices = countryDict;
+		// 	// availableProviders;
+		// 	// choices = availableProviders.map((platform) => countryDict.filter(({ value }) => (selectedRegion.toLowerCase().includes(`${value}`) || value.toLowerCase() === selectedRegion.toLowerCase()) && Object.keys(platform.display_priorities).includes(value)) && { value: platform.provider_id, name: platform.provider_name }) ;
+		// 	choices = availableProviders.reduce((arry, platform) => {
+		// 		try {
+		// 			const filteredCountry = countryDict.find(({ value, name }) => tempRegion.toLowerCase().includes(name.toLowerCase()) || tempRegion.toLowerCase().includes(value.toLowerCase()));
+		// 			// console.log(filteredCountry);
+		// 			const keys = Object.keys(platform.display_priorities);
+		// 			if (keys.includes(filteredCountry.value)) {
+		// 				arry.push({ name: platform.provider_name, value: platform.provider_id });
+
+		// 			}
+		// 			return arry;
+
+		// 		}
+		// 		catch {
+		// 			console.log('failed');
+		// 			return arry;
+		// 		}
+		// 	}, []);
+		// }
 		if (focusedOption.name === 'region') {
 			choices = countryDict;
 		}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
+		try {
+			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+            // if (focusedOption.name == 'region') {
+            //     selectedRegion = choices.find(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).value;
+            //     console.log(selectedRegion);
+            //     // console.log('----------------------------------');
+            // }
+			await interaction.respond(
+				filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+			);
+		}
+		catch {
+			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+			// console.log(filtered);
+			await interaction.respond(
+				filtered.map(choice => ({ name: `${choice.name}`, value: `${choice.value}` })),
+			);
+
+		}
 	},
 	async execute(interaction) {
 		const query = interaction.options.getString('title');

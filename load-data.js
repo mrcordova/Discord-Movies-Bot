@@ -22,6 +22,55 @@ const translationsCodeDict = transArry.reduce((objArry, item) => {
 	return objArry;
 }, []);
 
+
+const platformToCountryDict = availableProviders.reduce((arry, platform) => {
+	if (!arry[platform.provider_name]) {
+		arry[platform.provider_name] = [];
+	}
+
+	arry[platform.provider_name] = platform.display_priorities;
+	return arry;
+}, {});
+
+const platformToCountryArry = availableProviders.reduce((arry, platform) => {
+	if (!arry[platform.provider_name]) {
+		arry[platform.provider_name] = [];
+	}
+
+	const countries = Object.keys(platform.display_priorities).map(country => country);
+
+	arry[platform.provider_name] = countries;
+	return arry;
+}, {});
+
+const countryToPlatformDict = availableProviders.reduce((obj, platform) => {
+	const countries = Object.keys(platform.display_priorities);
+	countries.forEach(country => {
+		if (!(country in obj)) {
+			obj[country] = {};
+		}
+		obj[country][platform.provider_name] = platform.provider_id;
+	});
+	return obj;
+}, {});
+
+const countryToPlatformDictObj = availableProviders.reduce((obj, platform) => {
+	const values = availableRegions.map(({ value }) => value);
+	const countries = Object.keys(platform.display_priorities).filter(country => values.includes(country));
+	countries.forEach(country => {
+		if (!(country in obj)) {
+			obj[country] = {};
+		}
+		obj[country][platform.provider_name] = { id: platform.provider_id, logo_path: platform.logo_path };
+	});
+	return obj;
+}, {});
+
+// console.log(countryToPlatformDictObj);
+// console.log(countryToPlatformDict);
+// console.log(platformToCountryArry);
+// console.log(platformToCountryDict);
+
 const depts = jobsArry.reduce((arry, item) => {
 	arry.push(item.department);
 	return arry;
