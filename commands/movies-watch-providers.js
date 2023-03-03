@@ -201,6 +201,7 @@ module.exports = {
 			currentIndex = 0;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=watch/providers`);
 			// console.log(movieResponse);
+			const movieTitle = movieResponse.data.title;
 			const movie = new Map(Object.entries(movieResponse.data['watch/providers'].results));
 			try {
 				for (const k of movie.keys()) {
@@ -283,7 +284,8 @@ module.exports = {
 
 			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			// const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptions.length}`;
+			const title = `${movieTitle.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
+			console.log(title);
 
 			// const movieVideoEmbed = createVideoEmbed(title, current, m.user);
 			// const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
