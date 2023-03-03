@@ -2,6 +2,7 @@ const { EmbedBuilder, Colors } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
+const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'https://www.i.imgur.com/a/wDY1wua.png';
 const tmdbName = 'The Movie Database (TMDb)';
@@ -548,6 +549,60 @@ function createVideoEmbed(title, movieVideo, user) {
 	};
 }
 
+const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user, color = Colors.Blue) => {
+	if (!movieWatchProvidersList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = movieWatchProvidersList;
+	// current.map((watchProvider, index) => {
+	// 	console.log(watchProvider);
+
+	return new EmbedBuilder({
+		color: color,
+		title: title,
+		description: `TMDB URL to actual [deep links](${current[0].value.link}) to the content`,
+		fields: await Promise.all(current.map(async (watchProvider, index) => {
+			let rent;
+			let buy;
+			let flatrate;
+			try {
+				rent = watchProvider.value.rent.map(({ provider_name }) => provider_name).join(', ');
+			}
+			catch {
+				rent = 'N/A';
+			}
+			try {
+				buy = watchProvider.value.buy.map(({ provider_name }) => provider_name).join(', ');
+			}
+			catch {
+				buy = 'N/A';
+			}
+			try {
+				flatrate = watchProvider.value.flatrate.map(({ provider_name }) => provider_name).join(', ');
+			}
+			catch {
+				flatrate = 'N/A';
+			}
+
+			return {
+				name: `${watchProvider.country}`,
+				value: `Rent: ${ rent }\nBuy: ${ buy }\nStreaming: ${flatrate}`,
+			};
+
+		})),
+		thumbnail: {
+			url: justWatchIconUrl,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
+
+
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
@@ -564,4 +619,5 @@ module.exports = {
 	createTranslateListEmbed,
 	createTranslateDetailEmbed,
 	createVideoEmbed,
+	createWatchProviderListEmbed,
 };

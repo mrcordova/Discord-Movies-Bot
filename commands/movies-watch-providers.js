@@ -3,8 +3,8 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { countryDict, translationsCodeDict, file, availableProviders } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../components/embed');
+const { countryDict, translationsCodeDict, file, availableProviders, justWatchFile } = require('../load-data.js');
+const { createNoResultEmbed, createEmbed, createVideoEmbed, createWatchProviderListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
@@ -265,7 +265,7 @@ module.exports = {
 				console.log(movieOptions);
 
 			}
-			console.log(movieOptions);
+			// console.log(movieOptions);
 
 
 			const movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
@@ -282,32 +282,34 @@ module.exports = {
 			// console.log(movieVideos);
 
 
-			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
+			// const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const title = `${movieTitle.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
-			console.log(title);
+			// const title = `${movieTitle.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
+			// console.log(title);
 
-			// const movieVideoEmbed = createVideoEmbed(title, current, m.user);
-			// const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 80), 1, options);
+			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
+			const title = `${movieTitle.slice(0, 80)} Showing Providers ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
+			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
+			const newSelectMenu = createSelectMenu('List of Movies', movieTitle.slice(0, 80), 1, options);
 
 			// const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
-			// await m.update({
-			// 	content: 'Selected Movie Video: ',
-			// 	embeds: [movieVideoEmbed],
-			// 	components: [
-			// 		new ActionRowBuilder().addComponents(newSelectMenu),
-			// 		new ActionRowBuilder({ components:  [
-			// 			// back button if it isn't the start
-			// 			...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-			// 			// forward button if it isn't the end
-			// 			...(currentIndex + listSize < movieOptions.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-			// 		] }),
-			// 		new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-			// 	],
-			// 	files: [file],
-			// });
+			await m.update({
+				content: 'Selected Movie Video: ',
+				embeds: [movieWatchProviderEmbed],
+				components: [
+					new ActionRowBuilder().addComponents(newSelectMenu),
+					new ActionRowBuilder({ components:  [
+						// back button if it isn't the start
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < movieOptions.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] }),
+					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+				],
+				files: [file, justWatchFile],
+			});
 
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});

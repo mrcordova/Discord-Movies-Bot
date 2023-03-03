@@ -106,6 +106,7 @@ const numberEmojis = {
 };
 
 const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
+const justWatchFile = new AttachmentBuilder('./images/just-watch-logo.jpg');
 // const file = new AttachmentBuilder('./images/just-watch-logo.jpg');
 
 // // Create an empty dictionary object
@@ -128,4 +129,5 @@ module.exports = {
 	numberEmojis,
 	ratings,
 	file,
+	justWatchFile,
 };
