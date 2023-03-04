@@ -4,10 +4,9 @@ const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file, availableProviders, justWatchFile } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createVideoEmbed, createWatchProviderListEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createWatchProviderListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReplyWithoutEmebed } = require('../helpers/get-editReply');
 const { getKey, TMDB_WATCH_LINK } = require('../helpers/get-key');
 // const movie_now_playing = '/movie/now_playing';
@@ -296,7 +295,7 @@ module.exports = {
 
 
 			// console.log('--------------------------');
-			// movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == contentType.toLowerCase() || contentType == 'All').filter(video => video.site == site || site == 'All'); 
+			// movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == contentType.toLowerCase() || contentType == 'All').filter(video => video.site == site || site == 'All');
 
 			// console.log(movieVideos);
 
