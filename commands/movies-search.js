@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply } = require('../helpers/get-editReply');
+const { getEditReply } = require('../helpers/get-reply');
 const movie_details = '/movie';
 
 

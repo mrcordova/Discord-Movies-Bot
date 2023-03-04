@@ -9,7 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
-const { getEditReply } = require('../helpers/get-editReply');
+const { getEditReply } = require('../helpers/get-reply');
 const movie_details = '/movie';
 
 

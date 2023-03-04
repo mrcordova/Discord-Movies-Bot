@@ -18,6 +18,10 @@ const getEditReplyWithoutEmebed = async (interaction, reason) => {
 
 	return await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 };
+const getPrivateFollowUp = async (interaction) => {
+	await interaction.update({ });
+	await interaction.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
+};
 
 
-module.exports = { getEditReply, getEditReplyWithoutEmebed };
+module.exports = { getEditReply, getEditReplyWithoutEmebed, getPrivateFollowUp };

@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
-const { getEditReply } = require('../helpers/get-editReply');
+const { getEditReply } = require('../helpers/get-reply');
 const movie_route = '/movie';
 const movie_lists = 'lists';
 

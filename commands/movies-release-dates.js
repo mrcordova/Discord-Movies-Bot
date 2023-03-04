@@ -7,7 +7,7 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getEditReply } = require('../helpers/get-editReply');
+const { getEditReply } = require('../helpers/get-reply');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>

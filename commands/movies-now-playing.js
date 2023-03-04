@@ -5,7 +5,7 @@ const { createButton } = require('../components/button.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply } = require('../helpers/get-editReply');
+const { getEditReply } = require('../helpers/get-reply');
 const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en&page=1&region=us

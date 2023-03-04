@@ -8,7 +8,7 @@ const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../compo
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
-const { getEditReplyWithoutEmebed } = require('../helpers/get-editReply');
+const { getEditReplyWithoutEmebed } = require('../helpers/get-reply');
 // const movie_now_playing = '/movie/now_playing';
 
 // 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
@@ -162,11 +162,9 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=videos&include_video_language=${vidLang},null`);
 			const movie = movieResponse.data;
 
-			// console.log(movie.videos.results);
-			// console.log('--------------------------');
+
 			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == videoType.toLowerCase() || videoType == 'All').filter(video => video.site == site || site == 'All');
 
-			// console.log(movieVideos);
 
 
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);

@@ -7,7 +7,7 @@ const { countryDict, translationsCodeDict, file, availableProviders, justWatchFi
 const { createNoResultEmbed, createEmbed, createWatchProviderListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getEditReplyWithoutEmebed } = require('../helpers/get-editReply');
+const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getKey, TMDB_WATCH_LINK } = require('../helpers/get-key');
 // const movie_now_playing = '/movie/now_playing';
 
@@ -83,57 +83,24 @@ module.exports = {
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
-		// const regionOption = interaction.options.getString('region').value ?? 'All';
-		// const platformOption = interaction.options.getString('platform') ?? 'All';
-		//    const tempRegion = selectedRegion.length ? 'All' : selectedRegion;
-		//    const tempRegion = selectedRegion ?? 'All';
+
 		let choices;
 
-		// console.log(selectedRegion);
-		// console.log(countryDict);
+
 
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
 		if (focusedOption.name === 'platform') {
 			choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : provider_id }));
-			// availableProviders;
-			// const temp = availableProviders.map((platform) => countryDict.filter(({ value }) => Object.keys(platform.display_priorities).includes(value)) && { logo_path : platform.logo_path, provider_name: platform.provider_name}) ;
-			// console.log(choices);
 		}
-		// else if (focusedOption.name === 'platform' && tempRegion != 'All') {
-		// 	// choices = countryDict;
-		// 	// availableProviders;
-		// 	// choices = availableProviders.map((platform) => countryDict.filter(({ value }) => (selectedRegion.toLowerCase().includes(`${value}`) || value.toLowerCase() === selectedRegion.toLowerCase()) && Object.keys(platform.display_priorities).includes(value)) && { value: platform.provider_id, name: platform.provider_name }) ;
-		// 	choices = availableProviders.reduce((arry, platform) => {
-		// 		try {
-		// 			const filteredCountry = countryDict.find(({ value, name }) => tempRegion.toLowerCase().includes(name.toLowerCase()) || tempRegion.toLowerCase().includes(value.toLowerCase()));
-		// 			// console.log(filteredCountry);
-		// 			const keys = Object.keys(platform.display_priorities);
-		// 			if (keys.includes(filteredCountry.value)) {
-		// 				arry.push({ name: platform.provider_name, value: platform.provider_id });
-
-		// 			}
-		// 			return arry;
-
-		// 		}
-		// 		catch {
-		// 			console.log('failed');
-		// 			return arry;
-		// 		}
-		// 	}, []);
-		// }
 		if (focusedOption.name === 'region') {
 			choices = countryDict;
 		}
 
 		try {
 			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-			// if (focusedOption.name == 'region') {
-			//     selectedRegion = choices.find(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).value;
-			//     console.log(selectedRegion);
-			//     // console.log('----------------------------------');
-			// }
+
 			await interaction.respond(
 				filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
 			);
@@ -157,11 +124,6 @@ module.exports = {
 		const platform = interaction.options.getInteger('platform');
 		const contentType = interaction.options.getString('content-type');
 
-		// console.log(platform);
-		// console.log(contentType);
-		// console.log(country);
-		// const videoType = interaction.options.getString('video-type') ?? 'All';
-		// const site = interaction.options.getString('site') ?? 'All';
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -200,7 +162,6 @@ module.exports = {
 			currentIndex = 0;
 			let movieOptions;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=watch/providers`);
-			// console.log(movieResponse);
 			const movieTitle = movieResponse.data.title;
 			const movie = new Map(Object.entries(movieResponse.data['watch/providers'].results));
 			try {
@@ -227,17 +188,14 @@ module.exports = {
 						filteredOptions.set(key, filteredValue);
 					}
 				}
-				// console.log(filteredOptions);
 				movieOptions = filteredOptions;
 			}
 			catch (err) {
 				console.error(`content: ${contentType} failed\n${err}`);
 
-				// console.log(movieOptions);
 			}
 			try {
 
-				// console.log(platform);
 				if (platform != null) {
 					const filteredOptions = new Map();
 
@@ -248,14 +206,11 @@ module.exports = {
 						for (const [contentKey, contentVal] of values) {
 							const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
 							if (Object.keys(filteredPlatforms).length > 0) {
-								// console.log(filteredPlatforms);
 								if (!filteredContentType.has(contentKey)) {
 									filteredContentType.set(contentKey, []);
 								}
 								const combinedContentType = filteredContentType.get(contentKey).concat(filteredPlatforms);
-								// console.log(temp);
 								filteredContentType.set(contentKey, combinedContentType);
-								// console.log(filteredContentType);
 							}
 						}
 
@@ -265,17 +220,13 @@ module.exports = {
 							filteredOptions.set(key, filteredContentType);
 						}
 					}
-					// console.log(filteredOptions);
 					movieOptions = filteredOptions;
-					// console.log(movieOptions);
 				}
 			}
 			catch (err) {
 				console.error(`platform: ${platform} failed\n${err}`);
-				// console.log(movieOptions);
 
 			}
-			// console.log(movieOptions);
 
 
 			movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
@@ -294,23 +245,12 @@ module.exports = {
 			});
 
 
-			// console.log('--------------------------');
-			// movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == contentType.toLowerCase() || contentType == 'All').filter(video => video.site == site || site == 'All');
-
-			// console.log(movieVideos);
-
-
-			// const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
-			// const title = `${movieTitle.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
-			// console.log(title);
 
 			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 			const title = `Showing Country ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
 			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle.slice(0, 80), 1, options);
 
-			// const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 			await m.update({
@@ -324,7 +264,6 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < movieOptionsArray.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 				files: [file, justWatchFile],
 			});
@@ -339,29 +278,16 @@ module.exports = {
 
 
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			// console.log(message.interaction.channelId);
-			// console.log(await message);
-			// client.channels.cache.get('id');
-			// console.log(r);
 			// const temp = await message.client.channels.fetch(message.interaction.channelId);
 			// console.log(await temp.messages.fetch());
-			// console.log( message.client);
-			// const messaged = await message.channel.messages.fetch('menu');
-			// if (!messaged) {
-			//   console.log('The message has been deleted.');
-			//   // handle accordingly
-			// }
+
 			await getEditReplyWithoutEmebed(interaction, r);
-			// await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
-			// await interaction.deleteReply();
+
 		});
 		selectMenucollector.on(MyEvents.Ignore, async args => {
-			// console.log(`ignore: ${args}`);
-			// args.message.components[0].components[0].data.placeholder = "test";
-			// console.log(args.message.components[0].components[0].data.placeholder);
-			await args.update({ });
-			await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
-			// args.message.interaction.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
+			// await args.update({ });
+			// await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
+			getPrivateFollowUp(args);
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
@@ -373,11 +299,8 @@ module.exports = {
 			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 
 
-			// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
-			// console.log(m.message.components[0].components[0].placeholder)
 			const title = `Showing Country ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
 			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
-			// const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
@@ -391,7 +314,6 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < movieOptionsArray.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Videos found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 			});
 
@@ -406,20 +328,18 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			await getEditReplyWithoutEmebed(interaction, r);
-			// console.log(c = {});
 		});
 		buttonCollector.on(MyEvents.Ignore, async args => {
-			// console.log(`ignore: ${args}`);
-			// console.log(args)
-			await args.update({ });
-			await args.followUp({ content: 'The button isn\'t for you!', ephemeral: true });
-			// await i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
+
+			// await args.update({ });
+			// await args.followUp({ content: 'The button isn\'t for you!', ephemeral: true });
+			getPrivateFollowUp(args);
+
 
 		});
 
 
-		// await interaction.reply({ content: `These buttons aren't for you!`, ephemeral: true });
-		// return;
+
 
 
 	},
