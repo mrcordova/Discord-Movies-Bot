@@ -392,14 +392,16 @@ module.exports = {
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			await getEditReplyWithoutEmebed(interaction, r);
 		});
-		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
-			console.log(args)
+		buttonCollector.on(MyEvents.Ignore, async args => {
+			// console.log(`ignore: ${args}`);
+			// console.log(args)
+			await args.update({ });
+			await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
 			// await i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 
 		});
 
-		
+
 		// await interaction.reply({ content: `These buttons aren't for you!`, ephemeral: true });
 		// return;
 
