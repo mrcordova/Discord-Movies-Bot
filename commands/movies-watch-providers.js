@@ -185,7 +185,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
-		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
+		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 3000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
@@ -331,11 +331,20 @@ module.exports = {
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 
+		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.Dispose, m => {
 			console.log(`dispose: ${m}`);
 		});
-		// eslint-disable-next-line no-unused-vars
+
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
+			// console.log(message.interaction.channelId);
+			const temp = await message.client.channels.fetch(message.interaction.channelId);
+			console.log(await temp.messages.fetch());
+			// const messaged = await message.channel.messages.fetch('menu');
+			// if (!messaged) {
+			//   console.log('The message has been deleted.');
+			//   // handle accordingly
+			// }
 			await getEditReplyWithoutEmebed(interaction, r);
 			// await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 			// await interaction.deleteReply();
@@ -391,6 +400,7 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			await getEditReplyWithoutEmebed(interaction, r);
+			// console.log(c = {});
 		});
 		buttonCollector.on(MyEvents.Ignore, async args => {
 			// console.log(`ignore: ${args}`);
