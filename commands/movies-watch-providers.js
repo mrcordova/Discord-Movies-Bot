@@ -396,7 +396,7 @@ module.exports = {
 			// console.log(`ignore: ${args}`);
 			// console.log(args)
 			await args.update({ });
-			await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
+			await args.followUp({ content: 'The button isn\'t for you!', ephemeral: true });
 			// await i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 
 		});
