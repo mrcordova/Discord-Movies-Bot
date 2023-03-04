@@ -87,7 +87,6 @@ module.exports = {
 		let choices;
 
 
-
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
@@ -245,12 +244,10 @@ module.exports = {
 			});
 
 
-
 			const current = movieOptionsArray.slice(currentIndex, currentIndex + listSize);
 			const title = `Showing Country ${currentIndex + current.length} out of ${movieOptionsArray.length}`;
 			const movieWatchProviderEmbed = await createWatchProviderListEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle.slice(0, 80), 1, options);
-
 
 
 			await m.update({
@@ -336,9 +333,6 @@ module.exports = {
 			getPrivateFollowUp(args);
 
 		});
-
-
-
 
 
 	},

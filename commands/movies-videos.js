@@ -166,7 +166,6 @@ module.exports = {
 			movieVideos = movie.videos.results.filter(video => video.type.toLowerCase() == videoType.toLowerCase() || videoType == 'All').filter(video => video.site == site || site == 'All');
 
 
-
 			const current = movieVideos.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 80)} Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`;
 

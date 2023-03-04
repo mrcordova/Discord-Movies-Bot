@@ -6,7 +6,6 @@ const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'https://www.i.imgur.com/a/wDY1wua.png';
 const tmdbName = 'The Movie Database (TMDb)';
-const milliToSec = 0.001;
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
 	return new EmbedBuilder()
