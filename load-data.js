@@ -32,7 +32,7 @@ const platformToCountryDict = availableProviders.reduce((arry, platform) => {
 	return arry;
 }, {});
 
-const platformToCountryArry = availableProviders.reduce((arry, platform) => {
+const platformToCountryArryDict = availableProviders.reduce((arry, platform) => {
 	if (!arry[platform.provider_name]) {
 		arry[platform.provider_name] = [];
 	}
