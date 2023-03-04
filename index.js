@@ -1,11 +1,20 @@
 const fs = require('node:fs');
 const path = require('node:path');
 // Require the necessary discord.js classes
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, GatewayDispatchEvents } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions] });
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.DirectMessages,
+	],
+});
 
 // https://discordjs.guide/slash-commands/response-methods.html#localized-responses
 // add lcalized respnse in content

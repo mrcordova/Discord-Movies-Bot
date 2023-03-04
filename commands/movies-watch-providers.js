@@ -185,13 +185,14 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
-		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 3000 });
+		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
 		const listSize = 1;
 		let currentIndex = 0;
 		let movieOptionsArray;
+
 
 		selectMenucollector.on(MyEvents.Collect, async m => {
 			if (!m.isStringSelectMenu()) return;
@@ -336,16 +337,21 @@ module.exports = {
 			console.log(`dispose: ${m}`);
 		});
 
+
+
+
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			// console.log(message.interaction.channelId);
-			const temp = await message.client.channels.fetch(message.interaction.channelId);
-			console.log(await temp.messages.fetch());
+			console.log('here');
+			// const temp = await message.client.channels.fetch(message.interaction.channelId);
+			// // console.log(await temp.messages.fetch());
+			// console.log( message.client);
 			// const messaged = await message.channel.messages.fetch('menu');
 			// if (!messaged) {
 			//   console.log('The message has been deleted.');
 			//   // handle accordingly
 			// }
-			await getEditReplyWithoutEmebed(interaction, r);
+			// await getEditReplyWithoutEmebed(interaction, r);
 			// await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 			// await interaction.deleteReply();
 		});
