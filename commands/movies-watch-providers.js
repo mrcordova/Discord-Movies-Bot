@@ -249,7 +249,14 @@ module.exports = {
 						for (const [contentKey, contentVal] of values) {
 							const filteredPlatforms = contentVal.filter(({ provider_id }) => provider_id == platform);
 							if (Object.keys(filteredPlatforms).length > 0) {
-								filteredContentType.set(contentKey, filteredPlatforms);
+								// console.log(filteredPlatforms);
+								if (!filteredContentType.has(contentKey)) {
+									filteredContentType.set(contentKey, []);
+								}
+								const combinedContentType = filteredContentType.get(contentKey).concat(filteredPlatforms);
+								// console.log(temp);
+								filteredContentType.set(contentKey, combinedContentType);
+								// console.log(filteredContentType);
 							}
 						}
 
@@ -259,8 +266,9 @@ module.exports = {
 							filteredOptions.set(key, filteredContentType);
 						}
 					}
+					// console.log(filteredOptions);
 					movieOptions = filteredOptions;
-					console.log(movieOptions);
+					// console.log(movieOptions);
 				}
 			}
 			catch (err) {
@@ -272,9 +280,17 @@ module.exports = {
 
 
 			movieOptionsArray = Array.from(movieOptions.entries()).map(([key, value]) => {
+				let temp = value;
+				if (value instanceof Map) {
+					temp = Object.fromEntries(value);
+				}
+
 				return {
 					country: key,
-					value,
+					link: temp['link'],
+					buy: temp['buy'],
+					rent: temp['rent'],
+					flatrate: temp['flatrate'],
 				};
 			});
 

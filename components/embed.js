@@ -565,25 +565,25 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
 		},
-		description: `[TMDB URL](${current[0].value.link})`,
+		description: `[TMDB URL](${current[0].link})`,
 		fields: await Promise.all(current.map(async (watchProvider) => {
 			let rent;
 			let buy;
 			let flatrate;
 			try {
-				rent = watchProvider.value.rent.map(({ provider_name }) => provider_name).join(', ');
+				rent = watchProvider.rent.map(({ provider_name }) => provider_name).join(', ');
 			}
 			catch {
 				rent = 'N/A';
 			}
 			try {
-				buy = watchProvider.value.buy.map(({ provider_name }) => provider_name).join(', ');
+				buy = watchProvider.buy.map(({ provider_name }) => provider_name).join(', ');
 			}
 			catch {
 				buy = 'N/A';
 			}
 			try {
-				flatrate = watchProvider.value.flatrate.map(({ provider_name }) => provider_name).join(', ');
+				flatrate = watchProvider.flatrate.map(({ provider_name }) => provider_name).join(', ');
 			}
 			catch {
 				flatrate = 'N/A';
