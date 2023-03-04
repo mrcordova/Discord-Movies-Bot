@@ -224,7 +224,7 @@ module.exports = {
 						.filter(([k]) => k.trim().toLowerCase() === contentType.trim().toLowerCase() || k.trim().toLocaleLowerCase() === 'link')
 						.reduce((obj, [k, v]) => ({ ...obj, [k]: v }), {});
 
-					if (Object.keys(filteredValue).length > 0) {
+					if (Object.keys(filteredValue).length > 1) {
 						filteredOptions.set(key, filteredValue);
 					}
 				}
@@ -238,6 +238,7 @@ module.exports = {
 			}
 			try {
 
+				// console.log(platform);
 				if (platform != null) {
 					const filteredOptions = new Map();
 
@@ -259,11 +260,12 @@ module.exports = {
 						}
 					}
 					movieOptions = filteredOptions;
+					console.log(movieOptions);
 				}
 			}
 			catch (err) {
 				console.error(`platform: ${platform} failed\n${err}`);
-				console.log(movieOptions);
+				// console.log(movieOptions);
 
 			}
 			// console.log(movieOptions);
