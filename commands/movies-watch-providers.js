@@ -338,8 +338,6 @@ module.exports = {
 		});
 
 
-
-
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			// console.log(message.interaction.channelId);
 			console.log('here');
