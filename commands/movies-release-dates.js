@@ -33,7 +33,6 @@ module.exports = {
 				.setRequired(true)
 				.setChoices(
 					...Object.values(ReleaseTypes).reduce((arry, releaseType) => {
-						// console.log(releaseType.value);
 						arry.push({ name: releaseType.toString, value: releaseType.value });
 						return arry;
 					}, []),

@@ -89,7 +89,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Movies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
