@@ -340,16 +340,18 @@ module.exports = {
 
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			// console.log(message.interaction.channelId);
-			console.log('here');
+			// console.log(await message);
+			// client.channels.cache.get('id');
+			// console.log(r);
 			// const temp = await message.client.channels.fetch(message.interaction.channelId);
-			// // console.log(await temp.messages.fetch());
+			// console.log(await temp.messages.fetch());
 			// console.log( message.client);
 			// const messaged = await message.channel.messages.fetch('menu');
 			// if (!messaged) {
 			//   console.log('The message has been deleted.');
 			//   // handle accordingly
 			// }
-			// await getEditReplyWithoutEmebed(interaction, r);
+			await getEditReplyWithoutEmebed(interaction, r);
 			// await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
 			// await interaction.deleteReply();
 		});
