@@ -327,14 +327,13 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await getEditReplyWithoutEmebed(interaction, r);
+			getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, async args => {
 
 			// await args.update({ });
 			// await args.followUp({ content: 'The button isn\'t for you!', ephemeral: true });
 			getPrivateFollowUp(args);
-
 
 		});
 
