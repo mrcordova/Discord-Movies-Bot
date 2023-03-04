@@ -590,7 +590,7 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 			}
 
 			return {
-				name: `${watchProvider.country} (${countryCodeDict[watchProvider.country]})`,
+				name: `${watchProvider.country}  (${countryCodeDict[watchProvider.country]})`,
 				value: `__**Rent:**__  *${ rent }*\n\n__**Buy:**__  *${ buy }*\n\n__**Streaming:**__  *${flatrate}*`,
 				inline: true,
 			};
