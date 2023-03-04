@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink } = require('discord.js');
+const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
@@ -6,6 +6,7 @@ const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'https://www.i.imgur.com/a/wDY1wua.png';
 const tmdbName = 'The Movie Database (TMDb)';
+const milliToSec = 0.001;
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
 	return new EmbedBuilder()
@@ -335,9 +336,9 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 
 function createReviewDetailEmbed(review) {
 
+	const createdAt = new Date(review.created_at);
+	const updatedAt = new Date(review.updated_at);
 
-	const createAtArry = review.created_at.split('T');
-	const updateAtArry = review.updated_at.split('T');
 	return {
 		color: Colors.Blurple,
 		title: review.author_details.username,
@@ -359,12 +360,12 @@ function createReviewDetailEmbed(review) {
 			},
 			{
 				name: 'Created',
-				value: `${createAtArry[0]} at ${createAtArry[1]}`,
+				value: `${time(createdAt, 'F')} (${time(createdAt, 'R')})`,
 				inline: true,
 			},
 			{
 				name: 'Updated',
-				value: `${updateAtArry[0]} at ${updateAtArry[1]}`,
+				value: `${time(updatedAt, 'F')} (${time(updatedAt, 'R')})`,
 				inline: true,
 			},
 		],
