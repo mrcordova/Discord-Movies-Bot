@@ -182,10 +182,9 @@ module.exports = {
 
 		const embed = createEmbed(Colors.Blue, 'Movie will appear here', 'Some description here', 'https://discord.js.org/');
 
-
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -338,9 +337,16 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			await getEditReplyWithoutEmebed(interaction, r);
+			// await interaction.editReply({ content: 'Time\'s up!', embeds:[], components: [], files: [] });
+			// await interaction.deleteReply();
 		});
-		selectMenucollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+		selectMenucollector.on(MyEvents.Ignore, async args => {
+			// console.log(`ignore: ${args}`);
+			// args.message.components[0].components[0].data.placeholder = "test";
+			// console.log(args.message.components[0].components[0].data.placeholder);
+			await args.update({ });
+			await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
+			// args.message.interaction.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
@@ -388,7 +394,15 @@ module.exports = {
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
 			console.log(`ignore: ${args}`);
+			console.log(args)
+			// await i.reply({ content: 'These buttons aren\'t for you!', ephemeral: true });
+
 		});
+
+		
+		// await interaction.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+		// return;
+
 
 	},
 };
