@@ -281,7 +281,7 @@ module.exports = {
 			// const temp = await message.client.channels.fetch(message.interaction.channelId);
 			// console.log(await temp.messages.fetch());
 
-			await getEditReplyWithoutEmebed(interaction, r);
+			getEditReplyWithoutEmebed(interaction, r);
 
 		});
 		selectMenucollector.on(MyEvents.Ignore, async args => {
