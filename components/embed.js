@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors } = require('discord.js');
+const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink } = require('discord.js');
 const { countryCodeDict, images, ratings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
@@ -565,7 +565,7 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
 		},
-		description: `[TMDB URL](${current[0].link})`,
+		description: `${hyperlink('TMDB URL', current[0].link)}`,
 		fields: await Promise.all(current.map(async (watchProvider) => {
 			let rent;
 			let buy;
@@ -591,7 +591,7 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 
 			return {
 				name: `${watchProvider.country}  (${countryCodeDict[watchProvider.country]})`,
-				value: `__**Rent:**__  *${ rent }*\n\n__**Buy:**__  *${ buy }*\n\n__**Streaming:**__  *${flatrate}*`,
+				value: `${underscore(bold('Rent:'))}  ${italic(rent)}\n\n${underscore(bold('Buy:'))}  ${italic(buy)}\n\n${underscore(bold('Streaming:'))}  ${italic(flatrate)}`,
 				inline: true,
 			};
 
