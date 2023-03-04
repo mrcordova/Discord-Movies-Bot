@@ -168,7 +168,7 @@ module.exports = {
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file, justWatchFile] });
 			return;
 		}
 		const options = [];
