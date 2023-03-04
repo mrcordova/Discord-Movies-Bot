@@ -7,7 +7,7 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getEditReply } = require('../helpers/get-reply');
+const { getEditReply, getPrivateFollowUp} = require('../helpers/get-reply');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>
@@ -148,10 +148,11 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
@@ -187,10 +188,12 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
+
 		});
 
 	},

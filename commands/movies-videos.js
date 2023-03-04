@@ -8,7 +8,7 @@ const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../compo
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
-const { getEditReplyWithoutEmebed } = require('../helpers/get-reply');
+const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../helpers/get-reply');
 // const movie_now_playing = '/movie/now_playing';
 
 // 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
@@ -200,10 +200,11 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await getEditReplyWithoutEmebed(interaction, r);
+			getEditReplyWithoutEmebed(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
@@ -269,10 +270,11 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await getEditReplyWithoutEmebed(interaction, r);
+			getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 
 	},

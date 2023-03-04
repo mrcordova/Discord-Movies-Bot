@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply } = require('../helpers/get-reply');
+const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const movie_details = '/movie';
 
 
@@ -133,10 +133,11 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 
 	},

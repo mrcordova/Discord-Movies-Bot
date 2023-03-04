@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
-const { getEditReply } = require('../helpers/get-reply');
+const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const movie_route = '/movie';
 const movie_lists = 'lists';
 
@@ -122,12 +122,13 @@ module.exports = {
 			console.log(`select menu dispose: ${i}`);
 		});
 		selectMenuCollector.on(MyEvents.Ignore, args => {
-			console.log(`select menu ignore: ${args}`);
+			// console.log(`select menu ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
 			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
@@ -154,12 +155,14 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`button ignore: ${args}`);
+			// console.log(`button ignore: ${args}`);
+			getPrivateFollowUp(args);
+
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 	},
 };

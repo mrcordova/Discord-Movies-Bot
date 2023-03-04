@@ -9,7 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
-const { getEditReply } = require('../helpers/get-reply');
+const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const movie_details = '/movie';
 
 
@@ -147,11 +147,12 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
@@ -215,12 +216,13 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`button ignore: ${args}`);
+			// console.log(`button ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 	},
 };

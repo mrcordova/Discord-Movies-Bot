@@ -5,7 +5,7 @@ const { createButton } = require('../components/button.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply } = require('../helpers/get-reply');
+const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const movie_popular = '/movie/popular';
 
 
@@ -108,10 +108,11 @@ module.exports = {
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
-			await getEditReply(interaction, r);
+			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			console.log(`ignore: ${args}`);
+			// console.log(`ignore: ${args}`);
+			getPrivateFollowUp(args);
 		});
 
 	},
