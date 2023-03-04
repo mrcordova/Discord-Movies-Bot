@@ -590,8 +590,8 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 			}
 
 			return {
-				name: `${watchProvider.country}`,
-				value: `__**Rent:**__ ${ rent }\n\n__**Buy:**__ ${ buy }\n\n__**Streaming:**__ ${flatrate}`,
+				name: `${watchProvider.country} (${countryCodeDict[watchProvider.country]})`,
+				value: `__**Rent:**__  *${ rent }*\n\n__**Buy:**__  *${ buy }*\n\n__**Streaming:**__  *${flatrate}*`,
 				inline: true,
 			};
 
@@ -599,7 +599,6 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 		thumbnail: {
 			url: justWatchIconUrl,
 		},
-
 		timestamp: new Date(),
 		footer: {
 			text: tmdbName,
