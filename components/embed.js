@@ -551,7 +551,7 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
-				name: '# of episodes',
+				name: '# of Episodes',
 				value: tv.number_of_episodes,
 				inline: true,
 			},
