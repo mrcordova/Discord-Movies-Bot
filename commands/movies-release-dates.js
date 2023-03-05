@@ -8,6 +8,7 @@ const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('.
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
+const { getOptionsForSelectMenu } = require('../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>
@@ -83,14 +84,7 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
-		const options = [];
-
-		for (const movieObject of movieTitles) {
-			const description = movieObject.overview.slice(0, 50);
-			const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-			const releaseDate = new Date (movieObject.release_date).toLocaleDateString(language, dateOptions);
-			options.push({ label: `${movieObject.title.slice(0, 81)} (${releaseDate})`, description: `${description}...`, value: `${movieObject.id}` });
-		}
+		const options = getOptionsForSelectMenu(movieTitles, language);
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
@@ -199,3 +193,4 @@ module.exports = {
 
 	},
 };
+
