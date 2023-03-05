@@ -490,7 +490,6 @@ function createTranslateDetailEmbed(translationDetails, user) {
 function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
 	const lastAirDate = new Date(tv.last_air_date);
-	console.log(`${tmdbUrl}/tv/${tv.id}-${tv.name.replace(/ /g, '-')}?language=${tv.language}`);
 	return {
 		color: color,
 		title: tv.name,
@@ -533,6 +532,11 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 			{
 				name: 'Type',
 				value: tv.type,
+				inline: true,
+			},
+			{
+				name: 'Genre(s)',
+				value: tv.genres.map(genre => genre.name).join(', '),
 				inline: true,
 			},
 			{
