@@ -223,7 +223,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 function createPersonDetailEmbed(person, movieCredits, user) {
 
 	const known_for = movieCredits.sort((a, b) => b.vote_average - a.vote_average).map(movie => movie.title).join(', ');
-	console.log(person.deathday);
+	// console.log(person.deathday);
 	const deathday = new Date(person.deathday ?? undefined);
 	const birthday = new Date(person.birthday ?? undefined);
 	return {
@@ -247,7 +247,12 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 			},
 			{
 				name: 'Death',
-				value: !isNaN(deathday) ? `${time(deathday, 'D')}` : 'N/A',
+				value: !isNaN(deathday) ? `${time(deathday, 'D')} (${time(deathday, 'R')})` : 'N/A',
+				inline: true,
+			},
+			{
+				name: 'Age',
+				value: !isNaN(birthday) ? `${Math.floor((new Date() - birthday) / (1000 * 60 * 60 * 24 * 365.25)) } years old` : 'N/A',
 				inline: true,
 			},
 			{
