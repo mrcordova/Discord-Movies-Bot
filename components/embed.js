@@ -463,7 +463,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 			},
 			{
 				name: 'Language',
-				value: `${translationDetails.iso_639_1}`,
+				value: `${translationDetails.iso_639_1} (${langCodeDict[translationDetails.iso_639_1]})`,
 				inline: true,
 			},
 
