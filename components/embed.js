@@ -561,6 +561,11 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
+				name: 'Countries of Origin',
+				value: tv.origin_country.map(country => countryCodeDict[country]).join(', '),
+				inline: true,
+			},
+			{
 				name: 'Production Companies',
 				value: tv.production_companies.sort((a, b) => a.id < b.id).map(prod => prod.name).join(', '),
 				inline: true,
