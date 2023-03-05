@@ -490,7 +490,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
 	const lastAirDate = new Date(tv.last_air_date);
-	// console.log(tv.homepage);
+	// console.log(tv.created_by);
 	return {
 		color: color,
 		title: tv.name,

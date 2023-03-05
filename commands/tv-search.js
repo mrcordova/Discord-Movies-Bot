@@ -64,6 +64,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
 		const response = await searchForTV(query, language, region, releaseYear);
@@ -96,23 +97,23 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,content_ratings`);
+			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
 			const tv = tvResponse.data;
-			// console.log(tv.content_ratings.results);
+			// console.log(tv.origin_country);
+			// console.log(tv.content_ratings);
 			let tvRating;
 			try {
-				tvRating = tv.content_ratings.results.find(({ iso_3166_1 }) => iso_3166_1 == region)['rating'];
+				tvRating = tv.content_ratings.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country) || tv.origin_country.includes(iso_3166_1)))['rating'];
 			}
 			catch (err) {
 				tvRating = 'N/A';
 			}
-			// // const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
-			// // console.log(movieRating);
+
 			tv.rating = tvRating;
-			// console.log(tv.credits['crew']);
 			const network = getProductionCompany(tv['networks']);
 			// const creators = getCrewMember(tv.credits['crew'], 'Creator');
-			const actors = getCast(tv.credits['cast'], 10);
+			// console.log(tv.aggregate_credits['crew']);
+			const actors = getCast(tv.aggregate_credits['cast'], 10);
 			tv.language = language;
 			// console.log(tv.credits['crew']);
 
