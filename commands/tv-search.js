@@ -121,7 +121,7 @@ module.exports = {
 
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: 'Selected TV Show:',
 				embeds: [tvDetailsEmbed],
 				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
 				files: [file],
