@@ -70,7 +70,7 @@ module.exports = {
 		const tvTitles = response.data.results;
 
 		if (!tvTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Tv Shows Found', 'Please make a new command with a different options')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV Shows Found', 'Please make a new command with a different options')], files: [file] });
 			return;
 		}
 		const options = [];
@@ -80,16 +80,16 @@ module.exports = {
 			options.push({ label: `${tvObject.name.slice(0, 81)} (${tvObject.first_air_date})`, description: `${description}...`, value: `${tvObject.id}` });
 		}
 
-		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of T  Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Tv show will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'TV show will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
@@ -117,7 +117,7 @@ module.exports = {
 			// console.log(tv.credits['crew']);
 
 			const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv, network, actors, color: Colors.Aqua });
-			const newSelectMenu = createSelectMenu('List of Movies', tv.name.slice(0, 81), 1, options);
+			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 
 			await i.update({
