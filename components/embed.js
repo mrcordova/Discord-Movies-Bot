@@ -252,7 +252,7 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 			},
 			{
 				name: 'Age',
-				value: !isNaN(birthday) ? `${Math.floor((new Date() - birthday) / (1000 * 60 * 60 * 24 * 365.25)) } years old` : 'N/A',
+				value: !isNaN(birthday) ? `${!isNaN(deathday) ? Math.floor((deathday - birthday)) / (1000 * 60 * 60 * 24 * 365.25) : Math.floor((new Date() - birthday)) / (1000 * 60 * 60 * 24 * 365.25) } years old` : 'N/A',
 				inline: true,
 			},
 			{
