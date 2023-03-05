@@ -223,6 +223,9 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 function createPersonDetailEmbed(person, movieCredits, user) {
 
 	const known_for = movieCredits.sort((a, b) => b.vote_average - a.vote_average).map(movie => movie.title).join(', ');
+	console.log(person.deathday);
+	const deathday = new Date(person.deathday ?? undefined);
+	const birthday = new Date(person.birthday ?? undefined);
 	return {
 		color: Colors.Blurple,
 		title: person.name,
@@ -239,12 +242,12 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 		fields: [
 			{
 				name: 'Birthday',
-				value: person.birthday ?? 'N/A',
+				value:  !isNaN(birthday) ? `${time(birthday, 'D')}` : 'N/A',
 				inline: true,
 			},
 			{
 				name: 'Death',
-				value: person.deathday ?? 'N/A',
+				value: !isNaN(deathday) ? `${time(deathday, 'D')}` : 'N/A',
 				inline: true,
 			},
 			{
@@ -262,26 +265,6 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 				value: `${person.gender ?? 'N/A'}`,
 				inline: true,
 			},
-			// {
-			// 	name: 'Runtime',
-			// 	value: `${movie.runtime}`,
-			// 	inline: true,
-			// },
-			// {
-			// 	name: 'Budget',
-			// 	value: `${formatter.format(movie.budget)}`,
-			// 	inline: true,
-			// },
-			// {
-			// 	name: 'Revenue',
-			// 	value: `${formatter.format(movie.revenue)}`,
-			// 	inline: true,
-			// },
-			// {
-			// 	name: 'User Rating',
-			// 	value: `${movie.vote_average}/10`,
-			// 	inline: true,
-			// },
 		],
 		image: {
 			url: `${images.base_url}${images.poster_sizes[5]}${person.profile_path}`,
