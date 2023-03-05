@@ -9,6 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
+const { getOptionsForSelectMenu } = require('../helpers/get-options');
 const movie_details = '/movie';
 
 
@@ -77,12 +78,7 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different options')], files:[file] });
 			return;
 		}
-		const options = [];
-
-		for (const movieObject of movieTitles) {
-			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
-		}
+		const options = getOptionsForSelectMenu(movieTitles, language);
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
@@ -158,6 +154,7 @@ module.exports = {
 
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
+				// TODO: Look at what's returned for  english_name and title
 				const translationDetailEmbed = createTranslateDetailEmbed(selectedTranslation, i.user);
 				const content = i.message.content.split('Translation').join('Translation Detail');
 
