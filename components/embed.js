@@ -179,6 +179,11 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 				inline: true,
 			},
 			{
+				name: 'Genre(s)',
+				value: movie.genres.map(({ name }) => name).join(', '),
+				inline: true,
+			},
+			{
 				name: 'Status',
 				value: movie.status,
 				inline: true,

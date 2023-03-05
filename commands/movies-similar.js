@@ -69,6 +69,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		// const dept = interaction.options.getString('department') ?? '';
 
@@ -157,9 +158,11 @@ module.exports = {
 				const movieDetails = creditResponse.data;
 
 				// TODO: chack if country is null, and default to country of production like tv-search.js
+				console.log(movieDetails);
 				let movieRating;
+				// || tv.origin_country.includes(iso_3166_1)
 				try {
-					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country))) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
 				}
 				catch {
 					movieRating = 'N/A';
