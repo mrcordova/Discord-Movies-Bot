@@ -486,8 +486,8 @@ function createTranslateDetailEmbed(translationDetails, user) {
 	};
 }
 
-function createTvDetailEmbed({ user, tv, prod, directors, actors, formatter, color }) {
-
+function createTvDetailEmbed({ user, tv, prod, creators, actors, color }) {
+	const firstAirDate = new Date(tv.first_air_date);
 	return {
 		color: color,
 		title: tv.title,
@@ -503,8 +503,8 @@ function createTvDetailEmbed({ user, tv, prod, directors, actors, formatter, col
 		},
 		fields: [
 			{
-				name: 'Directed by',
-				value: directors.join(' & '),
+				name: 'Created by',
+				value: tv.created_by.map(creator => creator.name).join(' & '),
 				inline: true,
 			},
 			{
@@ -514,7 +514,7 @@ function createTvDetailEmbed({ user, tv, prod, directors, actors, formatter, col
 			},
 			{
 				name: 'Release Date',
-				value: tv.release_date,
+				value: `${time(firstAirDate, 'F')} (${time(firstAirDate, 'R')} )`,
 				inline: true,
 			},
 			{
@@ -523,23 +523,8 @@ function createTvDetailEmbed({ user, tv, prod, directors, actors, formatter, col
 				inline: true,
 			},
 			{
-				name: 'Content Rating',
-				value: `${tv.rating}`,
-				inline: true,
-			},
-			{
 				name: 'Runtime',
-				value: `${tv.runtime}`,
-				inline: true,
-			},
-			{
-				name: 'Budget',
-				value: `${formatter.format(tv.budget)}`,
-				inline: true,
-			},
-			{
-				name: 'Revenue',
-				value: `${formatter.format(tv.revenue)}`,
+				value: `${tv.episode_run_time[0]}`,
 				inline: true,
 			},
 			{
