@@ -70,7 +70,7 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({
-			name: `${ start + (index + 1)}. ${movie.title} (${movie.release_date}) - ${movie.vote_average}`,
+			name: `${ start + (index + 1)}. ${movie.title} (${time(new Date(movie.release_date), 'D')}) - ${movie.vote_average}`,
 			value: movie.overview })),
 		),
 		timestamp: new Date(),
