@@ -535,6 +535,11 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
+				name: 'Content Rating',
+				value: tv.rating,
+				inline: true,
+			},
+			{
 				name: 'Genre(s)',
 				value: tv.genres.map(genre => genre.name).join(', '),
 				inline: true,
