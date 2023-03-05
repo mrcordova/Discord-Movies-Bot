@@ -80,7 +80,7 @@ module.exports = {
 			options.push({ label: `${tvObject.name.slice(0, 81)} (${tvObject.first_air_date})`, description: `${description}...`, value: `${tvObject.id}` });
 		}
 
-		const selectMenu = createSelectMenu('List of T  Shows', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
 		const embed = createEmbed(Colors.Blue, 'TV show will appear here', 'Some description here', 'https://discord.js.org/');
