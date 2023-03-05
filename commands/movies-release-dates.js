@@ -87,7 +87,9 @@ module.exports = {
 
 		for (const movieObject of movieTitles) {
 			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
+			const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+			const releaseDate = new Date (movieObject.release_date).toLocaleDateString(language, dateOptions);
+			options.push({ label: `${movieObject.title.slice(0, 81)} (${releaseDate})`, description: `${description}...`, value: `${movieObject.id}` });
 		}
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
