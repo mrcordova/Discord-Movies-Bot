@@ -486,7 +486,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 	};
 }
 
-function createTvDetailEmbed({ user, tv, prod, creators, actors, color }) {
+function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
 	return {
 		color: color,
@@ -499,7 +499,7 @@ function createTvDetailEmbed({ user, tv, prod, creators, actors, color }) {
 		},
 		description: tv.overview,
 		thumbnail: {
-			url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+			url: `${images.base_url}${images.logo_sizes[1]}${network.logo_path}`,
 		},
 		fields: [
 			{
@@ -538,7 +538,7 @@ function createTvDetailEmbed({ user, tv, prod, creators, actors, color }) {
 		},
 		timestamp: new Date(),
 		footer: {
-			text: `${prod.name}`,
+			text: `${network.name}`,
 			icon_url: tmdbIconUrl,
 		},
 	};
