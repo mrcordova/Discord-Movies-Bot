@@ -9,6 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getKey, TMDB_WATCH_LINK } = require('../helpers/get-key');
+const { getOptionsForSelectMenu } = require('../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // flatrate: HBO, DirectTV, Cable TV, Locke etc...
@@ -131,12 +132,7 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file, justWatchFile] });
 			return;
 		}
-		const options = [];
-
-		for (const movieObject of movieTitles) {
-			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
-		}
+		const options = getOptionsForSelectMenu(movieTitles, language);
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
