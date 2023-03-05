@@ -8,6 +8,7 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { getCast, getProductionCompany } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const tv_details = '/tv';
 
 
@@ -74,12 +75,7 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV Shows Found', 'Please make a new command with a different options')], files: [file] });
 			return;
 		}
-		const options = [];
-
-		for (const tvObject of tvTitles) {
-			const description = tvObject.overview.slice(0, 50);
-			options.push({ label: `${tvObject.name.slice(0, 81)} (${tvObject.first_air_date})`, description: `${description}...`, value: `${tvObject.id}` });
-		}
+		const options = getOptionsForTvSelectMenu(tvTitles, language);
 
 		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
@@ -144,3 +140,4 @@ module.exports = {
 
 	},
 };
+
