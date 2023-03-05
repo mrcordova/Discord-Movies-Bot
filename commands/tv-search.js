@@ -112,7 +112,7 @@ module.exports = {
 			// console.log(tv.credits['crew']);
 			const network = getProductionCompany(tv['networks']);
 			// const creators = getCrewMember(tv.credits['crew'], 'Creator');
-			const actors = getCast(tv.credits['cast'], 3);
+			const actors = getCast(tv.credits['cast'], 10);
 			tv.language = language;
 			// console.log(tv.credits['crew']);
 
