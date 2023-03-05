@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle, time } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
@@ -96,7 +96,9 @@ module.exports = {
 
 		for (const movieObject of movieTitles) {
 			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title.slice(0, 81)} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
+			const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+			const releaseDate = new Date (movieObject.release_date).toLocaleDateString(language, dateOptions);
+			options.push({ label: `${movieObject.title.slice(0, 81)} (${releaseDate})`, description: `${description}...`, value: `${movieObject.id}` });
 		}
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
@@ -125,10 +127,11 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
 			const movie = movieResponse.data;
 
-			// console.log(dept);
+			// console.log(movie);
 			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
 			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew);
+			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 

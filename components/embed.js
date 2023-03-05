@@ -50,7 +50,7 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (member, index) => ({
 			name: `${ start + (index + 1)}. ${member.name}`,
-			value: `Credit: ${member.job ?? 'N/A'}` })),
+			value: `Credit: ${member.job ?? member.character ?? 'N/A'}` })),
 		),
 		timestamp: new Date(),
 		footer: {
