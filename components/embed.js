@@ -561,7 +561,7 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
-				name: 'Countries of Origin',
+				name: 'Country of Origin',
 				value: tv.origin_country.map(country => countryCodeDict[country]).join(', '),
 				inline: true,
 			},
