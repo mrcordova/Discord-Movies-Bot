@@ -6,6 +6,7 @@ const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'attachment://just-watch-logo.jpg';
 // const tmdbIconUrl = 'https://www.i.imgur.com/a/wDY1wua.png';
 const tmdbName = 'The Movie Database (TMDb)';
+const tmdbUrl = 'https://www.themoviedb.org';
 
 function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some description here', url = 'https://discord.js.org/') {
 	return new EmbedBuilder()
@@ -488,10 +489,12 @@ function createTranslateDetailEmbed(translationDetails, user) {
 
 function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
+	const lastAirDate = new Date(tv.last_air_date);
+	console.log();
 	return {
 		color: color,
-		title: tv.title,
-		url: `https://www.imdb.com/title/${tv.imdb_id}/`,
+		title: tv.name,
+		url: `${tmdbUrl}/tv/${tv.id}-${tv.name}?language=${tv.language}`,
 		author: {
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
@@ -513,8 +516,13 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
-				name: 'Release Date',
+				name: 'First Air Date',
 				value: `${time(firstAirDate, 'F')} (${time(firstAirDate, 'R')} )`,
+				inline: true,
+			},
+			{
+				name: 'Last Air Date',
+				value: `${time(lastAirDate, 'F')} (${time(lastAirDate, 'R')} )`,
 				inline: true,
 			},
 			{
@@ -523,8 +531,28 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 				inline: true,
 			},
 			{
-				name: 'Runtime',
-				value: `${tv.episode_run_time[0]}`,
+				name: 'Type',
+				value: tv.type,
+				inline: true,
+			},
+			{
+				name: '# of episodes',
+				value: tv.number_of_episodes,
+				inline: true,
+			},
+			{
+				name: '# of Seasons',
+				value: tv.number_of_seasons,
+				inline: true,
+			},
+			{
+				name: 'Production Companies',
+				value: tv.production_companies.sort((a, b) => a.id < b.id).map(prod => prod.name).join(', '),
+				inline: true,
+			},
+			{
+				name: 'Runtime(s)',
+				value: `${tv.episode_run_time.join(', ')}`,
 				inline: true,
 			},
 			{

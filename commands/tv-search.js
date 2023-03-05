@@ -98,7 +98,7 @@ module.exports = {
 
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
 			const tv = tvResponse.data;
-			console.log(tv);
+			// console.log(tv);
 			// let movieRating;
 			// try {
 			// 	movieRating = (tv.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
@@ -113,8 +113,8 @@ module.exports = {
 			const network = getProductionCompany(tv['networks']);
 			// const creators = getCrewMember(tv.credits['crew'], 'Creator');
 			const actors = getCast(tv.credits['cast'], 3);
-
-			console.log(tv.credits['crew']);
+			tv.language = language;
+			// console.log(tv.credits['crew']);
 
 			const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv, network, actors, color: Colors.Aqua });
 			const newSelectMenu = createSelectMenu('List of Movies', tv.name.slice(0, 81), 1, options);
