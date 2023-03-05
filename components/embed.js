@@ -148,6 +148,7 @@ function createImageEmbed(title, movieImage, user) {
 
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
+	const releaseDate = new Date(movie.release_date);
 	return {
 		color: color,
 		title: movie.title,
@@ -174,7 +175,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 			},
 			{
 				name: 'Release Date',
-				value: movie.release_date,
+				value: `${time(releaseDate, 'D')} (${time(releaseDate, 'R')})`,
 				inline: true,
 			},
 			{
@@ -505,11 +506,6 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 			url: `${images.base_url}${images.logo_sizes[1]}${network.logo_path}`,
 		},
 		fields: [
-			// {
-			// 	name: '\u200b',
-			// 	value: hyperlink('Home Page', tv.homepage),
-			// 	inline: true,
-			// },
 			{
 				name: 'Created by',
 				value: tv.created_by.map(creator => creator.name).join(' & '),
@@ -609,7 +605,7 @@ function createVideoEmbed(title, movieVideo, user) {
 	//     published_at: '2020-04-23T17:59:57.000Z',
 	//     id: '62299b179a3c490047cc6b52'
 	//   }
-	const dateTime = movieVideo[0].published_at.split('T');
+	const dateTime = new Date(movieVideo[0].published_at);
 	return {
 		color: Colors.DarkGrey,
 		title: `${title}`,
@@ -640,7 +636,7 @@ function createVideoEmbed(title, movieVideo, user) {
 			},
 			{
 				name: 'Published',
-				value: `${dateTime[0]} at ${dateTime[1]}`,
+				value: `${time(dateTime, 'F')} (${time(dateTime, 'R')})`,
 			},
 			{
 				name: 'Size',
