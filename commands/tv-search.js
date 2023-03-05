@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createTvDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { createEmbed, createNoResultEmbed, createTvDetailEmbed } = require('../components/embed.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
+const { getCast, getProductionCompany } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const tv_details = '/tv';

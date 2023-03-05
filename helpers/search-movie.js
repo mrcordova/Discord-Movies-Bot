@@ -2,7 +2,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 
 const search_movie = '/search/movie';
-const search_tv = '/search/tv'
+const search_tv = '/search/tv';
 // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
 // language en-US optional
 // query String required
