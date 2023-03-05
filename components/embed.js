@@ -490,20 +490,26 @@ function createTranslateDetailEmbed(translationDetails, user) {
 function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
 	const lastAirDate = new Date(tv.last_air_date);
+	// console.log(tv.homepage);
 	return {
 		color: color,
 		title: tv.name,
-		url: `${tmdbUrl}/tv/${tv.id}-${tv.name.replace(/ /g, '-')}?language=${tv.language}`,
+		url: tv.homepage,
 		author: {
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
 			// url: "https://discord.js.org",
 		},
-		description: tv.overview,
+		description: `${tv.overview}\n${hyperlink('Show more', `${tmdbUrl}/tv/${tv.id}-${tv.name.replace(/ /g, '-')}?language=${tv.language}`)}`,
 		thumbnail: {
 			url: `${images.base_url}${images.logo_sizes[1]}${network.logo_path}`,
 		},
 		fields: [
+			// {
+			// 	name: '\u200b',
+			// 	value: hyperlink('Home Page', tv.homepage),
+			// 	inline: true,
+			// },
 			{
 				name: 'Created by',
 				value: tv.created_by.map(creator => creator.name).join(' & '),
