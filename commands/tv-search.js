@@ -96,9 +96,9 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
+			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,content_ratings`);
 			const tv = tvResponse.data;
-			// console.log(tv);
+			console.log(tv);
 			// let movieRating;
 			// try {
 			// 	movieRating = (tv.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
