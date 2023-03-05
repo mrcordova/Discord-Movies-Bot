@@ -20,5 +20,8 @@ const search_movie = '/search/movie';
 async function searchForMovie(query, language = 'en-US', region = 'US', primaryReleaseYear = 0, page = 1) {
 	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
 }
+async function searchForTV(query, language = 'en-US', region = 'US', primaryReleaseYear = 0, page = 1) {
+	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
+}
 
-module.exports = { searchForMovie };
+module.exports = { searchForMovie, searchForTV };
