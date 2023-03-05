@@ -11,6 +11,10 @@ const availableProviders = JSON.parse(fs.readFileSync('data/movie-providers.json
 // let countryCodeDict = {};
 
 // (() => {
+const langCodeDict = languageDictionary.reduce((obj, item) => {
+	obj[item.value] = item.name; return obj;
+}, {});
+
 const countryCodeDict = countryDictionary.reduce((obj, item) => {
 	obj[item.value] = item.name; return obj;
 }, {});
@@ -120,14 +124,15 @@ const justWatchFile = new AttachmentBuilder('./images/just-watch-logo.jpg');
 module.exports = {
 	availableProviders,
 	countryDict: countryDictionary,
-	languageDict: languageDictionary,
 	countryCodeDict,
-	images,
-	translationsCodeDict,
 	depts,
 	deptEmojis,
+	file,
+	images,
+	justWatchFile,
+	languageDict: languageDictionary,
+	langCodeDict,
 	numberEmojis,
 	ratings,
-	file,
-	justWatchFile,
+	translationsCodeDict,
 };

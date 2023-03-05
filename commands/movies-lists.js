@@ -8,6 +8,7 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
+const { getOptionsForSelectMenu } = require('../helpers/get-options');
 const movie_route = '/movie';
 const movie_lists = 'lists';
 
@@ -64,19 +65,15 @@ module.exports = {
 			return;
 		}
 
-		const options = [];
+		const options = getOptionsForSelectMenu(movieTitles, language);
 
-		for (const movieObject of movieTitles) {
-			const description = movieObject.overview.slice(0, 50);
-			options.push({ label: `${movieObject.title} (${movieObject.release_date})`, description: `${description}...`, value: `${movieObject.id}` });
-		}
 
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
 
-		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Movie will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;

@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
-const { countryCodeDict, images, ratings } = require('../load-data.js');
+const { countryCodeDict, images, ratings, langCodeDict } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
 const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
@@ -91,8 +91,8 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${moviesList.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({
-			name: `${ start + (index + 1)}. ${movie.name} (Movies Count: ${movie.item_count}) - ${movie.iso_639_1}`,
-			value: movie.description })),
+			name: `${ start + (index + 1)}. ${movie.name} (Movies Count: ${movie.item_count})`,
+			value: `${underscore(`${movie.iso_639_1} (${langCodeDict[movie.iso_639_1]}`)})\n${movie.description}` })),
 		),
 		timestamp: new Date(),
 		footer: {
