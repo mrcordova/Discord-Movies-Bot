@@ -93,7 +93,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Movie will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -117,10 +117,10 @@ module.exports = {
 
 
 			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
-			// console.log(current);
+
 			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
 
-			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
+			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType, language);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 
@@ -164,7 +164,7 @@ module.exports = {
 			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
 			// const newSelectMenu = createSelectMenu('List of Movies', m.message.components[0].placeHolderText, 1, options);
 
-			// console.log(currentIndex);
+
 			// Respond to interaction by updating message with new embed
 			await m.update({
 				content:  m.message.content,

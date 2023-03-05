@@ -282,7 +282,7 @@ function createPersonDetailEmbed(person, movieCredits, user) {
 	};
 
 }
-const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, color = Colors.Blue) => {
+const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, language, color = Colors.Blue) => {
 	if (!moviesList.length) {
 		return createNoResultEmbed(Colors.Red, 'No Movie Found', 'No release date for speific movie with certain options');
 	}
@@ -295,6 +295,9 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 		title: title,
 		fields: await Promise.all(current.map(async (movie, index) => {
 			const release = movie.release_dates.find(({ type }) => releaseType == type) ?? { release_date: 'N/A', certification: 'N/A' };
+			const options = { year: 'numeric', month: 'long', day: 'numeric' };
+			// const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+			const releaseDate = new Date(release.release_date).toLocaleDateString(language, options);
 			let ratingMeaning;
 			let releaseRating;
 			try {
@@ -313,7 +316,7 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, co
 			// console.log(ratings.certifications[movie.iso_3166_1])
 			return {
 				name: `${start + (index + 1)}. ${countryCodeDict[movie.iso_3166_1] ?? 'N/A'}`,
-				value: `Release Date: ${release.release_date.split('T')[0]}\nRating: ${releaseRating}\nRating meaning: ${ratingMeaning}`,
+				value: `${underscore('Release Date:')} ${releaseDate}\n${underscore('Rating:')} ${releaseRating}\n${underscore('Rating meaning:')} ${ratingMeaning}`,
 			};
 		})),
 		timestamp: new Date(),
