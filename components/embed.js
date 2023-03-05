@@ -217,6 +217,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 		},
 	};
 }
+
 function createPersonDetailEmbed(person, movieCredits, user) {
 
 	const known_for = movieCredits.sort((a, b) => b.vote_average - a.vote_average).map(movie => movie.title).join(', ');
@@ -485,6 +486,79 @@ function createTranslateDetailEmbed(translationDetails, user) {
 	};
 }
 
+function createTvDetailEmbed({ user, tv, prod, directors, actors, formatter, color }) {
+
+	return {
+		color: color,
+		title: tv.title,
+		url: `https://www.imdb.com/title/${tv.imdb_id}/`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: tv.overview,
+		thumbnail: {
+			url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		},
+		fields: [
+			{
+				name: 'Directed by',
+				value: directors.join(' & '),
+				inline: true,
+			},
+			{
+				name: 'Starring',
+				value: actors.join(', '),
+				inline: true,
+			},
+			{
+				name: 'Release Date',
+				value: tv.release_date,
+				inline: true,
+			},
+			{
+				name: 'Status',
+				value: tv.status,
+				inline: true,
+			},
+			{
+				name: 'Content Rating',
+				value: `${tv.rating}`,
+				inline: true,
+			},
+			{
+				name: 'Runtime',
+				value: `${tv.runtime}`,
+				inline: true,
+			},
+			{
+				name: 'Budget',
+				value: `${formatter.format(tv.budget)}`,
+				inline: true,
+			},
+			{
+				name: 'Revenue',
+				value: `${formatter.format(tv.revenue)}`,
+				inline: true,
+			},
+			{
+				name: 'User Rating',
+				value: `${tv.vote_average}/10`,
+				inline: true,
+			},
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${tv.poster_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: `${prod.name}`,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
+
 function createVideoEmbed(title, movieVideo, user) {
 	if (!movieVideo.length) {
 		return createNoResultEmbed();
@@ -623,6 +697,7 @@ module.exports = {
 	createReviewEmbed,
 	createTranslateListEmbed,
 	createTranslateDetailEmbed,
+	createTvDetailEmbed,
 	createVideoEmbed,
 	createWatchProviderListEmbed,
 };

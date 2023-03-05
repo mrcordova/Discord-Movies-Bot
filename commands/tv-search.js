@@ -77,7 +77,7 @@ module.exports = {
 
 		for (const tvObject of tvTitles) {
 			const description = tvObject.overview.slice(0, 50);
-			options.push({ label: `${tvObject.title.slice(0, 81)} (${tvObject.release_date})`, description: `${description}...`, value: `${tvObject.id}` });
+			options.push({ label: `${tvObject.name.slice(0, 81)} (${tvObject.first_air_date})`, description: `${description}...`, value: `${tvObject.id}` });
 		}
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
@@ -111,11 +111,11 @@ module.exports = {
 			// tv.rating = movieRating;
 
 			const formatter = createCurrencyFormatter();
-			const prod = getProductionCompany(tv['network']);
+			const prod = getProductionCompany(tv['production_companies']);
 			const directors = getCrewMember(tv.credits['crew'], 'director');
 			const actors = getCast(tv.credits['cast'], 3);
 
-			const tvDetailsEmbed = createMovieDetailEmbed({ user: i.user, tv, prod, directors, actors, formatter, color: Colors.Aqua });
+			const tvDetailsEmbed = create ({ user: i.user, tv, prod, directors, actors, formatter, color: Colors.Aqua });
 			const newSelectMenu = createSelectMenu('List of Movies', tv.title.slice(0, 81), 1, options);
 
 

@@ -2,6 +2,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 
 const search_movie = '/search/movie';
+const search_tv = '/search/tv'
 // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
 // language en-US optional
 // query String required
@@ -21,7 +22,7 @@ async function searchForMovie(query, language = 'en-US', region = 'US', primaryR
 	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
 }
 async function searchForTV(query, language = 'en-US', region = 'US', primaryReleaseYear = 0, page = 1) {
-	return await axios.get(`${api_url}${search_movie}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
+	return await axios.get(`${api_url}${search_tv}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
 }
 
 module.exports = { searchForMovie, searchForTV };
