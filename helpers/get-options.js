@@ -1,4 +1,4 @@
-function getOptionsForSelectMenu(movieTitles, language) {
+function getOptionsForSelectMenu(movieTitles, language = 'en-US') {
 	const options = [];
 
 	for (const movieObject of movieTitles) {
