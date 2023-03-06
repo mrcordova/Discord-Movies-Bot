@@ -43,7 +43,7 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	if (!moviesList.length) {
 		return createNoResultEmbed();
 	}
-	
+
 	const current = moviesList.slice(start, start + listSize);
 	console.log(current);
 	return new EmbedBuilder({
@@ -242,7 +242,7 @@ function createPersonDetailEmbed(person, credits, user) {
 	const known_for = credits.sort((a, b) => b.vote_average - a.vote_average).map(credit => {
 		if (credit.title) {
 			return `${credit.title} (${credit.media_type})`;
-		} 
+		}
 		return `${credit.name} (${credit.media_type})`;
 	}).join(', ');
 	// console.log(credits);
@@ -752,7 +752,6 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 		},
 	});
 };
-
 
 
 module.exports = {

@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed, createTvCreditListEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { createEmbed, createNoResultEmbed, createPersonDetailEmbed, createTvCreditListEmbed } = require('../components/embed.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, depts, deptEmojis, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
@@ -9,7 +9,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const tv_details = '/tv';
 
 
@@ -168,6 +168,7 @@ module.exports = {
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{id}?api_key=<<api_key>>
 
+				// TODO: add btns to known for media
 				const personResponse = await axios.get(`${api_url}/person/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
 				// console.log(personDetials);
