@@ -180,7 +180,7 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 			},
 			{
 				name: 'Production Companies',
-				value: movie.production_companies.map(({ name }) => name).join(', '),
+				value: movie.production_companies.sort((a, b) => a.id - b.id).map(({ name }) => name).join(', '),
 				inline: true,
 			},
 			{
