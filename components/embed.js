@@ -686,7 +686,7 @@ const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) 
 		fields: await Promise.all(current.map(async (tv, index) => {
 			const network = tv.network ?? { origin_country: 'N/A' };
 			return {
-				name: `${ start + (index + 1)}. ${tv.name} (Eps Count: ${tv.episode_count})`,
+				name: `${ start + (index + 1)}. ${tv.name} (Eps Count: ${tv.episode_count}) (Group Count: ${tv.group_count})`,
 				value: `${underscore('Country of Origin:')} ${network.origin_country} (${countryCodeDict[network.origin_country] ?? 'N/A'})\n${underscore('Description:')}${tv.description}\n${underscore('Type:')} ${new EpisodeGroupTypes(tv.type).toString}`,
 			};
 		}),
