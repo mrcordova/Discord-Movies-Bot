@@ -43,7 +43,6 @@ function getMediaDetail(mediaType, country, language, i, mediaData) {
 		mediaData.rating = movieRating;
 
 		const formatter = createCurrencyFormatter();
-		console.log(mediaData);
 		const prod = getProductionCompany(mediaData['production_companies']);
 		const directors = getCrewMember(mediaData.credits['crew'], 'director');
 		const actors = getCast(mediaData.credits['cast'], 10);
