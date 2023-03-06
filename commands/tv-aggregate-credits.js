@@ -128,14 +128,14 @@ module.exports = {
 			const crew = tv.aggregate_credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew);
 			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
-			const movieCreditsEmbed = await createTvCreditListEmbed(currentIndex, listSize, credits);
+			const tvCreditsEmbed = await createTvCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
 			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
-				embeds: [movieCreditsEmbed],
+				embeds: [tvCreditsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
@@ -201,7 +201,6 @@ module.exports = {
 			else if (i.customId.includes('known_for_')) {
 				const searchParameter = i.customId.replace('known_for_', '');
 				const [mediaType, id] = searchParameter.split('_');
-				// console.log(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
 				const mediaResponse = await getMediaResponse(mediaType, id, language);
 
 				const media = mediaResponse.data;
@@ -211,6 +210,7 @@ module.exports = {
 					content: `${mediaType}'s Detail`,
 					embeds: [mediaDetailsEmbed],
 					components: [],
+
 				});
 
 				buttonCollector.stop('Done!');
