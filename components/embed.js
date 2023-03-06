@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
-const { countryCodeDict, images, ratings, langCodeDict } = require('../load-data.js');
+const { countryCodeDict, images, movieRatings, langCodeDict } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
 const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
@@ -324,7 +324,7 @@ const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, la
 			let releaseRating;
 			try {
 				// console.log(ratings.certifications[movie.iso_3166_1].map(rating => console.log(rating.certification)));
-				ratingMeaning = ratings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
+				ratingMeaning = movieRatings.certifications[movie.iso_3166_1].find(rating => rating.certification == release.certification).meaning;
 			}
 			catch {
 				ratingMeaning = 'N/A';

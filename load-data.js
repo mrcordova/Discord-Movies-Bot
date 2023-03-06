@@ -5,12 +5,12 @@ const languageDictionary = JSON.parse(fs.readFileSync('data/languages.json', 'ut
 const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
 const transArry = JSON.parse(fs.readFileSync('data/primary-translations.json', 'utf8'));
 const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
-const ratings = JSON.parse(fs.readFileSync('data/movie-ratings.json', 'utf8'));
+const movieRatings = JSON.parse(fs.readFileSync('data/movie-ratings.json', 'utf8'));
 const availableRegions = JSON.parse(fs.readFileSync('data/watch-countries.json', 'utf8'));
 const availableProviders = JSON.parse(fs.readFileSync('data/movie-providers.json', 'utf8'));
 // let countryCodeDict = {};
 
-// (() => {
+
 const langCodeDict = languageDictionary.reduce((obj, item) => {
 	obj[item.value] = item.name; return obj;
 }, {});
@@ -18,7 +18,7 @@ const langCodeDict = languageDictionary.reduce((obj, item) => {
 const countryCodeDict = countryDictionary.reduce((obj, item) => {
 	obj[item.value] = item.name; return obj;
 }, {});
-// })();
+
 
 const translationsCodeDict = transArry.reduce((objArry, item) => {
 	const langTemp = languageDictionary.find((lang) => item.includes(lang.value));
@@ -113,14 +113,6 @@ const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
 const justWatchFile = new AttachmentBuilder('./images/just-watch-logo.jpg');
 // const file = new AttachmentBuilder('./images/just-watch-logo.jpg');
 
-// // Create an empty dictionary object
-// const countriesDict = {};
-// console.log(ratings)
-// // Loop through the array and create dictionary entries
-// for (let i = 0; i < dictionary.length; i++) {
-// 	const item = dictionary[i];
-// 	countriesDict[item.key] = item.value;
-// }
 module.exports = {
 	availableProviders,
 	countryDict: countryDictionary,
@@ -133,6 +125,6 @@ module.exports = {
 	languageDict: languageDictionary,
 	langCodeDict,
 	numberEmojis,
-	ratings,
+	movieRatings,
 	translationsCodeDict,
 };
