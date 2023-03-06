@@ -26,7 +26,7 @@ module.exports = {
 		.setDescription('Search for tv show based on a text query.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired film.')
+				.setDescription('Search for the desired TV Show.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')

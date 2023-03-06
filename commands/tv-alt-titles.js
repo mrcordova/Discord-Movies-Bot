@@ -29,7 +29,7 @@ module.exports = {
 		.setDescription('Get alternative titles for a tv show.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired film.')
+				.setDescription('Search for the desired TV Show.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('country')
