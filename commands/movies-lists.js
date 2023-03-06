@@ -68,7 +68,6 @@ module.exports = {
 		const options = getOptionsForSelectMenu(movieTitles, language);
 
 
-
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
