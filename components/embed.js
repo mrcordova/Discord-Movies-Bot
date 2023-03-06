@@ -105,6 +105,7 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 };
 
 
+
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
 		.setColor(color)
@@ -671,6 +672,33 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	};
 }
 
+const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
+	if (!tvList.length) {
+		return createNoResultEmbed(Colors.Red, 'No TV Show Found');
+	}
+
+
+	console.log(tvList);
+	const current = tvList.slice(start, start + listSize);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${tvList.length}`,
+		fields: await Promise.all(current.map(async (tv, index) => {
+			const network = tv.network ?? { origin_country: 'N/A' };
+			return {
+				name: `${ start + (index + 1)}. ${tv.name} (Eps Count: ${tv.episode_count})`,
+				value: `${underscore('Country of Origin:')} ${network.origin_country} (${countryCodeDict[network.origin_country] ?? 'N/A'})\n${underscore('Description:')}${tv.description}`,
+			};
+		}),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
+
 function createVideoEmbed(title, movieVideo, user) {
 	if (!movieVideo.length) {
 		return createNoResultEmbed();
@@ -812,6 +840,7 @@ module.exports = {
 	createTranslateDetailEmbed,
 	createTvCreditListEmbed,
 	createTvDetailEmbed,
+	createTvListsEmbed,
 	createVideoEmbed,
 	createWatchProviderListEmbed,
 };
