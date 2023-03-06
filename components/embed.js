@@ -43,9 +43,9 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	if (!moviesList.length) {
 		return createNoResultEmbed();
 	}
-
+	
 	const current = moviesList.slice(start, start + listSize);
-
+	console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
@@ -60,6 +60,7 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 		},
 	});
 };
+
 
 const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -494,7 +495,37 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		},
 	};
 }
+const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
+	if (!tvList.length) {
+		return createNoResultEmbed();
+	}
 
+	const current = tvList.slice(start, start + listSize);
+	console.log(current);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing TV Credits ${start + 1}-${start + current.length} out of ${tvList.length}`,
+		fields: await Promise.all(current.map(async (member, index) => {
+			let credits;
+			try {
+				credits = member.jobs.map(({ job, episode_count }) => `${job} (ep count: ${episode_count})`).join(', ');
+			}
+			catch {
+				credits = member.roles.map(({ character, episode_count }) => `${character} (# of eps: ${episode_count})`).join(', ');
+			}
+			return {
+				name: `${ start + (index + 1)}. ${member.name}`,
+				value: `${underscore('Credit:')} ${credits ?? 'N/A'}\n${underscore('Total # of Eps:')} ${member.total_episode_count}`,
+			};
+		}),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 function createTvDetailEmbed({ user, tv, network, actors, color }) {
 	const firstAirDate = new Date(tv.first_air_date);
 	const lastAirDate = new Date(tv.last_air_date);
@@ -718,6 +749,7 @@ const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user
 };
 
 
+
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
@@ -733,6 +765,7 @@ module.exports = {
 	createReviewEmbed,
 	createTranslateListEmbed,
 	createTranslateDetailEmbed,
+	createTvCreditListEmbed,
 	createTvDetailEmbed,
 	createVideoEmbed,
 	createWatchProviderListEmbed,

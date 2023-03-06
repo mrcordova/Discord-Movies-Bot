@@ -89,10 +89,8 @@ module.exports = {
 			const tvResponse = await axios.get(`${api_url}${tv_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${tv_alt}&country=${country}`);
 			tv = tvResponse.data.alternative_titles;
 			const tvTitle = tvResponse.data.name;
-            // console.log(tv.results);
 
 			const newSelectMenu = createSelectMenu('List of TV Shows', tvTitle, 1, options);
-            // console.log(tv);
 
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, tv.results);
 
