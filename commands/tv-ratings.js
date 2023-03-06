@@ -1,10 +1,9 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
-const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
+const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed, createRatingsEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
@@ -92,35 +91,36 @@ module.exports = {
 
 		const listSize = 5;
 		let currentIndex = 0;
-		let movieReleaseDates;
+		let tvRatings;
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
-			const movieResponse = await getMediaResponse(TV, selected, language, 'content_ratings');
-			const movie = movieResponse.data;
-			movieReleaseDates = movie.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
+			const appendToResponse = ['content_ratings'];
+			const tvResponse = await getMediaResponse(TV, selected, language, appendToResponse);
+			const tv = tvResponse.data;
+			// tvReleaseDates = tv.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
+			tvRatings = tv.content_ratings.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
+			const current = tvRatings.slice(currentIndex, currentIndex + listSize, tvRatings);
 
+			const title = `Showing Ratings ${currentIndex + current.length} out of ${tvRatings.length}`;
 
-			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize, movieReleaseDates);
-
-			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
-
-			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType, language);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+            // (start, tvList, title, color = Colors.Blue)
+			const tvRatingEmbed = await createRatingsEmbed(currentIndex, current, title);
+			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 
 			await i.update({
-				content: `${new ReleaseTypes(releaseType).toString} releases for ${movie.title.slice(0, 81)}`,
-				embeds: [movieReleaseDateEmbed],
+				content: `${tv.name.slice(0, 81)}`,
+				embeds: [tvRatingEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movieReleaseDates.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < tvRatings.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 				],
 				files: [file],
@@ -145,10 +145,10 @@ module.exports = {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			const current = movieReleaseDates.slice(currentIndex, currentIndex + listSize);
-			const title = `Showing Release Dates ${currentIndex + current.length} out of ${movieReleaseDates.length}`;
+			const current = tvReleaseDates.slice(currentIndex, currentIndex + listSize);
+			const title = `Showing Release Dates ${currentIndex + current.length} out of ${tvRatings.length}`;
 
-			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title, releaseType);
+			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title);
 			// const newSelectMenu = createSelectMenu('List of Movies', m.message.components[0].placeHolderText, 1, options);
 
 
@@ -162,7 +162,7 @@ module.exports = {
 					// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movieReleaseDates.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < tvRatings.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }) ],
 			});
 			selectMenucollector.resetTimer([{ idle: 30000 }]);

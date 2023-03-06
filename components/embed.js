@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
-const { countryCodeDict, images, movieRatings, langCodeDict } = require('../load-data.js');
+const { countryCodeDict, images, movieRatings, langCodeDict, tvRatings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
 const justWatchIconUrl = 'attachment://just-watch-logo.jpg';
@@ -304,6 +304,46 @@ function createPersonDetailEmbed(person, credits, user) {
 	};
 
 }
+const createRatingsEmbed = async (start, tvList, title, color = Colors.Blue) => {
+	if (!tvList.length) {
+		return createNoResultEmbed(Colors.Red, 'No TV Show Found', 'No ratings for speific movie with these options');
+	}
+
+	const current = tvList;
+
+	console.log(tvRatings);
+	return new EmbedBuilder({
+		color: color,
+		title: title,
+		fields: await Promise.all(current.map(async (tv, index) => {
+			const rating = tv.rating;
+			let ratingMeaning;
+			const language = `${tv.iso_3166_1} (${countryCodeDict[tv.iso_3166_1]})`;
+			try {
+				ratingMeaning = tvRatings.certifications[tv.iso_3166_1].find(({ certification }) => certification == tv.rating).meaning;
+			}
+			catch {
+				ratingMeaning = 'N/A';
+			}
+			// try {
+			// 	releaseRating = release.certification.length ? release.certification : 'N/A';
+			// }
+			// catch {
+			// 	releaseRating = 'N/A';
+			// }
+			// console.log(ratings.certifications[movie.iso_3166_1])
+			return {
+				name: `${start + (index + 1)}. ${language ?? 'N/A'}`,
+				value: `${underscore('Rating:')} ${rating}\n${underscore('Rating meaning:')} ${ratingMeaning}`,
+			};
+		})),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 const createReleaseDatesEmbed = async (start, moviesList, title, releaseType, language, color = Colors.Blue) => {
 	if (!moviesList.length) {
 		return createNoResultEmbed(Colors.Red, 'No Movie Found', 'No release date for speific movie with certain options');
@@ -764,6 +804,7 @@ module.exports = {
 	createNoResultEmbed,
 	createMovieDetailEmbed,
 	createPersonDetailEmbed,
+	createRatingsEmbed,
 	createReleaseDatesEmbed,
 	createReviewDetailEmbed,
 	createReviewEmbed,
