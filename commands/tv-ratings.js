@@ -2,13 +2,15 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Color
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { searchForMovie } = require('../helpers/search-movie.js');
+const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createReleaseDatesEmbed } = require('../components/embed');
 const { MyEvents, ReleaseTypes } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu } = require('../helpers/get-options');
+const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getMediaResponse } = require('../helpers/get-media');
+const TV = 'tv';
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/release_dates?api_key=<<api_key>>
@@ -64,27 +66,26 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const country = interaction.options.getString('region') ?? 'All';
-		const releaseType = interaction.options.getInteger('release-type');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
-		const response = await searchForMovie(query, language, region, releaseYear);
-		const movieTitles = response.data.results;
+		const response = await searchForTV(query, language, region, releaseYear);
+		const tvTitles = response.data.results;
 
-		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
+		if (!tvTitles.length) {
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV Shows Found', 'Please make a new command with a different options.')], files: [file] });
 			return;
 		}
-		const options = getOptionsForSelectMenu(movieTitles, language);
+		const options = getOptionsForTvSelectMenu(tvTitles, language);
 
-		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'TV Show will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', filter: filter, ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -97,7 +98,7 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
-			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=release_dates`);
+			const movieResponse = await getMediaResponse(TV, selected, language, 'content_ratings');
 			const movie = movieResponse.data;
 			movieReleaseDates = movie.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 

@@ -100,7 +100,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'TV Show credits will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'TV Show credits will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -201,7 +201,10 @@ module.exports = {
 			else if (i.customId.includes('known_for_')) {
 				const searchParameter = i.customId.replace('known_for_', '');
 				const [mediaType, id] = searchParameter.split('_');
-				const mediaResponse = await getMediaResponse(mediaType, id, language);
+				const appendToResponse = mediaType == 'tv' ? ['aggregate_credits', 'content_ratings'] : ['credits', 'release_dates'];
+
+
+				const mediaResponse = await getMediaResponse(mediaType, id, language, appendToResponse);
 
 				const media = mediaResponse.data;
 

@@ -54,13 +54,15 @@ function getMediaDetail(mediaType, country, language, i, mediaData) {
 }
 
 
-async function getMediaResponse(mediaType, id, language) {
+async function getMediaResponse(mediaType, id, language, ...append_to_response) {
 	let mediaResponse;
 	if (mediaType.toUpperCase() == 'TV') {
-		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
+		// aggregate_credits,content_ratings
+		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${append_to_response.join(',')}`);
 	}
 	else if (mediaType.toUpperCase() == 'MOVIE') {
-		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
+		// credits,release_dates
+		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${append_to_response.join(',')}`);
 	}
 	return mediaResponse;
 }
