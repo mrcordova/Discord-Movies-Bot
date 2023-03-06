@@ -10,6 +10,7 @@ const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getMediaDetail, getMediaResponse } = require('../helpers/get-media');
 const tv_details = '/tv';
 
 
@@ -83,6 +84,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		const dept = interaction.options.getString('department') ?? '';
 
@@ -165,7 +167,7 @@ module.exports = {
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
-			if (i.customId != backId && i.customId != forwardId) {
+			if (i.customId != backId && i.customId != forwardId && !i.customId.includes('known_for_')) {
 				// https://api.themoviedb.org/3/credit/{id}?api_key=<<api_key>>
 
 				// TODO: add btns to known for media
@@ -180,18 +182,38 @@ module.exports = {
 					tvCredits = imdbResponse.data.person_results[0].known_for;
 				}
 				catch {
-					tvCredits = [{ title: 'N/A', vote_average: -1 }];
+					tvCredits = [];
 				}
 
 				const personCreditsEmbed = createPersonDetailEmbed(personDetials, tvCredits, i.user);
-
+				const moreDetailBtns = tvCredits.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `known_for_${credit.media_type}_${credit.id}`, getEmoji((index + 1))));
+				// console.log(moreDetailBtns);
 				await i.update({
 					content: 'Person\'s Detail',
 					embeds: [personCreditsEmbed],
+					components: [
+						new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No credits found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					],
+				});
+				// buttonCollector.stop('Done!');
+				// selectMenucollector.stop('Done!');
+			}
+			else if (i.customId.includes('known_for_')) {
+				const searchParameter = i.customId.replace('known_for_', '');
+				const [mediaType, id] = searchParameter.split('_');
+				// console.log(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
+				const mediaResponse = await getMediaResponse(mediaType, id, language);
+				const media = mediaResponse.data;
+
+				// console.log(media);
+				const mediaDetailsEmbed = getMediaDetail(mediaType, country, language, i, media);
+				await i.update({
+					content: `${mediaType}'s Detail`,
+					embeds: [mediaDetailsEmbed],
 					components: [],
 				});
+
 				buttonCollector.stop('Done!');
-				// selectMenucollector.stop('Done!');
 			}
 			else {
 
@@ -219,6 +241,8 @@ module.exports = {
 				});
 			}
 			selectMenucollector.resetTimer([{ idle: 30000 }]);
+
+
 		});
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`button dispose: ${i}`);
