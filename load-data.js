@@ -6,6 +6,7 @@ const jobsArry = JSON.parse(fs.readFileSync('data/jobs.json', 'utf8'));
 const transArry = JSON.parse(fs.readFileSync('data/primary-translations.json', 'utf8'));
 const images = JSON.parse(fs.readFileSync('data/images.json', 'utf8'));
 const movieRatings = JSON.parse(fs.readFileSync('data/movie-ratings.json', 'utf8'));
+const tvRatings = JSON.parse(fs.readFileSync('data/tv-ratings.json', 'utf8'));
 const availableRegions = JSON.parse(fs.readFileSync('data/watch-countries.json', 'utf8'));
 const availableProviders = JSON.parse(fs.readFileSync('data/movie-providers.json', 'utf8'));
 // let countryCodeDict = {};
@@ -127,4 +128,5 @@ module.exports = {
 	numberEmojis,
 	movieRatings,
 	translationsCodeDict,
+	tvRatings,
 };
