@@ -65,6 +65,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
 		const response = await searchForMovie(query, language, region, releaseYear);
@@ -98,12 +99,21 @@ module.exports = {
 			let movieRating;
 			// || tv.origin_country.includes(iso_3166_1)
 			try {
-				const production_countries = movie.production_countries.map(c => c.iso_3166_1);
-				// console.log(movieDetails.release_dates.results.find(({ iso_3166_1 }) => (country && iso_3166_1 == country) || production_countries.includes(iso_3166_1)));
-				movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => ((movie && iso_3166_1 == movie)) || production_countries.includes(iso_3166_1)) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				// console.log(movie.production_companies);
+				const countryObj = movie.release_dates.results.find(({ iso_3166_1 }) => country && iso_3166_1 == country);
+				movieRating = countryObj['release_dates'].find(({ type, certification }) => (type == 3 && certification) || (type == 2 && certification)).certification;
+				// console.log(countryObj['release_dates']);
 			}
 			catch {
-				movieRating = 'N/A';
+				try {
+					const originCountry = movie.production_companies.filter(({ origin_country }) => origin_country.length ? origin_country : false).sort((a, b) => a.id - b.id)[0].origin_country;
+					// console.log(movie.production_companies.filter(({ origin_country }) => origin_country.length ? origin_country : false).sort((a, b) => a.id - b.id)[0]);
+					const countryObj = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region || originCountry == iso_3166_1);
+					movieRating = countryObj['release_dates'].find(({ type, certification }) => (type == 3 && certification) || (type == 2 && certification)).certification;
+				}
+				catch {
+					movieRating = 'N/A';
+				}
 			}
 			movie.rating = movieRating;
 
