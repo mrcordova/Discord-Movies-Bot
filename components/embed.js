@@ -15,16 +15,17 @@ function createEmbed(color = 0x0099FF, title = 'Some title', description = 'Some
 		.setURL(url)
 		.setDescription(description);
 }
-const createAltListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
-	if (!moviesList.length) {
+const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) => {
+
+	if (!list.length) {
 		return createNoResultEmbed();
 	}
 
-	const current = moviesList.slice(start, start + listSize);
+	const current = list.slice(start, start + listSize);
 
 	return new EmbedBuilder({
 		color: color,
-		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		title: `Showing Alternative Titles ${start + 1}-${start + current.length} out of ${list.length}`,
 		fields: await Promise.all(current.map(async (movie, index) => ({
 			name: `${ start + (index + 1)}. ${movie.title}`,
 			value: `ISO Code: ${movie.iso_3166_1}\nName: ${ countryCodeDict[movie.iso_3166_1] ?? 'N/A'}\nType: ${movie.type == '' ? 'N/A' : movie.type}` })),
