@@ -94,16 +94,17 @@ module.exports = {
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
-			// console.log(movie.release_dates);
+			// console.log(movieDetails.release_dates.results);
 			let movieRating;
+			// || tv.origin_country.includes(iso_3166_1)
 			try {
-				movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+				const production_countries = movie.production_countries.map(c => c.iso_3166_1);
+				// console.log(movieDetails.release_dates.results.find(({ iso_3166_1 }) => (country && iso_3166_1 == country) || production_countries.includes(iso_3166_1)));
+				movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => ((movie && iso_3166_1 == movie)) || production_countries.includes(iso_3166_1)) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
 			}
 			catch {
 				movieRating = 'N/A';
 			}
-			// const movieRating = (movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
-			// console.log(movieRating);
 			movie.rating = movieRating;
 
 			const formatter = createCurrencyFormatter();
