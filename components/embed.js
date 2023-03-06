@@ -237,10 +237,15 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 	};
 }
 
-function createPersonDetailEmbed(person, movieCredits, user) {
+function createPersonDetailEmbed(person, credits, user) {
 
-	const known_for = movieCredits.sort((a, b) => b.vote_average - a.vote_average).map(movie => movie.title).join(', ');
-	// console.log(person.deathday);
+	const known_for = credits.sort((a, b) => b.vote_average - a.vote_average).map(credit => {
+		if (credit.title) {
+			return `${credit.title} (${credit.media_type})`;
+		} 
+		return `${credit.name} (${credit.media_type})`;
+	}).join(', ');
+	// console.log(credits);
 	const deathday = new Date(person.deathday ?? undefined);
 	const birthday = new Date(person.birthday ?? undefined);
 	return {
@@ -501,7 +506,7 @@ const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.B
 	}
 
 	const current = tvList.slice(start, start + listSize);
-	console.log(current);
+	// console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing TV Credits ${start + 1}-${start + current.length} out of ${tvList.length}`,

@@ -166,12 +166,9 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
+				// https://api.themoviedb.org/3/credit/{id}?api_key=<<api_key>>
 
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
+				const personResponse = await axios.get(`${api_url}/person/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
 				// console.log(personDetials);
 				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
@@ -193,7 +190,7 @@ module.exports = {
 					components: [],
 				});
 				buttonCollector.stop('Done!');
-				selectMenucollector.stop('Done!');
+				// selectMenucollector.stop('Done!');
 			}
 			else {
 
