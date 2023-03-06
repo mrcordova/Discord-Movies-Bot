@@ -1,4 +1,5 @@
 const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
+const { EpisodeGroupTypes } = require('../events/DMB-Events.js');
 const { countryCodeDict, images, movieRatings, langCodeDict, tvRatings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
@@ -678,7 +679,6 @@ const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) 
 	}
 
 
-	console.log(tvList);
 	const current = tvList.slice(start, start + listSize);
 	return new EmbedBuilder({
 		color: color,
@@ -687,7 +687,7 @@ const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) 
 			const network = tv.network ?? { origin_country: 'N/A' };
 			return {
 				name: `${ start + (index + 1)}. ${tv.name} (Eps Count: ${tv.episode_count})`,
-				value: `${underscore('Country of Origin:')} ${network.origin_country} (${countryCodeDict[network.origin_country] ?? 'N/A'})\n${underscore('Description:')}${tv.description}`,
+				value: `${underscore('Country of Origin:')} ${network.origin_country} (${countryCodeDict[network.origin_country] ?? 'N/A'})\n${underscore('Description:')}${tv.description}\n${underscore('Type:')} ${new EpisodeGroupTypes(tv.type).toString}`,
 			};
 		}),
 		),
