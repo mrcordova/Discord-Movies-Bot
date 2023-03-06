@@ -13,13 +13,12 @@ const tv_details = '/tv';
 
 
 // https://api.themoviedb.org/3/search/tv?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
-// language en-US optional
-// query String required
-// page 1 optional
+// language string Pass a ISO 639-1 value to display translated data for the fields that support it.
+// page integer Specify which page to query. optional
+// query string Pass a text query to search. This value should be URI encoded. required
 // include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
+// first_air_date_year integer optional
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
