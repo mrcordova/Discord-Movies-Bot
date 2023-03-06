@@ -203,9 +203,9 @@ module.exports = {
 				const [mediaType, id] = searchParameter.split('_');
 				// console.log(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
 				const mediaResponse = await getMediaResponse(mediaType, id, language);
+
 				const media = mediaResponse.data;
 
-				// console.log(media);
 				const mediaDetailsEmbed = getMediaDetail(mediaType, country, language, i, media);
 				await i.update({
 					content: `${mediaType}'s Detail`,

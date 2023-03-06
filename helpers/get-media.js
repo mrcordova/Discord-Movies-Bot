@@ -43,6 +43,7 @@ function getMediaDetail(mediaType, country, language, i, mediaData) {
 		mediaData.rating = movieRating;
 
 		const formatter = createCurrencyFormatter();
+		console.log(mediaData);
 		const prod = getProductionCompany(mediaData['production_companies']);
 		const directors = getCrewMember(mediaData.credits['crew'], 'director');
 		const actors = getCast(mediaData.credits['cast'], 10);
@@ -60,7 +61,7 @@ async function getMediaResponse(mediaType, id, language) {
 		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits,content_ratings`);
 	}
 	else if (mediaType.toUpperCase() == 'MOVIE') {
-		mediaResponse = await axios.get(`${api_url}${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
+		mediaResponse = await axios.get(`${api_url}/${mediaType}/${id}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 	}
 	return mediaResponse;
 }
