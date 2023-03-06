@@ -26,7 +26,7 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('tv-alt-titles')
-		.setDescription('Get alternative titles for a movie.')
+		.setDescription('Get alternative titles for a tv show.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
