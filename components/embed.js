@@ -106,7 +106,6 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 };
 
 
-
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
 		.setColor(color)

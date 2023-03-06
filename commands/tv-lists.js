@@ -11,6 +11,7 @@ const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { searchForTV } = require('../helpers/search-movie');
 const { getMediaResponse } = require('../helpers/get-media');
+const { getEmoji } = require('../helpers/get-emoji');
 const TV = 'tv';
 // const movie_lists = 'lists';
 
@@ -100,6 +101,11 @@ module.exports = {
 
 
 			const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
+            //TODO: add btns for going through epsodes
+			// const current = tv.results.slice(currentIndex, currentIndex + listSize);
+			// const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
+
+
 
 			await i.update({
 				content: 'Selected TV:',
@@ -112,6 +118,7 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < tv.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
+					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No TV Show List found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 				files: [file],
 			});
@@ -131,23 +138,37 @@ module.exports = {
 
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
+			// console.log(i.customId);
 
-			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+			if (i.customId != backId && i.customId != forwardId) {
+				const mediaResponse = await axios.get(`${api_url}/tv/episode_group/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
+				const data = mediaResponse.data;
+				console.log(data.groups);
+				// create new prev/next btns
+				// reset current index
+				// check id is not part of group
 
-			const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
+			}
+			else {
 
-			await i.update({
-				content: 'Selected TV:',
-				embeds: [listsEmbed],
-				components: [
-					i.message.components[0],
-					new ActionRowBuilder({ components:  [
-						// back button if it isn't the start
-						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-						// forward button if it isn't the end
-						...(currentIndex + listSize < tv.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] })],
-			});
+				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+				const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
+
+				await i.update({
+					content: 'Selected TV:',
+					embeds: [listsEmbed],
+					components: [
+						i.message.components[0],
+						new ActionRowBuilder({ components:  [
+							// back button if it isn't the start
+							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+							// forward button if it isn't the end
+							...(currentIndex + listSize < tv.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						] })],
+				});
+
+			}
 			selectMenuCollector.resetTimer([{ idle: 30000 }]);
 		});
 		buttonCollector.on(MyEvents.Dispose, i => {
