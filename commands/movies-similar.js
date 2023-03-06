@@ -158,11 +158,13 @@ module.exports = {
 				const movieDetails = creditResponse.data;
 
 				// TODO: chack if country is null, and default to country of production like tv-search.js
-				console.log(movieDetails);
+				// console.log(movieDetails.release_dates.results);
 				let movieRating;
 				// || tv.origin_country.includes(iso_3166_1)
 				try {
-					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country))) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+					const production_countries = movieDetails.production_countries.map(c => c.iso_3166_1);
+					// console.log(movieDetails.release_dates.results.find(({ iso_3166_1 }) => (country && iso_3166_1 == country) || production_countries.includes(iso_3166_1)));
+					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country)) || production_countries.includes(iso_3166_1)) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
 				}
 				catch {
 					movieRating = 'N/A';

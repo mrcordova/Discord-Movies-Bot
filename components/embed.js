@@ -184,6 +184,11 @@ function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatte
 				inline: true,
 			},
 			{
+				name: 'TagLine',
+				value: movie.tagline ?? 'N/A',
+				inline: true,
+			},
+			{
 				name: 'Status',
 				value: movie.status,
 				inline: true,
