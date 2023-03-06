@@ -214,6 +214,7 @@ module.exports = {
 				});
 
 				buttonCollector.stop('Done!');
+                selectMenucollector.stop('Done!');
 			}
 			else {
 
