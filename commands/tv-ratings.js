@@ -112,7 +112,7 @@ module.exports = {
 
 
 			await i.update({
-				content: `${tv.name.slice(0, 81)}`,
+				content: `Ratins for ${tv.name.slice(0, 81)}`,
 				embeds: [tvRatingEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -145,10 +145,10 @@ module.exports = {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			const current = tvReleaseDates.slice(currentIndex, currentIndex + listSize);
-			const title = `Showing Release Dates ${currentIndex + current.length} out of ${tvRatings.length}`;
+			const current = tvRatings.slice(currentIndex, currentIndex + listSize);
+			const title = `Showing Ratings ${currentIndex + 1}-${currentIndex + current.length} out of ${tvRatings.length}`;
 
-			const movieReleaseDateEmbed = await createReleaseDatesEmbed(currentIndex, current, title);
+			const movieReleaseDateEmbed = await createRatingsEmbed(currentIndex, current, title);
 			// const newSelectMenu = createSelectMenu('List of Movies', m.message.components[0].placeHolderText, 1, options);
 
 

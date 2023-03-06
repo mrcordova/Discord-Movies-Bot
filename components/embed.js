@@ -311,7 +311,7 @@ const createRatingsEmbed = async (start, tvList, title, color = Colors.Blue) => 
 
 	const current = tvList;
 
-	console.log(tvRatings);
+
 	return new EmbedBuilder({
 		color: color,
 		title: title,
