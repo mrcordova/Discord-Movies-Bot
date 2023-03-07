@@ -248,7 +248,7 @@ module.exports = {
 
 
 			await m.update({
-				content: `Selected Movie: ${tvTitle.slice(0, 80)}`,
+				content: `Selected TV Show: ${tvTitle.slice(0, 80)}`,
 				embeds: [tvWatchProviderEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
