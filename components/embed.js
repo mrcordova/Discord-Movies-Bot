@@ -111,6 +111,7 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		.setColor(color)
 		.setTitle(title)
 		.setDescription(description)
+		// .setThumbnail(justWatchIconUrl)
 		.setFooter({
 			text: tmdbName,
 			iconURL: tmdbIconUrl,
@@ -842,6 +843,7 @@ function createVideoEmbed(title, movieVideo, user) {
 }
 
 const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user, color = Colors.Blue) => {
+	// TODO: Determine media-type
 	if (!movieWatchProvidersList.length) {
 		return createNoResultEmbed();
 	}
