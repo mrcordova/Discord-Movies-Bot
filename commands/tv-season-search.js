@@ -99,12 +99,11 @@ module.exports = {
 		// if no film is found for certain year.
 		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-        const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
-
+		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 		let currentIndex = 0;
 		const listSize = 5;
 		let episodes;
-        let tv;
+		let tv;
 		selectMenuCollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
@@ -117,7 +116,7 @@ module.exports = {
 			// console.log(tv.credits['crew']);
 			episodes = tv.episodes;
 			const current = episodes.slice(currentIndex, currentIndex + listSize);
-            tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
+			tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
 			const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
@@ -159,20 +158,25 @@ module.exports = {
 			// console.log(i.customId);
 
 			if (i.customId != backId && i.customId != forwardId) {
-				const mediaResponse = await axios.get(`${api_url}/tv/episode_group/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const data = mediaResponse.data;
-				console.log(data.groups);
-				// create new prev/next btns
-				// reset current index
-				// check id is not part of group
+				const episode = episodes.find(({ id }) => id == i.customId);
 
+				// const episodeDetailDetailEmbed;
+
+				await i.update({
+					content: 'Test',
+					embeds: [],
+					components: [],
+					ephemeral: false,
+				});
+				buttonCollector.stop('Done!');
+				selectMenuCollector.stop('Done!');
 			}
 			else {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 				const current = episodes.slice(currentIndex, currentIndex + listSize);
-                tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
+				tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
 				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 				const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
