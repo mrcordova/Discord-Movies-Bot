@@ -6,11 +6,10 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed, createTvListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const tv_popular = '/tv/popular';
-const TV = 'tv';
+const tv_top_rated = '/tv/top_rated';
 
 
-// https://api.themoviedb.org/3/movie/popular?api_key=<<api_key>>&language=en-US&page=1
+// https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
 // language optional
 // page optional
 // region optional
@@ -24,8 +23,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-popular')
-		.setDescription('Get a list of the current popular TV shows on TMDB. This list updates daily.')
+		.setName('tv-top-rated')
+		.setDescription('Get a list of the top rated TV shows on TMDB.')
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired language.')
@@ -58,19 +57,19 @@ module.exports = {
 		);
 	},
 	async execute(interaction) {
-
-		// TODO: added buttons for each button on list and direct them to chossen media
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 
-		const response = await axios.get(`${api_url}${tv_popular}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
-		const tvPopular = response.data.results;
+		const response = await axios.get(`${api_url}${tv_top_rated}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
+		const tvTopRated = response.data.results;
 		const listSize = 5;
 		let currentIndex = 0;
-		const canFitOnOnePage = tvPopular.length <= listSize;
+		// dates = response.data.dates;
+
+		const canFitOnOnePage = tvTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
-			content: 'Popular TV Shows',
-			embeds: [await createTvListEmbed(currentIndex, listSize, tvPopular)],
+			content: 'Top Rated TV Shows',
+			embeds: [await createTvListEmbed(currentIndex, listSize, tvTopRated)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 			files: [file],
 		});
@@ -87,30 +86,27 @@ module.exports = {
 			customId:'list',
 			idle: 30000,
 		});
-
 		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				content: 'Popular TV Shows',
-				embeds: [await createTvListEmbed(currentIndex, listSize, tvPopular)],
+				content: 'Top Rated TV Shows',
+				embeds: [await createTvListEmbed(currentIndex, listSize, tvTopRated)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
 					...(currentIndex ? [backButton] : []),
 					// forward button if it isn't the end
-					...(currentIndex + listSize < tvPopular.length ? [forwardButton] : []),
+					...(currentIndex + listSize < tvTopRated.length ? [forwardButton] : []),
 				] }) ],
 			});
 		});
-
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
