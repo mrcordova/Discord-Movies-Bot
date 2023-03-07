@@ -97,18 +97,21 @@ module.exports = {
 
 		// if no film is found for certain year.
 		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
-		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
+		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
+        const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+
 		let currentIndex = 0;
 		const listSize = 5;
 		let episodes;
-		selectMenucollector.on(MyEvents.Collect, async i => {
+        let tv;
+		selectMenuCollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
 
 
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
-			const tv = tvResponse.data;
+			tv = tvResponse.data;
 
 			// console.log(tv.credits['crew']);
 			episodes = tv.episodes;
@@ -118,7 +121,7 @@ module.exports = {
 
 
 			await i.update({
-				content: 'Selected TV Show:',
+				content: `Selected TV Show: ${tv.name.slice(0, 81)}`,
 				embeds: [tvDetailsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -132,20 +135,69 @@ module.exports = {
 				files: [file],
 			});
 			// collector.resetTimer([{time: 15000}]);
+            buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 
-		selectMenucollector.on(MyEvents.Dispose, i => {
+		selectMenuCollector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
 		// eslint-disable-next-line no-unused-vars
-		selectMenucollector.on(MyEvents.End, async (c, r) => {
+		selectMenuCollector.on(MyEvents.End, async (c, r) => {
 			getEditReply(interaction, r);
 		});
-		selectMenucollector.on(MyEvents.Ignore, args => {
+		selectMenuCollector.on(MyEvents.Ignore, args => {
 			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
+		buttonCollector.on(MyEvents.Collect, async i => {
+			// console.log(i.customId);
+
+			if (i.customId != backId && i.customId != forwardId) {
+				const mediaResponse = await axios.get(`${api_url}/tv/episode_group/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
+				const data = mediaResponse.data;
+				console.log(data.groups);
+				// create new prev/next btns
+				// reset current index
+				// check id is not part of group
+
+			}
+			else {
+
+				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+                const current = episodes.slice(currentIndex, currentIndex + listSize);
+				const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
+
+				await i.update({
+					content: i.message.content,
+					embeds: [tvDetailsEmbed],
+					components: [
+						i.message.components[0],
+						new ActionRowBuilder({ components:  [
+							// back button if it isn't the start
+							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+							// forward button if it isn't the end
+							...(currentIndex + listSize < episodes.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						] })],
+				});
+
+			}
+			selectMenuCollector.resetTimer([{ idle: 30000 }]);
+		});
+		buttonCollector.on(MyEvents.Dispose, i => {
+			console.log(`button dispose: ${i}`);
+		});
+		buttonCollector.on(MyEvents.Ignore, args => {
+			// console.log(`button ignore: ${args}`);
+			getPrivateFollowUp(args);
+
+		});
+		// eslint-disable-next-line no-unused-vars
+		buttonCollector.on(MyEvents.End, async (c, r) => {
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
+		});
 	},
 };
 
