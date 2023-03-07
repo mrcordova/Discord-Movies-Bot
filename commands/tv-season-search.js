@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTvDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createTvDetailEmbed, createTvSeasonDetailEmbed } = require('../components/embed.js');
 const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
@@ -99,25 +99,10 @@ module.exports = {
 
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
 			const tv = tvResponse.data;
-			console.log(tv);
-			// console.log(tv.content_ratings);
-			let tvRating;
-			try {
-				tvRating = tv.content_ratings.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country) || tv.origin_country.includes(iso_3166_1)))['rating'];
-			}
-			catch (err) {
-				tvRating = 'N/A';
-			}
 
-			tv.rating = tvRating;
-			const network = getProductionCompany(tv['networks']);
-			// const creators = getCrewMember(tv.credits['crew'], 'Creator');
-			// console.log(tv.aggregate_credits['crew']);
-			const actors = getCast(tv.aggregate_credits['cast'], 10);
-			tv.language = language;
 			// console.log(tv.credits['crew']);
 
-			const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv, network, actors, color: Colors.Aqua });
+			const tvDetailsEmbed =  await createTvSeasonDetailEmbed(tv, i.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 
