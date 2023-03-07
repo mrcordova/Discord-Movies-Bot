@@ -739,7 +739,7 @@ async function createTvSeasonDetailEmbed({ tv, episodes }, user, color = Colors.
 	// console.log();
 	return {
 		color: color,
-		title: tv.name,
+		title: `${underscore(tv.name)}\n${tv.count}`,
 		url: tv.homepage,
 		author: {
 			name: user.username,

@@ -117,6 +117,7 @@ module.exports = {
 			// console.log(tv.credits['crew']);
 			episodes = tv.episodes;
 			const current = episodes.slice(currentIndex, currentIndex + listSize);
+            tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
 			const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
@@ -171,6 +172,7 @@ module.exports = {
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 				const current = episodes.slice(currentIndex, currentIndex + listSize);
+                tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
 				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 				const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
