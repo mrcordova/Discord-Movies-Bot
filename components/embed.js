@@ -62,6 +62,18 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	});
 };
 
+function createJustWatchNoResultEmbed(color = 'ff0000', title = 'No Results Found', description = 'Please enter new options.') {
+	return new EmbedBuilder()
+		.setColor(color)
+		.setTitle(title)
+		.setDescription(description)
+		.setThumbnail(justWatchIconUrl)
+		.setFooter({
+			text: tmdbName,
+			iconURL: tmdbIconUrl,
+		});
+}
+
 
 const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -842,13 +854,13 @@ function createVideoEmbed(title, movieVideo, user) {
 	};
 }
 
-const createWatchProviderListEmbed = async (title, movieWatchProvidersList, user, color = Colors.Blue) => {
+const createWatchProviderListEmbed = async (title, watchProvidersList, user, color = Colors.Blue) => {
 	// TODO: Determine media-type
-	if (!movieWatchProvidersList.length) {
-		return createNoResultEmbed();
+	if (!watchProvidersList.length) {
+		return createJustWatchNoResultEmbed();
 	}
 
-	const current = movieWatchProvidersList;
+	const current = watchProvidersList;
 	// current.map((watchProvider, index) => {
 	// 	console.log(watchProvider);
 
@@ -906,6 +918,7 @@ module.exports = {
 	createEmbed,
 	createAltListEmbed,
 	createCreditListEmbed,
+	createJustWatchNoResultEmbed,
 	createListEmbed,
 	createListsEmbed,
 	createImageEmbed,
