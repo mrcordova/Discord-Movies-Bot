@@ -2,14 +2,14 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Color
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createVideoEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
@@ -27,7 +27,6 @@ const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpe
 // Constants
 const backId = 'back';
 const forwardId = 'forward';
-const TV = 'tv';
 
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
