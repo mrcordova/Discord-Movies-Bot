@@ -40,8 +40,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-availability')
-		.setDescription('Get a list of the availabilities per country by platform')
+		.setName('tv-availability')
+		.setDescription('get a list of the availabilities per country by provider')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
