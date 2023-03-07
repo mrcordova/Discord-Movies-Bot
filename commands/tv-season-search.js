@@ -10,6 +10,7 @@ const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { createButton } = require('../components/button');
+const { getEmoji } = require('../helpers/get-emoji');
 const tv_details = '/tv';
 
 
@@ -119,6 +120,7 @@ module.exports = {
 			const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
+			const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 			await i.update({
 				content: `Selected TV Show: ${tv.name.slice(0, 81)}`,
@@ -131,11 +133,13 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < tv.episodes.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Episodes found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+
 				],
 				files: [file],
 			});
 			// collector.resetTimer([{time: 15000}]);
-            buttonCollector.resetTimer([{ idle: 30000 }]);
+			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 
 		selectMenuCollector.on(MyEvents.Dispose, i => {
@@ -166,7 +170,9 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-                const current = episodes.slice(currentIndex, currentIndex + listSize);
+				const current = episodes.slice(currentIndex, currentIndex + listSize);
+				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
+
 				const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
 
 				await i.update({
@@ -179,7 +185,9 @@ module.exports = {
 							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 							// forward button if it isn't the end
 							...(currentIndex + listSize < episodes.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-						] })],
+						] }),
+						new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Episodes found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					],
 				});
 
 			}
