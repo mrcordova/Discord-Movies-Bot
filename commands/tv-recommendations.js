@@ -70,6 +70,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
+		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		// const dept = interaction.options.getString('department') ?? '';
 
@@ -157,29 +158,31 @@ module.exports = {
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const appendToResponse = ['credits', 'release_dates'];
+				const appendToResponse = ['aggregate_credits', 'content_ratings'];
 				const creditResponse = await getMediaResponse(TV, i.customId, language, appendToResponse);
 				const tvDetails = creditResponse.data;
-                console.log(tvDetails);
+
 				let tvRating;
 				try {
-					tvRating = (tvDetails.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+					tvRating = tvDetails.content_ratings.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country) || tvDetails.origin_country.includes(iso_3166_1)))['rating'];
 				}
-				catch {
+				catch (err) {
 					tvRating = 'N/A';
 				}
 				tvDetails.rating = tvRating;
+				const network = getProductionCompany(tvDetails['networks']);
+				// const creators = getCrewMember(tv.credits['crew'], 'Creator');
+				// console.log(tv.aggregate_credits['crew']);
+				const actors = getCast(tvDetails.aggregate_credits['cast'], 10);
+				tvDetails.language = language;
+				// console.log(tv.credits['crew']);
 
-				const formatter = createCurrencyFormatter();
-				const network = getProductionCompany(tvDetails['network']);
-				const directors = getCrewMember(tvDetails.credits['crew'], 'director');
-				const actors = getCast(tvDetails.credits['cast'], 3);
-
-				const tvDetailssEmbed = createTvDetailEmbed({ user: i.user, tv: tvDetails, network, directors, actors, formatter, color: Colors.Aqua });
+				const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv: tvDetails, network, actors, color: Colors.Aqua });
+				// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 				await i.update({
 					content: 'TV\'s Detail',
-					embeds: [tvDetailssEmbed],
+					embeds: [tvDetailsEmbed],
 					components: [],
 				});
 				buttonCollector.stop('Done!');
