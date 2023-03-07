@@ -166,8 +166,9 @@ module.exports = {
 				episode.directors = getCrewMember(crew, 'director');
 				episode.editors = getCrewMember(crew, 'editor');
 				episode.dps = getCrewMember(crew, 'director of photography');
-				episode.actors = crew.filter(({ character, known_for_department }) => character && known_for_department == 'Acting');
-				console.log(episode);
+                // console.log(tv.aggregate_credits);
+				episode.actors = getCast(tv.aggregate_credits.cast, 10);
+				// console.log(episode);
 				const episodeDeatailEmbed = createEpisodeDetailEmbed(episode, i.user);
 				await i.update({
 					content: 'Test',

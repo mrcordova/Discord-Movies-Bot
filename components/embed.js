@@ -62,7 +62,7 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	});
 };
 
-function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name, still_path, overview, guest_stars }, user) {
+function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name, still_path, overview, guest_stars, runtime, season_number, episode_number, vote_average }, user) {
 	const airDate = new Date(air_date);
 	return {
 		color: Colors.Aqua,
@@ -84,12 +84,12 @@ function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, ai
 				inline: true,
 			},
 			{
-				name: 'Written',
+				name: 'Written by',
 				value: writers.join(' & '),
 				inline: true,
 			},
 			{
-				name: 'Editing',
+				name: 'Edited by',
 				value: editors.join(' & '),
 				inline: true,
 			},
@@ -105,12 +105,27 @@ function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, ai
 			},
 			{
 				name: 'Guest Stars',
-				value: guest_stars.map(({ name }) => name).join(', '),
+				value: guest_stars.map(({ name, character }) => `${underscore(name)} (Charactor: ${character})`).join(', '),
 				inline: true,
 			},
 			{
 				name: 'Air date',
 				value: `${time(airDate, 'D')} (${time(airDate, 'R')})`,
+				inline: true,
+			},
+			{
+				name: 'Run time',
+				value: runtime,
+				inline: true,
+			},
+			{
+				name: 'Episode ID',
+				value: `S${season_number}E${episode_number}`,
+				inline: true,
+			},
+			{
+				name: 'Rating',
+				value: `${vote_average}/10`,
 				inline: true,
 			},
 		],
