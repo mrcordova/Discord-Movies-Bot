@@ -3,11 +3,10 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
-const { createListEmbed, createTvListEmbed } = require('../components/embed');
+const { createTvListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const tv_popular = '/tv/popular';
-const TV = 'tv';
 
 
 // https://api.themoviedb.org/3/movie/popular?api_key=<<api_key>>&language=en-US&page=1
