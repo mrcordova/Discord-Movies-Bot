@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTvDetailEmbed, createTvSeasonDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createTvDetailEmbed, createTvSeasonDetailEmbed, createEpisodeDetailEmbed } = require('../components/embed.js');
 const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getCast, getProductionCompany } = require('../helpers/get-production-info');
+const { getCast, getProductionCompany, getCrewMember } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
@@ -161,10 +161,17 @@ module.exports = {
 				const episode = episodes.find(({ id }) => id == i.customId);
 
 				// const episodeDetailDetailEmbed;
-
+				const crew = episode.crew;
+				episode.writers = getCrewMember(crew, 'writer');
+				episode.directors = getCrewMember(crew, 'director');
+				episode.editors = getCrewMember(crew, 'editor');
+				episode.dps = getCrewMember(crew, 'director of photography');
+				episode.actors = crew.filter(({ character, known_for_department }) => character && known_for_department == 'Acting');
+				console.log(episode);
+				const episodeDeatailEmbed = createEpisodeDetailEmbed(episode, i.user);
 				await i.update({
 					content: 'Test',
-					embeds: [],
+					embeds: [episodeDeatailEmbed],
 					components: [],
 					ephemeral: false,
 				});

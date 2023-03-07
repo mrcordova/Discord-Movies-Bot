@@ -62,6 +62,69 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	});
 };
 
+function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name, still_path, overview, guest_stars }, user) {
+	const airDate = new Date(air_date);
+	return {
+		color: Colors.Aqua,
+		title: name,
+		// url: ``,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: overview,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Directed by',
+				value: directors.join(' & '),
+				inline: true,
+			},
+			{
+				name: 'Written',
+				value: writers.join(' & '),
+				inline: true,
+			},
+			{
+				name: 'Editing',
+				value: editors.join(' & '),
+				inline: true,
+			},
+			{
+				name: 'Director(s) of Photgraphy',
+				value: dps.join(' & '),
+				inline: true,
+			},
+			{
+				name: 'Starring',
+				value: actors.join(', '),
+				inline: true,
+			},
+			{
+				name: 'Guest Stars',
+				value: guest_stars.map(({ name }) => name).join(', '),
+				inline: true,
+			},
+			{
+				name: 'Air date',
+				value: `${time(airDate, 'D')} (${time(airDate, 'R')})`,
+				inline: true,
+			},
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${still_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
+
 function createJustWatchNoResultEmbed(color = 'ff0000', title = 'No Results Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
 		.setColor(color)
@@ -968,6 +1031,7 @@ module.exports = {
 	createEmbed,
 	createAltListEmbed,
 	createCreditListEmbed,
+	createEpisodeDetailEmbed,
 	createJustWatchNoResultEmbed,
 	createListEmbed,
 	createListsEmbed,
