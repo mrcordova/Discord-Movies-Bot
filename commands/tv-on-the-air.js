@@ -6,7 +6,7 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createTvListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const tv_airing_today = '/tv/airing_today';
+const tv_on_the_air = '/tv/on_the_air';
 
 
 // https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
@@ -23,8 +23,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-airing-today')
-		.setDescription('Get a list of TV shows that are airing today (Eastern Time UTC-05:00).')
+		.setName('tv-on-the-air')
+		.setDescription('Get a list of Tv shows currently airing with an episode in the next 7 days.')
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired language.')
@@ -60,7 +60,7 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 
-		const response = await axios.get(`${api_url}${tv_airing_today}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}`);
+		const response = await axios.get(`${api_url}${tv_on_the_air}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
 		const tvTopRated = response.data.results;
 		const listSize = 5;
 		let currentIndex = 0;
@@ -68,7 +68,7 @@ module.exports = {
 
 		const canFitOnOnePage = tvTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
-			content: 'TV Shows airing today',
+			content: 'TV Shows on air',
 			embeds: [await createTvListEmbed(currentIndex, listSize, tvTopRated)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 			files: [file],
