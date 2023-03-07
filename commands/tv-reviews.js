@@ -1,15 +1,13 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createReviewEmbed, createReviewDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
-const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { getMediaResponse } = require('../helpers/get-media');
 // const movie_details = '/movie';
 const TV = 'tv';
@@ -104,7 +102,7 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
-            const appendToResponse = ['reviews'];
+			const appendToResponse = ['reviews'];
 			const tvResponse = await getMediaResponse(TV, selected, language, appendToResponse);
 			const tv = tvResponse.data;
 			reviews = tv.reviews.results.sort((a, b) => {

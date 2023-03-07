@@ -1,16 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed, createTvCreditListEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { createEmbed, createNoResultEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
-const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
-const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
+const { getProductionCompany, getCast } = require('../helpers/get-production-info');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { getMediaResponse } = require('../helpers/get-media');
 const TV = 'tv';
 
@@ -155,7 +153,7 @@ module.exports = {
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-                const appendToRespnse = ['aggregate_credits', 'content_ratings'];
+				const appendToRespnse = ['aggregate_credits', 'content_ratings'];
 				const creditResponse = await getMediaResponse(TV, i.customId, language, appendToRespnse);
 				const tvDetails = creditResponse.data;
 
