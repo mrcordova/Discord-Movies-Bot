@@ -115,7 +115,7 @@ module.exports = {
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
+			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${movie.title.slice(0, 81)}`,
 				embeds: [movieTranslationsEmbed],
@@ -174,7 +174,7 @@ module.exports = {
 
 				const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 				const current = translations.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
