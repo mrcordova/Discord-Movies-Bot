@@ -20,7 +20,7 @@ const forwardId = 'forward';
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
-
+// TODO: create new embed for on the air and airing today to show next episode date?
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('tv-on-the-air')
