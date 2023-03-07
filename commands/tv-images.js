@@ -2,21 +2,19 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Color
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const { getMediaResponse } = require('../helpers/get-media');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
 // language string optional
 // include_image_language string optional
 
-const TV = 'tv';
 // Constants
 const backId = 'back';
 const forwardId = 'forward';

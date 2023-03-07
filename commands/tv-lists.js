@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createListsEmbed, createTvListsEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createTvListsEmbed } = require('../components/embed.js');
 const { translationsCodeDict, file } = require('../load-data.js');
 
 const axios = require('axios');
@@ -8,10 +8,9 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { searchForTV } = require('../helpers/search-movie');
 const { getMediaResponse } = require('../helpers/get-media');
-const { getEmoji } = require('../helpers/get-emoji');
 const TV = 'tv';
 // const movie_lists = 'lists';
 
@@ -101,10 +100,9 @@ module.exports = {
 
 
 			const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
-            //TODO: add btns for going through epsodes
+			// TODO: add btns for going through epsodes
 			// const current = tv.results.slice(currentIndex, currentIndex + listSize);
 			// const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
-
 
 
 			await i.update({

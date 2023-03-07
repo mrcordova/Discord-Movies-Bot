@@ -1,21 +1,18 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
+const { createEmbed, createNoResultEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
+const { searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
-const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
-const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
+const { getProductionCompany, getCast } = require('../helpers/get-production-info');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const { getMediaResponse } = require('../helpers/get-media');
-const movie_details = '/tv';
 const TV = 'tv';
 
-// https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=credits
+// https://api.themoviedb.org/3/movie/{tv_is}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=aggregate_credits
 // language en-US optional
 
 
@@ -31,7 +28,7 @@ module.exports = {
 		.setDescription('Get the list of TV show recommendations for this tv show.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired Tv show.')
+				.setDescription('Search for the desired TV show.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
