@@ -485,6 +485,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		return createNoResultEmbed();
 	}
 
+	console.log(translationDetails);
 	return {
 		color: Colors.DarkGrey,
 		title: `${translationDetails.data.title}`,
@@ -541,6 +542,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		},
 	};
 }
+
 const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
 	if (!tvList.length) {
 		return createNoResultEmbed();
@@ -717,6 +719,64 @@ const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) 
 	});
 };
 
+function createTvTranslateDetailEmbed(translationDetails, user) {
+	if (!translationDetails) {
+		return createNoResultEmbed();
+	}
+
+
+	return {
+		color: Colors.DarkGrey,
+		title: `${translationDetails.data.name}`,
+		url: `${translationDetails.data.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: translationDetails.data.overview,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Tagline',
+				value: `${translationDetails.data.tagline == '' ? 'N/A' : translationDetails.data.tagline}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
+				value: `${translationDetails.name}`,
+				inline: true,
+			},
+			{
+				name: 'English Translation',
+				value: `${translationDetails.english_name}`,
+				inline: true,
+			},
+			{
+				name: 'Region',
+				value: `${translationDetails.iso_3166_1}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
+				value: `${translationDetails.iso_639_1} (${langCodeDict[translationDetails.iso_639_1]})`,
+				inline: true,
+			},
+
+		],
+		// image: {
+		// 	url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+		// },
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
+
 function createVideoEmbed(title, movieVideo, user) {
 	if (!movieVideo.length) {
 		return createNoResultEmbed();
@@ -860,6 +920,7 @@ module.exports = {
 	createTvDetailEmbed,
 	createTvListEmbed,
 	createTvListsEmbed,
+	createTvTranslateDetailEmbed,
 	createVideoEmbed,
 	createWatchProviderListEmbed,
 };
