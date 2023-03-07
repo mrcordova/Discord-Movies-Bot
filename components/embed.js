@@ -671,7 +671,26 @@ function createTvDetailEmbed({ user, tv, network, actors, color }) {
 		},
 	};
 }
+const createTvListEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
+	if (!tvList.length) {
+		return createNoResultEmbed();
+	}
 
+	const current = tvList.slice(start, start + listSize);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${tvList.length}`,
+		fields: await Promise.all(current.map(async (movie, index) => ({
+			name: `${ start + (index + 1)}. ${movie.name} (${time(new Date(movie.first_air_date), 'D')}) - ${movie.vote_average}`,
+			value: movie.overview })),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
 	if (!tvList.length) {
 		return createNoResultEmbed(Colors.Red, 'No TV Show Found');
@@ -839,6 +858,7 @@ module.exports = {
 	createTranslateDetailEmbed,
 	createTvCreditListEmbed,
 	createTvDetailEmbed,
+	createTvListEmbed,
 	createTvListsEmbed,
 	createVideoEmbed,
 	createWatchProviderListEmbed,
