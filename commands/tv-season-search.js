@@ -109,8 +109,21 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
+			let tvResponse;
+			try {
+				tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
+			}
+			catch {
+				await i.update({
+					content: i.message.content,
+					embeds: [createNoResultEmbed(Colors.Red, 'No Results found')],
+					components: [
+						i.message.components[0],
+					],
+				});
+				return;
+			}
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
 			tv = tvResponse.data;
 
 			// console.log(tv.credits['crew']);
@@ -166,7 +179,6 @@ module.exports = {
 				episode.directors = getCrewMember(crew, 'director');
 				episode.editors = getCrewMember(crew, 'editor');
 				episode.dps = getCrewMember(crew, 'director of photography');
-                // console.log(tv.aggregate_credits);
 				episode.actors = getCast(tv.aggregate_credits.cast, 10);
 				// console.log(episode);
 				const episodeDeatailEmbed = createEpisodeDetailEmbed(episode, i.user);
