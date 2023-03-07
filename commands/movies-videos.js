@@ -235,7 +235,7 @@ module.exports = {
 
 				// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
 				// console.log(m.message.components[0].components[0].placeholder)
-				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Movie Image ${currentIndex + current.length} out of ${movieVideos.length}`;
+				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Movie Video ${currentIndex + current.length} out of ${movieVideos.length}`;
 				const movieVideoEmbed = createVideoEmbed(title, current, m.user);
 				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
