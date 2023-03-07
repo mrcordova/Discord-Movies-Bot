@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed } = require('../components/embed.js');
-const { searchForMovie } = require('../helpers/search-movie.js');
+const { createEmbed, createNoResultEmbed, createMovieDetailEmbed, createListEmbed, createTvCreditListEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
+const { searchForMovie, searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
@@ -10,8 +10,9 @@ const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { createCurrencyFormatter, getProductionCompany, getCrewMember, getCast } = require('../helpers/get-production-info');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu } = require('../helpers/get-options');
-const movie_details = '/movie';
+const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getMediaResponse } = require('../helpers/get-media');
+const TV = 'tv';
 
 
 // https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=credits
@@ -26,11 +27,11 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '�
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-similar')
-		.setDescription('Get a list of similar movies (uses keywords and genres). Not the same as the "Recommendation".')
+		.setName('tv-similar')
+		.setDescription('Get a list of similar tv shows (uses keywords and genres). Not the same as the "Recommendation".')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired film.')
+				.setDescription('Search for the desired tv show.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
@@ -73,24 +74,24 @@ module.exports = {
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		// const dept = interaction.options.getString('department') ?? '';
 
-		const response = await searchForMovie(query, language, region, releaseYear);
+		const response = await searchForTV(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found for that query', 'Please make a new command with a different options')], files:[file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Tv Show Found for that query', 'Please make a new command with a different options')], files:[file] });
 			return;
 		}
-		const options = getOptionsForSelectMenu(movieTitles, language);
+		const options = getOptionsForTvSelectMenu(movieTitles, language);
 
-		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie similar will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'TV Show similar will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -104,23 +105,23 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
+			const appendToResponse = ['similar'];
+			const tvResponse = await getMediaResponse(TV, selected, language, appendToResponse);
+			const tv = tvResponse.data;
 
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=similar`);
-			const movie = movieResponse.data;
+			similar = tv.similar.results;
 
-			similar = movie.similar.results;
-
-			const movieRecommendsEmbed = await createListEmbed(currentIndex, listSize, similar);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+			const tvRecommendsEmbed = await createTvListEmbed(currentIndex, listSize, similar);
+			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 			// console.log(recommendations);
 
 			const current = similar.slice(currentIndex, currentIndex + listSize);
 			// console.log(current);
-			const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+			const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
-				content: `Similar to ${movie.title.slice(0, 81)}`,
-				embeds: [movieRecommendsEmbed],
+				content: `Similar to ${tv.name.slice(0, 81)}`,
+				embeds: [tvRecommendsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
@@ -129,7 +130,7 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < similar.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Movies found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No TV Show found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
 				files:[file],
 			});
@@ -154,33 +155,32 @@ module.exports = {
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}${movie_details}/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
-				const movieDetails = creditResponse.data;
+                const appendToRespnse = ['aggregate_credits', 'content_ratings'];
+				const creditResponse = await getMediaResponse(TV, i.customId, language, appendToRespnse);
+				const tvDetails = creditResponse.data;
 
-				// TODO: chack if country is null, and default to country of production like tv-search.js
-				// console.log(movieDetails.release_dates.results);
-				let movieRating;
-				// || tv.origin_country.includes(iso_3166_1)
+
+				let tvRating;
 				try {
-					const production_countries = movieDetails.production_countries.map(c => c.iso_3166_1);
-					// console.log(movieDetails.release_dates.results.find(({ iso_3166_1 }) => (country && iso_3166_1 == country) || production_countries.includes(iso_3166_1)));
-					movieRating = (movieDetails.release_dates.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country)) || production_countries.includes(iso_3166_1)) ?? { release_dates: [{ type: 3 }] })['release_dates'].find(({ type }) => type == 3).certification ?? 'N/A';
+					tvRating = tvDetails.content_ratings.results.find(({ iso_3166_1 }) => ((country && iso_3166_1 == country) || tvDetails.origin_country.includes(iso_3166_1)))['rating'];
 				}
-				catch {
-					movieRating = 'N/A';
+				catch (err) {
+					tvRating = 'N/A';
 				}
-				movieDetails.rating = movieRating;
+				tvDetails.rating = tvRating;
+				const network = getProductionCompany(tvDetails['networks']);
+				// const creators = getCrewMember(tv.credits['crew'], 'Creator');
+				// console.log(tv.aggregate_credits['crew']);
+				const actors = getCast(tvDetails.aggregate_credits['cast'], 10);
+				tvDetails.language = language;
+				// console.log(tv.credits['crew']);
 
-				const formatter = createCurrencyFormatter();
-				const prod = getProductionCompany(movieDetails['production_companies']);
-				const directors = getCrewMember(movieDetails.credits['crew'], 'director');
-				const actors = getCast(movieDetails.credits['cast'], 3);
-
-				const movieDetailssEmbed = createMovieDetailEmbed({ user: i.user, movie: movieDetails, prod, directors, actors, formatter, color: Colors.Aqua });
+				const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv: tvDetails, network, actors, color: Colors.Aqua });
+				// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 				await i.update({
-					content: 'Movie\'s Detail',
-					embeds: [movieDetailssEmbed],
+					content: 'TV\'s Detail',
+					embeds: [tvDetailsEmbed],
 					components: [],
 				});
 				buttonCollector.stop('Done!');
@@ -191,14 +191,14 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-				const movieSimilarEmbed = await createListEmbed(currentIndex, listSize, similar);
+				const tvSimilarEmbed = await createTvListEmbed(currentIndex, listSize, similar);
 				const current = similar.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((movieInfo, index) => createButton(`${movieInfo.title}`, ButtonStyle.Secondary, `${movieInfo.id}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
 					content: i.message.content,
-					embeds: [movieSimilarEmbed],
+					embeds: [tvSimilarEmbed],
 					components: [
 						i.message.components[0],
 						new ActionRowBuilder({ components:  [
