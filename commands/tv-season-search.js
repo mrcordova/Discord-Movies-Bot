@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createTvDetailEmbed, createTvSeasonDetailEmbed } = require('../components/embed.js');
 const { searchForTV } = require('../helpers/search-movie.js');
@@ -9,6 +9,7 @@ const { getCast, getProductionCompany } = require('../helpers/get-production-inf
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { createButton } = require('../components/button');
 const tv_details = '/tv';
 
 
@@ -19,6 +20,11 @@ const tv_details = '/tv';
 // include_adult false optional
 // first_air_date_year integer optional
 
+const backId = 'back';
+const forwardId = 'forward';
+
+const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
+const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -92,24 +98,37 @@ module.exports = {
 		// if no film is found for certain year.
 		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-
+		let currentIndex = 0;
+		const listSize = 5;
+		let episodes;
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
+			currentIndex = 0;
+
 
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
 			const tv = tvResponse.data;
 
 			// console.log(tv.credits['crew']);
-
-			const tvDetailsEmbed =  await createTvSeasonDetailEmbed(tv, i.user);
+			episodes = tv.episodes;
+			const current = episodes.slice(currentIndex, currentIndex + listSize);
+			const tvDetailsEmbed = await createTvSeasonDetailEmbed({ tv, episodes: current }, i.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 
 			await i.update({
 				content: 'Selected TV Show:',
 				embeds: [tvDetailsEmbed],
-				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
+				components: [
+					new ActionRowBuilder().addComponents(newSelectMenu),
+					new ActionRowBuilder({ components:  [
+						// back button if it isn't the start
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < tv.episodes.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] }),
+				],
 				files: [file],
 			});
 			// collector.resetTimer([{time: 15000}]);

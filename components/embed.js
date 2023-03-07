@@ -733,10 +733,10 @@ const createTvListsEmbed = async (start, listSize, tvList, color = Colors.Blue) 
 	});
 };
 
-async function createTvSeasonDetailEmbed(tv, user, color = Colors.Aqua) {
+async function createTvSeasonDetailEmbed({ tv, episodes }, user, color = Colors.Aqua) {
 	const airDate = new Date(tv.air_date);
 	// const lastAirDate = new Date(tv.last_air_date);
-	// console.log(tv.created_by);
+	// console.log();
 	return {
 		color: color,
 		title: tv.name,
@@ -763,10 +763,10 @@ async function createTvSeasonDetailEmbed(tv, user, color = Colors.Aqua) {
 				name: '# of Eps',
 				value: `${tv.episodes.length}`,
 			},
-			...await Promise.all(tv.episodes.map(async ({ name, episode_number, air_date }) => {
+			...await Promise.all(episodes.map(async ({ name, episode_number, air_date }) => {
 				const epsAirDate = new Date(air_date);
 				return {
-					name: `${episode_number}. ${name}`, 
+					name: `${episode_number}. ${name}`,
 					value: `${time(epsAirDate, 'D')} (${time(epsAirDate, 'R')})`,
 				};
 			})),
