@@ -62,11 +62,11 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	});
 };
 
-function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name, still_path, overview, guest_stars, runtime, season_number, episode_number, vote_average }, user) {
+function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name: titleName, still_path, overview, guest_stars, runtime, season_number, episode_number, vote_average }, user) {
 	const airDate = new Date(air_date);
 	return {
 		color: Colors.Aqua,
-		title: name,
+		title: titleName,
 		// url: ``,
 		author: {
 			name: user.username,

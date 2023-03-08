@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTvDetailEmbed, createTvSeasonDetailEmbed, createEpisodeDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createTvSeasonDetailEmbed, createEpisodeDetailEmbed } = require('../components/embed.js');
 const { searchForTV } = require('../helpers/search-movie.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getCast, getProductionCompany, getCrewMember } = require('../helpers/get-production-info');
+const { getCast, getCrewMember } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
@@ -172,7 +172,7 @@ module.exports = {
 
 			if (i.customId != backId && i.customId != forwardId) {
 				const episode = episodes.find(({ id }) => id == i.customId);
-                console.log(episode);
+				// console.log(episode);
 				// const episodeDetailDetailEmbed;
 				const crew = episode.crew;
 				episode.writers = getCrewMember(crew, 'writer');
@@ -183,7 +183,7 @@ module.exports = {
 				// console.log(episode);
 				const episodeDeatailEmbed = createEpisodeDetailEmbed(episode, i.user);
 				await i.update({
-					content: 'Test',
+					content: 'Episode\'s Detail',
 					embeds: [episodeDeatailEmbed],
 					components: [],
 					ephemeral: false,
