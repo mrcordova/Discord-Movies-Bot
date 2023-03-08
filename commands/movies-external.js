@@ -121,8 +121,9 @@ module.exports = {
 
 			console.log(movieLinks);
 
-			try {
-				const videoLink = `${siteDict[site]}${movieLinks[`${site}_id`]}`;
+			if (site && movieLinks[`${site}_id`]) {
+				const videoLink = `${siteDict[site.toLowerCase()]}${movieLinks[`${site}_id`]}`;
+                console.log(videoLink);
 				await i.reply({
 					content: videoLink,
 					embeds: [],
@@ -130,8 +131,14 @@ module.exports = {
 					ephemeral: false,
 				});
 			}
-			catch {
-				console.log('here');
+			else if (!site) {
+
+				for (const [key, value] of Object.entries(movieLinks)) {
+					if (value != null) {
+						console.log(`${siteDict[key.split('_')[0]]}${value}`);
+						await i.message.channel.send(`${siteDict[key.split('_')[0]]}${value}`);
+					}
+				}
 			}
 
 

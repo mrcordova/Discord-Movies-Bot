@@ -134,7 +134,7 @@ const siteArray = [
 ];
 const siteDict = {
 	'imdb': 'https://www.imdb.com/title/',
-	'facebook' : 'https://www.facebook/',
+	'facebook' : 'https://www.facebook.com/',
 	'instagram': 'https://www.instagram.com/',
 	'twitter': 'https://twitter.com/',
 	'wikidata': 'https://www.wikidata.org/wiki/',
