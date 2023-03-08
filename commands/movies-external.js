@@ -23,11 +23,11 @@ const movie_details = '/movie';
 // primary_release_year Integer optional - oldest release date
 
 
-const backId = 'back';
-const forwardId = 'forward';
+// const backId = 'back';
+// const forwardId = 'forward';
 
-const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
-const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
+// const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
+// const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -95,25 +95,25 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
+		// const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', ephemeral: false, embeds: [], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+		// const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
-		const listSize = 5;
-		let currentIndex = 0;
-		let credits;
+		// const listSize = 5;
+		// let currentIndex = 0;
+		// let credits;
 
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
-			currentIndex = 0;
+			// currentIndex = 0;
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}/external_ids?api_key=${MOVIE_API_KEY}`);
 			const movieLinks = movieResponse.data;
@@ -157,7 +157,7 @@ module.exports = {
 			}
 
 
-			buttonCollector.stop('Done!');
+			// buttonCollector.stop('Done!');
 			selectMenucollector.stop('Done!');
 
 		});
@@ -173,76 +173,76 @@ module.exports = {
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
 			getEditReply(interaction, r);
 		});
-		buttonCollector.on(MyEvents.Collect, async i => {
-			if (i.customId == 'empty') return;
-			// console.log(i.customId);
-			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
+		// buttonCollector.on(MyEvents.Collect, async i => {
+		// 	if (i.customId == 'empty') return;
+		// 	// console.log(i.customId);
+		// 	if (i.customId != backId && i.customId != forwardId) {
+		// 		// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
+		// 		const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
 
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const personDetials = personResponse.data;
-				// console.log(personDetials);
-				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
-				let movieCredits;
-				try {
-					// undefined error for person results
-					movieCredits = imdbResponse.data.person_results[0].known_for;
-				}
-				catch {
-					movieCredits = [{ title: 'N/A', vote_average: -1 }];
-				}
+		// 		const person_id = creditResponse.data.person.id;
+		// 		//  add language option?
+		// 		const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
+		// 		const personDetials = personResponse.data;
+		// 		// console.log(personDetials);
+		// 		const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
+		// 		// console.log(imdbResponse.data);
+		// 		let movieCredits;
+		// 		try {
+		// 			// undefined error for person results
+		// 			movieCredits = imdbResponse.data.person_results[0].known_for;
+		// 		}
+		// 		catch {
+		// 			movieCredits = [{ title: 'N/A', vote_average: -1 }];
+		// 		}
 
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
+		// 		const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
 
-				await i.update({
-					content: 'Person\'s Detail',
-					embeds: [personCreditsEmbed],
-					components: [],
-				});
-				buttonCollector.stop('Done!');
-				selectMenucollector.stop('Done!');
-			}
-			else {
-
-
-				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
-
-				const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-				const current = credits.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+		// 		await i.update({
+		// 			content: 'Person\'s Detail',
+		// 			embeds: [personCreditsEmbed],
+		// 			components: [],
+		// 		});
+		// 		buttonCollector.stop('Done!');
+		// 		selectMenucollector.stop('Done!');
+		// 	}
+		// 	else {
 
 
-				await i.update({
-					content: `Department: ${dept}${deptEmojis[dept]}`,
-					embeds: [movieCreditsEmbed],
-					components: [
-						i.message.components[0],
-						new ActionRowBuilder({ components:  [
-							// back button if it isn't the start
-							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-							// forward button if it isn't the end
-							...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-						] }),
-						new ActionRowBuilder({ components:  moreDetailBtns }),
-					],
-				});
-			}
-			selectMenucollector.resetTimer([{ idle: 30000 }]);
-		});
-		buttonCollector.on(MyEvents.Dispose, i => {
-			console.log(`button dispose: ${i}`);
-		});
-		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
-			getPrivateFollowUp(args);
-		});
-		// eslint-disable-next-line no-unused-vars
-		buttonCollector.on(MyEvents.End, async (c, r) => {
-			getEditReply(interaction, r);
-		});
+		// 		i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+
+		// 		const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
+		// 		const current = credits.slice(currentIndex, currentIndex + listSize);
+		// 		const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+
+
+		// 		await i.update({
+		// 			content: `Department: ${dept}${deptEmojis[dept]}`,
+		// 			embeds: [movieCreditsEmbed],
+		// 			components: [
+		// 				i.message.components[0],
+		// 				new ActionRowBuilder({ components:  [
+		// 					// back button if it isn't the start
+		// 					...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+		// 					// forward button if it isn't the end
+		// 					...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+		// 				] }),
+		// 				new ActionRowBuilder({ components:  moreDetailBtns }),
+		// 			],
+		// 		});
+		// 	}
+		// 	selectMenucollector.resetTimer([{ idle: 30000 }]);
+		// });
+		// buttonCollector.on(MyEvents.Dispose, i => {
+		// 	console.log(`button dispose: ${i}`);
+		// });
+		// buttonCollector.on(MyEvents.Ignore, args => {
+		// 	// console.log(`button ignore: ${args}`);
+		// 	getPrivateFollowUp(args);
+		// });
+		// // eslint-disable-next-line no-unused-vars
+		// buttonCollector.on(MyEvents.End, async (c, r) => {
+		// 	getEditReply(interaction, r);
+		// });
 	},
 };
