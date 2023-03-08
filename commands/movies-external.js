@@ -119,11 +119,11 @@ module.exports = {
 			const movieLinks = movieResponse.data;
 			delete movieLinks.id;
 
-			console.log(movieLinks);
+			// console.log(movieLinks);
 
 			if (site && movieLinks[`${site}_id`]) {
 				const videoLink = `${siteDict[site.toLowerCase()]}${movieLinks[`${site}_id`]}`;
-                console.log(videoLink);
+
 				await i.reply({
 					content: videoLink,
 					embeds: [],
@@ -132,13 +132,28 @@ module.exports = {
 				});
 			}
 			else if (!site) {
+				let videoLink = '';
 
 				for (const [key, value] of Object.entries(movieLinks)) {
 					if (value != null) {
-						console.log(`${siteDict[key.split('_')[0]]}${value}`);
-						await i.message.channel.send(`${siteDict[key.split('_')[0]]}${value}`);
+						videoLink += `${siteDict[key.split('_')[0]]}${value}\n`;
 					}
 				}
+				await i.reply({
+					content: videoLink.length == 0 ? 'No external links found' : videoLink,
+					embeds: [],
+					components: [],
+					ephemeral: videoLink.length == 0 ? false : true,
+				});
+			}
+			else {
+				await i.reply({
+					content: 'No results found with these options',
+					embeds: [],
+					components: [],
+					ephemeral: true,
+				});
+
 			}
 
 
