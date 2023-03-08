@@ -25,10 +25,14 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('tv-images')
-		.setDescription('Get the images that belong to a TV show.')
+		.setDescription('Get the images that belong to a TV show season.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired tv show.')
+				.setDescription('Search for the desired tv show season.')
+				.setRequired(true))
+		.addIntegerOption(option =>
+			option.setName('season')
+				.setDescription('Search for the desired season.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
@@ -71,12 +75,13 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const imgLang = (interaction.options.getString('image_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
+		const seasonNum = interaction.options.getInteger('season') ?? 0;
 
 		const response = await searchForTV(query, language, region, releaseYear);
 		const tvTitles = response.data.results;
 
 		if (!tvTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV show  Found', 'Please make a new command with a different info.')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV show season Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
 		const options = getOptionsForTvSelectMenu(tvTitles, language);

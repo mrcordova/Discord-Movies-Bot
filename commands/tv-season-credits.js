@@ -202,7 +202,6 @@ module.exports = {
 
 				const personCreditsEmbed = createPersonDetailEmbed(personDetials, tvCredits, i.user);
 				const moreDetailBtns = tvCredits.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `known_for_${credit.media_type}_${credit.id}`, getEmoji((index + 1))));
-				// console.log(moreDetailBtns);
 				await i.update({
 					content: 'Person\'s Detail',
 					embeds: [personCreditsEmbed],
