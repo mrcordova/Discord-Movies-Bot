@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyl
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { translationsCodeDict, depts, deptEmojis, file, countryDict, siteArray } = require('../load-data.js');
+const { translationsCodeDict, depts, deptEmojis, file, countryDict, siteArray, siteDict } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
@@ -45,7 +45,7 @@ module.exports = {
 			option.setName('site')
 				.setDescription('Select the type of site')
 				.setChoices(
-                    ...siteArray,
+					...siteArray,
 				))
 		.addStringOption(option =>
 			option.setName('region')
@@ -115,25 +115,28 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=external_ids`);
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}/external_ids?api_key=${MOVIE_API_KEY}`);
 			const movieLinks = movieResponse.data;
+			delete movieLinks.id;
 
-            console.log(movieLinks);
-            const sites = {
-                'youtube': 'https://www.youtube.com/watch?v=',
-                'vimeo': 'https://vimeo.com/',
-            };
-            const videoLink = movieLinks.find(video => i.customId == video.id);
+			console.log(movieLinks);
+
+			try {
+				const videoLink = `${siteDict[site]}${movieLinks[`${site}_id`]}`;
+				await i.reply({
+					content: videoLink,
+					embeds: [],
+					components: [],
+					ephemeral: false,
+				});
+			}
+			catch {
+				console.log('here');
+			}
 
 
-            await i.reply({
-                content: `${sites[videoLink.site.toLowerCase()]}${videoLink.key}`,
-                embeds: [],
-                components: [],
-                ephemeral: false,
-            });
-            buttonCollector.stop('Done!');
-            selectMenucollector.stop('Done!')
+			buttonCollector.stop('Done!');
+			selectMenucollector.stop('Done!');
 
 		});
 

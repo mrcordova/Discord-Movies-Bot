@@ -113,29 +113,37 @@ const numberEmojis = {
 const siteArray = [
 	{
 		name: 'IMDb',
-		value: 'https://www.imdb.com/title/',
+		value: 'imdb',
 	},
 	{
 		name: 'Facebook',
-		value: 'https://www.facebook/',
+		value: 'facebook',
 	},
 	{
 		name: 'Instagram',
-		value: 'https://www.instagram.com/',
+		value: 'instagram',
 	},
 	{
 		name: 'Twitter',
-		value: 'https://twitter.com/',
+		value: 'twitter',
 	},
 	{
 		name: 'Wikidata',
-		value: 'https://www.wikidata.org/wiki/',
+		value: 'wikidata',
 	},
 ];
+const siteDict = {
+	'imdb': 'https://www.imdb.com/title/',
+	'facebook' : 'https://www.facebook/',
+	'instagram': 'https://www.instagram.com/',
+	'twitter': 'https://twitter.com/',
+	'wikidata': 'https://www.wikidata.org/wiki/',
+};
 
-const siteDict = siteArray.reduce((obj, item) => {
-	obj[item.name] = item.value; return obj;
-}, {});
+
+// const siteDict = siteArray.reduce((obj, item) => {
+// 	obj[item.name] = item.value; return obj;
+// }, {});
 
 const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
 const justWatchFile = new AttachmentBuilder('./images/just-watch-logo.jpg');
@@ -155,6 +163,7 @@ module.exports = {
 	numberEmojis,
 	movieRatings,
 	siteArray,
+	siteDict,
 	translationsCodeDict,
 	tvRatings,
 };
