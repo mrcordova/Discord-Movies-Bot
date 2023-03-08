@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyl
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
 const { searchForMovie } = require('../helpers/search-movie.js');
-const { translationsCodeDict, depts, deptEmojis, file, countryDict } = require('../load-data.js');
+const { translationsCodeDict, depts, deptEmojis, file, countryDict, siteArray } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
@@ -45,22 +45,7 @@ module.exports = {
 			option.setName('site')
 				.setDescription('Select the type of site')
 				.setChoices(
-					{
-						name: 'IMDb',
-						value: 'https://www.imdb.com/title/',
-					},
-					{
-						name: 'Facebook',
-						value: 'https://www.facebook/',
-					},
-					{
-						name: '	Instagram',
-						value: 'https://www.instagram.com/',
-					},
-					{
-						name: '	Twitter',
-						value: 'https://twitter.com/',
-					},
+                    ...siteArray,
 				))
 		.addStringOption(option =>
 			option.setName('region')
@@ -96,7 +81,7 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const site = interaction.options.getString('site') ?? '';
+		const site = interaction.options.getString('site');
 
 		const response = await searchForMovie(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -115,7 +100,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Movies matching your query. :smiley:', ephemeral: false, embeds: [], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -130,37 +115,25 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
-			const movie = movieResponse.data;
+			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=external_ids`);
+			const movieLinks = movieResponse.data;
 
-			// console.log(movie);
-			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
-			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
-			credits = cast.concat(crew);
-			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
-			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+            console.log(movieLinks);
+            const sites = {
+                'youtube': 'https://www.youtube.com/watch?v=',
+                'vimeo': 'https://vimeo.com/',
+            };
+            const videoLink = movieLinks.find(video => i.customId == video.id);
 
-			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// console.log(credits);
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
-			await i.update({
-				content: `Department: ${dept} ${deptEmojis[dept]}`,
-				embeds: [movieCreditsEmbed],
-				components: [
-					new ActionRowBuilder().addComponents(newSelectMenu),
-					new ActionRowBuilder({ components:  [
-						// back button if it isn't the start
-						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-						// forward button if it isn't the end
-						...(currentIndex + listSize < credits.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No credits found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-				],
-				files: [file],
-			});
 
-			buttonCollector.resetTimer([{ idle: 30000 }]);
+            await i.reply({
+                content: `${sites[videoLink.site.toLowerCase()]}${videoLink.key}`,
+                embeds: [],
+                components: [],
+                ephemeral: false,
+            });
+            buttonCollector.stop('Done!');
+            selectMenucollector.stop('Done!')
 
 		});
 

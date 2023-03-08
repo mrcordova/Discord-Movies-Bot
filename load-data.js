@@ -110,6 +110,33 @@ const numberEmojis = {
 	10 : '🔟',
 };
 
+const siteArray = [
+	{
+		name: 'IMDb',
+		value: 'https://www.imdb.com/title/',
+	},
+	{
+		name: 'Facebook',
+		value: 'https://www.facebook/',
+	},
+	{
+		name: 'Instagram',
+		value: 'https://www.instagram.com/',
+	},
+	{
+		name: 'Twitter',
+		value: 'https://twitter.com/',
+	},
+	{
+		name: 'Wikidata',
+		value: 'https://www.wikidata.org/wiki/',
+	},
+];
+
+const siteDict = siteArray.reduce((obj, item) => {
+	obj[item.name] = item.value; return obj;
+}, {});
+
 const file = new AttachmentBuilder('./images/TMDb-logo.jpg');
 const justWatchFile = new AttachmentBuilder('./images/just-watch-logo.jpg');
 // const file = new AttachmentBuilder('./images/just-watch-logo.jpg');
@@ -127,6 +154,7 @@ module.exports = {
 	langCodeDict,
 	numberEmojis,
 	movieRatings,
+	siteArray,
 	translationsCodeDict,
 	tvRatings,
 };
