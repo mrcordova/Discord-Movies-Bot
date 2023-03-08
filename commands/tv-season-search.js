@@ -180,7 +180,6 @@ module.exports = {
 				episode.editors = getCrewMember(crew, 'editor');
 				episode.dps = getCrewMember(crew, 'director of photography');
 				episode.actors = getCast(tv.aggregate_credits.cast, 10);
-				// console.log(episode);
 				const episodeDeatailEmbed = createEpisodeDetailEmbed(episode, i.user);
 				await i.update({
 					content: 'Episode\'s Detail',
