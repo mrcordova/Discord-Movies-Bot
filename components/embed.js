@@ -869,7 +869,7 @@ function createTvTranslateDetailEmbed(translationDetails, user) {
 	return {
 		color: Colors.DarkGrey,
 		title: `${translationDetails.data.name}`,
-		url: `${translationDetails.data.homepage}`,
+		url: `${translationDetails.data.homepage ?? ''}`,
 		author: {
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
@@ -882,7 +882,7 @@ function createTvTranslateDetailEmbed(translationDetails, user) {
 		fields: [
 			{
 				name: 'Tagline',
-				value: `${translationDetails.data.tagline == '' ? 'N/A' : translationDetails.data.tagline}`,
+				value: `${translationDetails.data.tagline == '' || !translationDetails.data.tagline ? 'N/A' : translationDetails.data.tagline}`,
 				inline: true,
 			},
 			{
