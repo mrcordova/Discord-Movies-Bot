@@ -38,6 +38,10 @@ module.exports = {
 			option.setName('title')
 				.setDescription('Search for the desired tv season.')
 				.setRequired(true))
+		.addIntegerOption(option =>
+			option.setName('season')
+				.setDescription('Search for the desired season.')
+				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('department')
 				.setDescription('Choose desired dept.')
@@ -86,13 +90,14 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
+		const seasonNum = interaction.options.getInteger('season');
 		const dept = interaction.options.getString('department') ?? '';
 
 		const response = await searchForTV(query, language, region, releaseYear);
 		const tvTitles = response.data.results;
 
 		if (!tvTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV Shows Found for that query', 'Please make a new command with a different option(s)')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV Show Seaseon found for that query', 'Please make a new command with a different option(s)')], files: [file] });
 			return;
 		}
 		const options = getOptionsForTvSelectMenu(tvTitles, language);
@@ -100,12 +105,12 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'TV Show credits will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'TV Show season credits will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Show matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Show season matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -120,8 +125,20 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
-			const tv = tvResponse.data;
+			let tvResponse;
+			try {
+				tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
+			}
+			catch {
+				await i.update({
+					content: i.message.content,
+					embeds: [createNoResultEmbed(Colors.Red, 'No Results found')],
+					components: [
+						i.message.components[0],
+					],
+				});
+				return;
+			}			const tv = tvResponse.data;
 
 			// console.log(tv);
 			const cast = tv.aggregate_credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
@@ -168,9 +185,7 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId && !i.customId.includes('known_for_')) {
-				// https://api.themoviedb.org/3/credit/{id}?api_key=<<api_key>>
 
-				// TODO: add btns to known for media
 				const personResponse = await axios.get(`${api_url}/person/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
 				// console.log(personDetials);
