@@ -117,7 +117,7 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
 
 			await i.update({
-				content: 'Selected Movie Images: ',
+				content: 'Selected TV Show Images: ',
 				embeds: [movieImageEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -162,7 +162,7 @@ module.exports = {
 			// console.log(currentIndex);
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				content: 'Showing Movie Images',
+				content: m.message.content,
 				embeds: [movieCreditsEmbed],
 				components: [
 					m.message.components[0],

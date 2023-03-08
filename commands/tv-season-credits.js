@@ -138,7 +138,8 @@ module.exports = {
 					],
 				});
 				return;
-			}			const tv = tvResponse.data;
+			}
+			const tv = tvResponse.data;
 
 			// console.log(tv);
 			const cast = tv.aggregate_credits['cast'].filter(({ known_for_department }) => known_for_department == dept);

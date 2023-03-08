@@ -24,7 +24,7 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-images')
+		.setName('tv-season-images')
 		.setDescription('Get the images that belong to a TV show season.')
 		.addStringOption(option =>
 			option.setName('title')
@@ -107,14 +107,27 @@ module.exports = {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
-			// const appendToResponse = ['images', `include_image_language=${imgLang},null`];
-			const mediaResponse = await axios.get(`${api_url}/tv/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
-			const tv = mediaResponse.data;
+
+            let tvResponse;
+			try {
+				tvResponse = await axios.get(`${api_url}/tv/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
+			}
+			catch {
+				await i.update({
+					content: i.message.content,
+					embeds: [createNoResultEmbed(Colors.Red, 'No Results found')],
+					components: [
+						i.message.components[0],
+					],
+				});
+				return;
+			}
+            const tv = tvResponse.data;
 			// console.log(tv.images);
 			tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
 
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
-			const title = `${tv.name.slice(0, 80)} Showing TV Show Image ${currentIndex + current.length} out of ${tvImages.length}`;
+			const title = `${tv.name.slice(0, 80)} Showing TV Show Season Image ${currentIndex + current.length} out of ${tvImages.length}`;
 
 			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
@@ -122,7 +135,7 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
 
 			await i.update({
-				content: 'Selected Movie Images: ',
+				content: 'Selected TV show season Images: ',
 				embeds: [movieImageEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -161,13 +174,13 @@ module.exports = {
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
 
 
-			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show Image ${currentIndex + current.length} out of ${tvImages.length}`;
+			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show Season Image ${currentIndex + current.length} out of ${tvImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
 
 			// console.log(currentIndex);
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				content: 'Showing Movie Images',
+				content: m.message.content,
 				embeds: [movieCreditsEmbed],
 				components: [
 					m.message.components[0],
