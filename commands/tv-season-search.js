@@ -172,7 +172,7 @@ module.exports = {
 
 			if (i.customId != backId && i.customId != forwardId) {
 				const episode = episodes.find(({ id }) => id == i.customId);
-
+                console.log(episode);
 				// const episodeDetailDetailEmbed;
 				const crew = episode.crew;
 				episode.writers = getCrewMember(crew, 'writer');

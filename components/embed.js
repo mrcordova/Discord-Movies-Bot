@@ -115,7 +115,7 @@ function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, ai
 			},
 			{
 				name: 'Run time',
-				value: runtime,
+				value: runtime ?? 'N/A',
 				inline: true,
 			},
 			{
