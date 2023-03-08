@@ -180,7 +180,7 @@ module.exports = {
 
 
 			const current = tvVideos.slice(currentIndex, currentIndex + listSize);
-			const title = `${tv.name.slice(0, 80)} Showing TV show season Videos ${currentIndex + current.length} out of ${tvVideos.length}`;
+			const title = `${tv.name.slice(0, 80)} Showing TV show season videos ${currentIndex + current.length} out of ${tvVideos.length}`;
 
 			const tvVideoEmbed = createVideoEmbed(title, current, m.user);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
@@ -189,7 +189,7 @@ module.exports = {
 
 
 			await m.update({
-				content: 'Selected TV show season Video: ',
+				content: 'Selected TV show season video: ',
 				embeds: [tvVideoEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
