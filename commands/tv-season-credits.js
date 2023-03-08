@@ -32,11 +32,11 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-credits')
-		.setDescription('Search for a tv show\'s cast and crew')
+		.setName('tv-season-credits')
+		.setDescription('Search for a tv season\'s cast and crew')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired tv show.')
+				.setDescription('Search for the desired tv season.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('department')
