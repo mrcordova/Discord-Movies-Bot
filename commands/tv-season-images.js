@@ -108,7 +108,7 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-            let tvResponse;
+			let tvResponse;
 			try {
 				tvResponse = await axios.get(`${api_url}/tv/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
 			}
@@ -122,7 +122,7 @@ module.exports = {
 				});
 				return;
 			}
-            const tv = tvResponse.data;
+			const tv = tvResponse.data;
 			// console.log(tv.images);
 			tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
 

@@ -8,7 +8,6 @@ const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const { getMediaResponse } = require('../helpers/get-media');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 
 const axios = require('axios');
