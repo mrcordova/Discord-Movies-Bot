@@ -230,7 +230,7 @@ module.exports = {
 
 
 				await i.update({
-					content: `Department: ${dept}${deptEmojis[dept]}`,
+					content: i.message.content,
 					embeds: [movieCreditsEmbed],
 					components: [
 						i.message.components[0],
