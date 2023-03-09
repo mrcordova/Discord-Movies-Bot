@@ -116,9 +116,9 @@ module.exports = {
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
 			const tvLinks = tvResponse.data.external_ids;
 			delete tvLinks.id;
-			console.log();
+
 			if (tvLinks['tvdb_id']) {
-				tvLinks['tvdb_id'] = tvResponse.data.name;
+				tvLinks['tvdb_id'] = tvResponse.data.name.replace(/[^\w\s-]/gi, '').replace(/\s+/g, '-');;
 			}
 
 			if (site && tvLinks[`${site}_id`]) {
