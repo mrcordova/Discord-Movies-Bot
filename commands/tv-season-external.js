@@ -127,7 +127,7 @@ module.exports = {
 			delete tvLinks.id;
 
             // console.log(tvResponse);
-            // https://thetvdb.com/series/345645-show/seasons/official/3
+            // https://thetvdb.com/series/79168-show/seasons/official/3
 			if (tvLinks['tvdb_id']) {
 				tvLinks['tvdb_id'] = `${tvShowResponse.data.name.replace(/[^\w\s-]/gi, '').replace(/\s+/g, '-')}/seasons/official/${seasonNum}`;
 			}
