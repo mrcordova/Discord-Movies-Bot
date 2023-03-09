@@ -138,6 +138,7 @@ const siteDict = {
 	'instagram': 'https://www.instagram.com/',
 	'twitter': 'https://www.twitter.com/',
 	'wikidata': 'https://www.wikidata.org/wiki/',
+	'tvdb': 'https://www.thetvdb.com/series/',
 };
 
 

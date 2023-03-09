@@ -113,11 +113,13 @@ module.exports = {
 			const selected = i.values[0];
 			// currentIndex = 0;
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}/external_ids?api_key=${MOVIE_API_KEY}`);
-			const tvLinks = tvResponse.data;
+			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+			const tvLinks = tvResponse.data.external_ids;
 			delete tvLinks.id;
-
-			// console.log(movieLinks);
+			console.log();
+			if (tvLinks['tvdb_id']) {
+				tvLinks['tvdb_id'] = tvResponse.data.name;
+			}
 
 			if (site && tvLinks[`${site}_id`]) {
 				const videoLink = `${siteDict[site.toLowerCase()]}${tvLinks[`${site}_id`]}`;
