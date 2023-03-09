@@ -133,7 +133,7 @@ module.exports = {
 				let videoLink = '';
 
 				for (const [key, value] of Object.entries(movieLinks)) {
-					if (value != null) {
+					if (value != null && siteDict[key.split('_')[0]]) {
 						videoLink += `${siteDict[key.split('_')[0]]}${value}\n`;
 					}
 				}
