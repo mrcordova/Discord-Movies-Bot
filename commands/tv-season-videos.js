@@ -42,7 +42,7 @@ module.exports = {
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Search for the desired season.')
-                .setRequired(true))
+				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('video-type')
 				.setDescription('Select the type of release')

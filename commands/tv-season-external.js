@@ -29,22 +29,26 @@ const tv_details = '/tv';
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-external-link')
-		.setDescription('Get the external link for a tv show.')
+		.setName('tv-season-external-link')
+		.setDescription('Get the external ids for a TV season. We currently support TVDB.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired tv show.')
+				.setDescription('Search for the desired tv show season.')
+				.setRequired(true))
+		.addIntegerOption(option =>
+			option.setName('season')
+				.setDescription('Search for the desired season.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
 				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('site')
-				.setDescription('Select the type of site')
-				.setChoices(
-					...siteArray.concat({ name: 'TVDB', value: 'tvdb' }),
-				))
+		// .addStringOption(option =>
+		// 	option.setName('site')
+		// 		.setDescription('Select the type of site')
+		// 		.setChoices(
+		// 			{ name: 'TVDB', value: 'tvdb' },
+		// 		))
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
@@ -80,6 +84,8 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		const site = interaction.options.getString('site');
+        const seasonNum = interaction.options.getInteger('season');
+
 
 		const response = await searchForTV(query, language, region, releaseYear);
 		const movieTitles = response.data.results;
@@ -98,7 +104,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Show matching your query. :smiley:', ephemeral: false, embeds: [], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Show season matching your query. :smiley:', ephemeral: false, embeds: [], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		// const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -113,12 +119,17 @@ module.exports = {
 			const selected = i.values[0];
 			// currentIndex = 0;
 
-			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
-			const tvLinks = tvResponse.data.external_ids;
+            const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+            // const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+            // console.log(tvShowResponse.data);
+			const tvSeasonResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+			const tvLinks = tvSeasonResponse.data.external_ids;
 			delete tvLinks.id;
 
+            // console.log(tvResponse);
+            // https://thetvdb.com/series/345645-show/seasons/official/3
 			if (tvLinks['tvdb_id']) {
-				tvLinks['tvdb_id'] = tvResponse.data.name.replace(/[^\w\s-]/gi, '').replace(/\s+/g, '-');
+				tvLinks['tvdb_id'] = `${tvShowResponse.data.name.replace(/[^\w\s-]/gi, '').replace(/\s+/g, '-')}/seasons/official/${seasonNum}`;
 			}
 
 			if (site && tvLinks[`${site}_id`]) {
