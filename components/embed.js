@@ -859,6 +859,54 @@ async function createTvSeasonDetailEmbed({ tv, episodes }, user, color = Colors.
 		},
 	};
 }
+async function createTvEpisodeDetailEmbed({ tv, episodes }, user, color = Colors.Aqua) {
+	const airDate = new Date(tv.air_date);
+	// const lastAirDate = new Date(tv.last_air_date);
+	// console.log();
+	return {
+		color: color,
+		title: `${underscore(tv.name)}\n${tv.count}`,
+		url: tv.homepage,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: `${tv.overview}`,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${tv.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Air Date',
+				value: `${time(airDate, 'D')} (${time(airDate, 'R')})`,
+			},
+			// {
+			// 	name: 'Season',
+			// 	value: `${tv.season_number}`,
+			// },
+			{
+				name: '# of Eps',
+				value: `${tv.episodes.length}`,
+			},
+			...await Promise.all(episodes.map(async ({ name, episode_number, air_date }) => {
+				const epsAirDate = new Date(air_date);
+				return {
+					name: `${episode_number}. ${name}`,
+					value: `${time(epsAirDate, 'D')} (${time(epsAirDate, 'R')})`,
+				};
+			})),
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${tv.poster_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: `${tmdbName}`,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
 
 function createTvTranslateDetailEmbed(translationDetails, user) {
 	if (!translationDetails) {
