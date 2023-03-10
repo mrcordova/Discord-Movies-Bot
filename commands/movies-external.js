@@ -30,7 +30,7 @@ const movie_details = '/movie';
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('movies-external-link')
-		.setDescription('Get the external link for a movie.')
+		.setDescription('Get the external links for a movie.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
