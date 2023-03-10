@@ -640,7 +640,7 @@ const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.B
 	}
 
 	const current = tvList.slice(start, start + listSize);
-	// console.log(current);
+	console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing TV Credits ${start + 1}-${start + current.length} out of ${tvList.length}`,
@@ -655,6 +655,32 @@ const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.B
 			return {
 				name: `${ start + (index + 1)}. ${member.name}`,
 				value: `${underscore('Credit:')} ${credits ?? 'N/A'}\n${underscore('Total # of Eps:')} ${member.total_episode_count}`,
+			};
+		}),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
+const createTvEpisodeCreditListEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
+	if (!tvList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = tvList.slice(start, start + listSize);
+	// console.log(current);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing TV episode Credits ${start + 1}-${start + current.length} out of ${tvList.length}`,
+		fields: await Promise.all(current.map(async (member, index) => {
+			const credits = member.job ?? member.character;
+
+			return {
+				name: `${ start + (index + 1)}. ${member.name}`,
+				value: `${underscore('Credit:')} ${credits ?? 'N/A'}\n`,
 			};
 		}),
 		),
@@ -1110,6 +1136,7 @@ module.exports = {
 	createTranslateDetailEmbed,
 	createTvCreditListEmbed,
 	createTvDetailEmbed,
+	createTvEpisodeCreditListEmbed,
 	createTvListEmbed,
 	createTvListsEmbed,
 	createTvSeasonDetailEmbed,
