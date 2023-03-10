@@ -33,7 +33,7 @@ module.exports = {
 		.setDescription('Get the TV episode details')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired TV Show\'s season.')
+				.setDescription('Search for the desired episode of TV Show.')
 				.setRequired(true))
 		.addIntegerOption(option =>
 			option.setName('season')
