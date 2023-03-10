@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createPersonDetailEmbed, createTvCreditListEmbed, createTvEpisodeCreditListEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createPersonDetailEmbed, createTvEpisodeCreditListEmbed } = require('../components/embed.js');
 const { searchForTV } = require('../helpers/search-movie.js');
 const { translationsCodeDict, depts, deptEmojis, file } = require('../load-data.js');
 const axios = require('axios');
@@ -151,7 +151,7 @@ module.exports = {
 			const crew = tv.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			const guestStars = tv.credits['guest_stars'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew).concat(guestStars);
-            // console.log(credits);
+			// console.log(credits);
 			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const tvCreditsEmbed = await createTvEpisodeCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
