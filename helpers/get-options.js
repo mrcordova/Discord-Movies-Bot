@@ -20,7 +20,7 @@ function getOptionsForTvSelectMenu(tvTitles, language) {
 	}
 	return options;
 }
-function getOptionsForPeopleelectMenu(people) {
+function getOptionsForPeopleSelectMenu(people) {
 	const options = [];
 
 	for (const peopleInfo of people) {
@@ -30,4 +30,4 @@ function getOptionsForPeopleelectMenu(people) {
 	return options;
 }
 
-module.exports = { getOptionsForPeopleelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
+module.exports = { getOptionsForPeopleSelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
