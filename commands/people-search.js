@@ -8,7 +8,7 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu } = require('../helpers/get-options');
+const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
 const people_details = '/people';
 
 
@@ -64,13 +64,14 @@ module.exports = {
 
 
 		const response = await searchForPeople(query, language, region);
-		const movieTitles = response.data.results;
+		const peopleNames = response.data.results;
 
-		if (!movieTitles.length) {
+		if (!peopleNames.length) {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No People Found', 'Please make a new command with a different year')], files: [file] });
 			return;
 		}
-		const options = getOptionsForSelectMenu(movieTitles, language);
+        console.log(peopleNames);
+		const options = getOptionsForTvSelectMenu(peopleNames, language);
 
 		const selectMenu = createSelectMenu('List of People', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);

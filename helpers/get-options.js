@@ -20,5 +20,14 @@ function getOptionsForTvSelectMenu(tvTitles, language) {
 	}
 	return options;
 }
+function getOptionsForPeopleelectMenu(people) {
+	const options = [];
 
-module.exports = { getOptionsForSelectMenu, getOptionsForTvSelectMenu };
+	for (const peopleInfo of people) {
+		// known_for_department
+		options.push({ label: `${peopleInfo.name.slice(0, 81)} (${peopleInfo.gender})`, description: `${peopleInfo.known_for_department}`, value: `${peopleInfo.id}` });
+	}
+	return options;
+}
+
+module.exports = { getOptionsForPeopleelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
