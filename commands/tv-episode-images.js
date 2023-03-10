@@ -24,15 +24,19 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-season-images')
-		.setDescription('Get the images that belong to a TV show season.')
+		.setName('tv-episode-images')
+		.setDescription('Get the images that belong to a TV show episode.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired tv show season.')
+				.setDescription('Search for the desired tv show episode.')
 				.setRequired(true))
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Search for the desired season.')
+				.setRequired(true))
+		.addIntegerOption(option =>
+			option.setName('episode')
+				.setDescription('Search for the desired episode.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
@@ -75,13 +79,14 @@ module.exports = {
 		const region = interaction.options.getString('region') ?? 'US';
 		const imgLang = (interaction.options.getString('image_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		const seasonNum = interaction.options.getInteger('season') ?? 0;
+		const seasonNum = interaction.options.getInteger('season');
+		const episodeNum = interaction.options.getInteger('episode');
 
 		const response = await searchForTV(query, language, region, releaseYear);
 		const tvTitles = response.data.results;
 
 		if (!tvTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV show season Found', 'Please make a new command with a different info.')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV show episode Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
 		const options = getOptionsForTvSelectMenu(tvTitles, language);
@@ -106,11 +111,13 @@ module.exports = {
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
+            const selectedOption = i.message.components[0].components[0].data.options.find(option => option.value === selected);
+            const selectedName = selectedOption.label;
 			currentIndex = 0;
 
 			let tvResponse;
 			try {
-				tvResponse = await axios.get(`${api_url}/tv/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
+				tvResponse = await axios.get(`${api_url}/tv/${selected}/season/${seasonNum}/episode/${episodeNum}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
 			}
 			catch {
 				await i.update({
@@ -124,21 +131,23 @@ module.exports = {
 			}
 			const tv = tvResponse.data;
 			// console.log(tv.images);
-			tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
+			// tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
+			tvImages = tv.images.stills;
+
 
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
-			const title = `${tv.name.slice(0, 80)} Showing TV Show Season Image ${currentIndex + current.length} out of ${tvImages.length}`;
+			const title = `${tv.name.slice(0, 80)}\nShowing Episode Image ${currentIndex + current.length} out of ${tvImages.length}`;
 
 			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const tvImageEmbed = createImageEmbed(title, current, i.user);
-			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
+			// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
 
 			await i.update({
-				content: 'Selected TV show season Images: ',
+				content: `Selected TV show: ${selectedName}`,
 				embeds: [tvImageEmbed],
 				components: [
-					new ActionRowBuilder().addComponents(newSelectMenu),
+					// new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
