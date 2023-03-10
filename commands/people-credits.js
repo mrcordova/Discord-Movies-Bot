@@ -10,7 +10,7 @@ const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForSelectMenu, getOptionsForPeopleSelectMenu } = require('../helpers/get-options');
-const movie_details = '/movie';
+const person_details = '/person';
 
 
 // https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
@@ -31,8 +31,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-credits')
-		.setDescription('Search for a movie\'s cast and crew')
+		.setName('people-credits')
+		.setDescription('Search for a person\'s credits')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
@@ -45,7 +45,7 @@ module.exports = {
 						arry.push({ name: dept, value: dept });
 						return arry;
 					}, []))
-				.setRequired(true))
+				)
 		.addStringOption(option =>
 			option.setName('media-type')
 				.setDescription('Select the type of media')
@@ -90,7 +90,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		const dept = interaction.options.getString('department') ?? '';
+		const dept = interaction.options.getString('department') ?? 'all';
 		const mediaType = interaction.options.getString('media-type') ?? 'combine';
 
 		const response = await searchForPeople(query, language, region);
@@ -105,7 +105,7 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of People', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Person\'s credits will apear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Person\'s credits will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -126,16 +126,16 @@ module.exports = {
 			currentIndex = 0;
 
             const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
-			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${mediaDict[mediaType]}`);
-			const movie = movieResponse.data;
+			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${mediaDict[mediaType]}`);
+			const personCredits = peopleResponse.data;
 
-			// console.log(movie);
-			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
-			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
+			console.log(personCredits);
+			const cast = personCredits[`${mediaDict[mediaType]}`]['cast'].filter(({ known_for_department }) => known_for_department == dept || dept === 'all');
+			const crew = personCredits[`${mediaDict[mediaType]}`]['crew'].filter(({ known_for_department }) => known_for_department == dept || dept === 'all');
 			credits = cast.concat(crew);
 			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+			const newSelectMenu = createSelectMenu('List of Movies', personCredits.name.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
 			// console.log(credits);
