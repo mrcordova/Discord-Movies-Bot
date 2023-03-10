@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed, createPeopleCreditListEmbed } = require('../components/embed.js');
 const { searchForMovie, searchForPeople } = require('../helpers/search-movie.js');
 const { translationsCodeDict, depts, deptEmojis, file } = require('../load-data.js');
 const axios = require('axios');
@@ -125,21 +125,21 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-            const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
+			const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
 			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${mediaDict[mediaType]}`);
 			const personCredits = peopleResponse.data;
-
-			console.log(personCredits);
-			const cast = personCredits[`${mediaDict[mediaType]}`]['cast'].filter(({ known_for_department }) => known_for_department == dept || dept === 'all');
-			const crew = personCredits[`${mediaDict[mediaType]}`]['crew'].filter(({ known_for_department }) => known_for_department == dept || dept === 'all');
+            
+			// console.log( personCredits[`${mediaDict[mediaType]}`]['cast']);
+			const cast = personCredits[`${mediaDict[mediaType]}`]['cast'].filter(() => dept == 'Acting' || dept === 'all');
+			const crew = personCredits[`${mediaDict[mediaType]}`]['crew'].filter(({ department }) => department == dept || dept === 'all');
 			credits = cast.concat(crew);
 			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
-			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
-			const newSelectMenu = createSelectMenu('List of Movies', personCredits.name.slice(0, 81), 1, options);
+			const movieCreditsEmbed = await createPeopleCreditListEmbed(currentIndex, listSize, credits);
+			const newSelectMenu = createSelectMenu('List of People', personCredits.name.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// console.log(credits);
-			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+			console.log(credits);
+			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
 				embeds: [movieCreditsEmbed],
@@ -209,9 +209,9 @@ module.exports = {
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-				const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
+				const movieCreditsEmbed = await createPeopleCreditListEmbed(currentIndex, listSize, credits);
 				const current = credits.slice(currentIndex, currentIndex + listSize);
-				const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
+				const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({

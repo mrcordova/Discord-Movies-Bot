@@ -61,6 +61,27 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 		},
 	});
 };
+const createPeopleCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
+	if (!moviesList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = moviesList.slice(start, start + listSize);
+	console.log(current);
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Person's Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
+		fields: await Promise.all(current.map(async (member, index) => ({
+			name: `${ start + (index + 1)}. ${member.name ?? member.title}`,
+			value: `Credit: ${member.job ?? member.character ?? 'N/A'}` })),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 
 function createEpisodeDetailEmbed({ writers, directors, editors, actors, dps, air_date, name: titleName, still_path, overview, guest_stars, runtime, season_number, episode_number, vote_average }, user) {
 	const airDate = new Date(air_date);
@@ -1079,6 +1100,7 @@ module.exports = {
 	createImageEmbed,
 	createNoResultEmbed,
 	createMovieDetailEmbed,
+	createPeopleCreditListEmbed,
 	createPersonDetailEmbed,
 	createRatingsEmbed,
 	createReleaseDatesEmbed,
