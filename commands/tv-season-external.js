@@ -119,15 +119,15 @@ module.exports = {
 			const selected = i.values[0];
 			// currentIndex = 0;
 
-            const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
-            // const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
-            // console.log(tvShowResponse.data);
+			const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+			// const tvShowResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
+			// console.log(tvShowResponse.data);
 			const tvSeasonResponse = await axios.get(`${api_url}${tv_details}/${selected}/season/${seasonNum}?api_key=${MOVIE_API_KEY}&append_to_response=external_ids`);
 			const tvLinks = tvSeasonResponse.data.external_ids;
 			delete tvLinks.id;
 
-            // console.log(tvResponse);
-            // https://thetvdb.com/series/79168-show/seasons/official/3
+			// console.log(tvResponse);
+			// https://thetvdb.com/series/79168-show/seasons/official/3
 			if (tvLinks['tvdb_id']) {
 				tvLinks['tvdb_id'] = `${tvShowResponse.data.name.replace(/[^\w\s-]/gi, '').replace(/\s+/g, '-')}/seasons/official/${seasonNum}`;
 			}
