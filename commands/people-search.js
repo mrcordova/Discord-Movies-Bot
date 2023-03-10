@@ -90,9 +90,8 @@ module.exports = {
 
 			const peopleResponse = await axios.get(`${api_url}${people_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const people = peopleResponse.data;
-            const credits = people.combined_credits;
-			console.log(people);
-
+            
+            const credits = people.combined_credits.cast.concat(people.combined_credits.crew);
 
 			const movieDetailsEmbed = createPersonDetailEmbed(people, credits, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', people.name.slice(0, 81), 1, options);

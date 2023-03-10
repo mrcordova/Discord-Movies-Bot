@@ -336,7 +336,7 @@ function createPersonDetailEmbed(person, credits, user) {
 			return `${credit.title} (${credit.media_type})`;
 		}
 		return `${credit.name} (${credit.media_type})`;
-	}).join(', ');
+	}).slice(0, 10).join(', ');
 	// console.log(credits);
 	const deathday = new Date(person.deathday ?? undefined);
 	const birthday = new Date(person.birthday ?? undefined);
@@ -371,7 +371,7 @@ function createPersonDetailEmbed(person, credits, user) {
 			},
 			{
 				name: 'Known For: ',
-				value: known_for ?? 'N/A',
+				value: `${known_for.slice(0, 1021)}..` ?? 'N/A',
 				inline: true,
 			},
 			{
