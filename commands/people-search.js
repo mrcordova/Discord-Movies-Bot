@@ -8,8 +8,8 @@ const { createSelectMenu } = require('../components/selectMenu');
 const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const people_details = '/people';
+const { getOptionsForSelectMenu, getOptionsForTvSelectMenu, getOptionsForPeopleSelectMenu } = require('../helpers/get-options');
+const people_details = '/person';
 
 
 // https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
@@ -70,8 +70,7 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No People Found', 'Please make a new command with a different year')], files: [file] });
 			return;
 		}
-        console.log(peopleNames);
-		const options = getOptionsForTvSelectMenu(peopleNames, language);
+		const options = getOptionsForPeopleSelectMenu(peopleNames);
 
 		const selectMenu = createSelectMenu('List of People', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
@@ -92,7 +91,7 @@ module.exports = {
 			const peopleResponse = await axios.get(`${api_url}${people_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const people = peopleResponse.data;
             const credits = people.combined_credits;
-			// console.log(movieDetails.release_dates.results);
+			console.log(people);
 
 
 			const movieDetailsEmbed = createPersonDetailEmbed(people, credits, i.user);
