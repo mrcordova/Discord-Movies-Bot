@@ -9,6 +9,7 @@ const movieRatings = JSON.parse(fs.readFileSync('data/movie-ratings.json', 'utf8
 const tvRatings = JSON.parse(fs.readFileSync('data/tv-ratings.json', 'utf8'));
 const availableRegions = JSON.parse(fs.readFileSync('data/watch-countries.json', 'utf8'));
 const availableProviders = JSON.parse(fs.readFileSync('data/movie-providers.json', 'utf8'));
+const availableNetworks = JSON.parse(fs.readFileSync('data/networks.json', 'utf8'));
 // let countryCodeDict = {};
 
 
@@ -164,6 +165,7 @@ module.exports = {
 	justWatchFile,
 	languageDict: languageDictionary,
 	langCodeDict,
+	availableNetworks,
 	numberEmojis,
 	movieRatings,
 	siteArray,
