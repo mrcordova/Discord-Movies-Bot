@@ -1,3 +1,5 @@
+const { countryCodeDict } = require("../load-data");
+
 function getOptionsForSelectMenu(movieTitles, language = 'en-US') {
 	const options = [];
 
@@ -34,7 +36,7 @@ function getOptionsForCompanySelectMenu(companies) {
 
 	for (const companyInfo of companies) {
 		// known_for_department
-		options.push({ label: `${companyInfo.name.slice(0, 81)}`, description: companyInfo.origin_country, value: `${companyInfo.id}` });
+		options.push({ label: `${companyInfo.name.slice(0, 81)}`, description: `${companyInfo.origin_country} (${countryCodeDict[companyInfo.origin_country]})`, value: `${companyInfo.id}` });
 	}
 	return options;
 }
