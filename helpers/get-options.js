@@ -29,5 +29,14 @@ function getOptionsForPeopleSelectMenu(people) {
 	}
 	return options;
 }
+function getOptionsForCompanySelectMenu(companies) {
+	const options = [];
 
-module.exports = { getOptionsForPeopleSelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
+	for (const companyInfo of companies) {
+		// known_for_department
+		options.push({ label: `${companyInfo.name.slice(0, 81)}`, description: companyInfo.origin_country, value: `${companyInfo.id}` });
+	}
+	return options;
+}
+
+module.exports = { getOptionsForCompanySelectMenu, getOptionsForPeopleSelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
