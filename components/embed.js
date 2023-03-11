@@ -38,6 +38,28 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 		},
 	});
 };
+const createCompanyAltListEmbed = async (start, listSize, list, color = Colors.Blue) => {
+
+	if (!list.length) {
+		return createNoResultEmbed(Colors.Red, 'No Alternative titles');
+	}
+
+	const current = list.slice(start, start + listSize);
+
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Alternative Names ${start + 1} - ${start + current.length} out of ${list.length}`,
+		fields: await Promise.all(current.map(async (company, index) => ({
+			name: `${ start + (index + 1)}. ${company.name}`,
+			value: `Type: ${company.type == '' ? 'N/A' : company.type}` })),
+		),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 
 function createCompanyDetailEmbed(companyDetails, user) {
 	if (!companyDetails) {
@@ -1220,6 +1242,7 @@ const createWatchProviderListEmbed = async (title, watchProvidersList, user, col
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
+	createCompanyAltListEmbed,
 	createCompanyDetailEmbed,
 	createCreditListEmbed,
 	createEpisodeDetailEmbed,
