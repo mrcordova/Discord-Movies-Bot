@@ -124,7 +124,7 @@ module.exports = {
 			}
 			const tv = tvResponse.data;
 			// console.log(tv.images);
-			tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
+			tvImages = tv.images.posters.concat(tv.images.posters.backdrops);
 
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${tv.name.slice(0, 80)} Showing TV Show Season Image ${currentIndex + current.length} out of ${tvImages.length}`;

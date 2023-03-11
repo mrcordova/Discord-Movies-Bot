@@ -117,7 +117,6 @@ module.exports = {
 			const movieLinks = movieResponse.data;
 			delete movieLinks.id;
 
-			console.log(movieLinks);
 
 			if (site && movieLinks[`${site}_id`]) {
 				const videoLink = `${siteDict[site.toLowerCase()]}${movieLinks[`${site}_id`]}`;

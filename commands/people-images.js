@@ -2,18 +2,19 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Color
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { searchForTV } = require('../helpers/search-for.js');
+const { searchForMovie, searchForPeople } = require('../helpers/search-for.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { getOptionsForSelectMenu, getOptionsForPeopleSelectMenu } = require('../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
 // language string optional
 // include_image_language string optional
+
 
 // Constants
 const backId = 'back';
@@ -24,11 +25,11 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('tv-images')
-		.setDescription('Get the images that belong to a TV show.')
+		.setName('people-images')
+		.setDescription('Get the images for a person.')
 		.addStringOption(option =>
 			option.setName('title')
-				.setDescription('Search for the desired tv show.')
+				.setDescription('Search for the desired person.')
 				.setRequired(true))
 		.addStringOption(option =>
 			option.setName('language')
@@ -38,15 +39,6 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000))
-		.addStringOption(option =>
-			option.setName('image_language')
-				.setDescription('Search for the desired image language.')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
@@ -70,62 +62,60 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const imgLang = (interaction.options.getString('image_language') ?? 'en').split('-')[0];
-		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
+		// const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
-		const response = await searchForTV(query, language, region, releaseYear);
-		const tvTitles = response.data.results;
+		const response = await searchForPeople(query, language, region);
+		const peopleNames = response.data.results;
 
-		if (!tvTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No TV show  Found', 'Please make a new command with a different info.')], files: [file] });
+		if (!peopleNames.length) {
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies Found', 'Please make a new command with a different info.')], files: [file] });
 			return;
 		}
-		const options = getOptionsForTvSelectMenu(tvTitles, language);
+		const options = getOptionsForPeopleSelectMenu(peopleNames);
 
-		const selectMenu = createSelectMenu('List of TV Shows', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of People', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'TV Show will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'People will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of People matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 
 		const listSize = 1;
 		let currentIndex = 0;
-		let tvImages;
+		let personImages;
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
-			// const appendToResponse = ['images', `include_image_language=${imgLang},null`];
-			const mediaResponse = await axios.get(`${api_url}/tv/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
-			const tv = mediaResponse.data;
-			
-			tvImages = tv.images.posters.concat(tv.images.posters.backdrops);
+			const peopleResponse = await axios.get(`${api_url}/person/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=images`);
+			const person = peopleResponse.data;
+			personImages = person.images.profiles;
 
-			const current = tvImages.slice(currentIndex, currentIndex + listSize);
-			const title = `${tv.name.slice(0, 80)} Showing TV Show Image ${currentIndex + current.length} out of ${tvImages.length}`;
+			const current = personImages.slice(currentIndex, currentIndex + listSize);
+			const title = `${person.name.slice(0, 80)} Showing Person Image ${currentIndex + current.length} out of ${personImages.length}`;
 
 			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
-			const movieImageEmbed = createImageEmbed(title, current, i.user);
-			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
+			const personImageEmbed = createImageEmbed(title, current, i.user);
+			const newSelectMenu = createSelectMenu('List of People', person.name.slice(0, 80), 1, options);
 
 			await i.update({
-				content: 'Selected TV Show Images: ',
-				embeds: [movieImageEmbed],
+				content: 'Selected Person Images: ',
+				embeds: [personImageEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < tvImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < personImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 					// new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Images found', ButtonStyle.Danger, 'empty', 'ðŸª¹').setDisabled(true)] }),
 				],
@@ -153,10 +143,10 @@ module.exports = {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			const current = tvImages.slice(currentIndex, currentIndex + listSize);
+			const current = personImages.slice(currentIndex, currentIndex + listSize);
 
 
-			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show Image ${currentIndex + current.length} out of ${tvImages.length}`;
+			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Person Image ${currentIndex + current.length} out of ${personImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
 
 			// console.log(currentIndex);
@@ -170,7 +160,7 @@ module.exports = {
 					// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < tvImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < personImages.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }) ],
 			});
 			selectMenucollector.resetTimer([{ idle: 30000 }]);

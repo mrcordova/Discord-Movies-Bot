@@ -105,7 +105,7 @@ module.exports = {
 			currentIndex = 0;
 			const movieResponse = await axios.get(`${api_url}/movie/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
 			const movie = movieResponse.data;
-			movieImages = movie.images.posters.concat(movie.images.posters.backdrops).filter((obj) => obj);
+			movieImages = movie.images.posters.concat(movie.images.posters.backdrops);
 
 			const current = movieImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${movie.title.slice(0, 80)} Showing Movie Image ${currentIndex + current.length} out of ${movieImages.length}`;
