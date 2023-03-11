@@ -11,6 +11,7 @@ const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForCompanySelectMenu, getOptionsForCollectionSelectMenu } = require('../helpers/get-options');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
+const { getMediaResponse, getMediaDetail } = require('../helpers/get-media');
 const collection_details = '/collection';
 
 const backId = 'back';
@@ -99,7 +100,7 @@ module.exports = {
 			const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
 
 			await i.update({
-				content: 'Selected Collection:',
+				content: `Selected Collection: ${collection.name}`,
 				embeds: [collectionDetailsEmbed],
 				components: [
                     new ActionRowBuilder().addComponents(newSelectMenu),
@@ -132,7 +133,17 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-                
+
+                const media = collection.parts.find(({ id }) => id == i.customId);
+                const mediaDetailsEmbed =  createCollectionDetailEmbed(media, i.user);
+
+				await i.update({
+					embeds: [mediaDetailsEmbed],
+					components: [],
+
+				});
+				buttonCollector.stop('Done!');
+				selectMenucollector.stop('Done!');
 			}
 			else {
 

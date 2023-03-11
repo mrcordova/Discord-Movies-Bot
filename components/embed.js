@@ -39,14 +39,19 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 	});
 };
 
-async function createCollectionDetailEmbed(collectionDetails, parts, user) {
+  function createCollectionDetailEmbed(collectionDetails, user) {
 	if (!collectionDetails) {
 		return createNoResultEmbed(Colors.Red, 'No Collection found');
 	}
 
+// TODO: maybe get genre with genrre_id in collection parent
+	const releaseDate = new Date(collectionDetails.release_date);
+	// console.log(collecti onDetails.release_date);
+
+	// console.log(`${time(releaseDate, 'D')} (${time(releaseDate, 'R')})`);
 	return {
 		color: Colors.DarkGrey,
-		title: `${collectionDetails.name}\nTotal # of items ${collectionDetails.parts.length}`,
+		title: `${collectionDetails.name ?? collectionDetails.title}`,
 		// url: `${collectionDetails.homepage}`,
 		author: {
 			name: user.username,
@@ -54,10 +59,28 @@ async function createCollectionDetailEmbed(collectionDetails, parts, user) {
 			// url: "https://discord.js.org",
 		},
 		description: collectionDetails.overview,
-		fields: await Promise.all(parts.map(async (media, index) => ({
-			name: `${collectionDetails.currentIndex + (index + 1)}. ${media.title} (${time(new Date(media.release_date), 'D')})`,
-			value: `rating: ${media.vote_average}\nmedia type: ${media.media_type}`,
-		}))),
+		fields: [
+			{
+				name: 'Releas Date',
+				value: `${time(releaseDate, 'D')} (${time(releaseDate, 'R')})`,
+			},
+			{
+				name: 'Rating',
+				value: `${collectionDetails.vote_average}/10`,
+			},
+			{
+				name: 'Rating count',
+				value: `${collectionDetails.vote_count}`,
+			},
+			{
+				name: 'Popularity',
+				value: `${collectionDetails.popularity}`,
+			},
+			{
+				name: 'Language',
+				value: `${collectionDetails.original_language}`,
+			},
+		],
 		image: {
 			url: `${images.base_url}${images.poster_sizes[5]}${collectionDetails.poster_path}`,
 		},
