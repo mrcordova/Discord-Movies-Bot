@@ -1,4 +1,5 @@
 const axios = require('axios');
+const zlib = require('zlib');
 // const cheerio = require('cheerio');
 const fs = require('fs');
 const { api_url, MOVIE_API_KEY } = require('./config.json');
@@ -16,6 +17,59 @@ const certification_tv = '/certification/tv/list';
 const watch_provider_movies = '/watch/providers/movie';
 const watch_provider_tvs = '/watch/providers/tv';
 const watch_provider_regions = '/watch/providers/regions';
+
+
+const file_export_url = 'http://files.tmdb.org';
+const today = new Date();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const year = today.getFullYear();
+const network_ids = `tv_network_ids_${month}_${day}_${year}.json.gz`;
+
+// axios.get(`${file_export_url}/p/exports/${network_ids}`)
+// 	.then(response => {
+
+// 	})
+axios({
+	method: 'get',
+	url: `${file_export_url}/p/exports/${network_ids}`,
+	responseType: 'stream',
+}).then(response => {
+	// Create a stream to the gzip data
+	const gunzip = zlib.createGunzip();
+	response.data.pipe(gunzip);
+
+	// Accumulate the unzipped data
+	let data = '';
+	gunzip.on('data', chunk => {
+		data += chunk.toString();
+	});
+
+	// Parse each line as JSON
+	gunzip.on('end', () => {
+		let networkArry = [];
+		data.split('\n').forEach(line => {
+			if (line) {
+				try {
+				  const json = JSON.parse(line);
+				  // Do something with the parsed JSON object
+				//   console.log(json);
+				  networkArry.push(json);
+				}
+				catch (error) {
+				  console.error(`Error parsing JSON: ${error}`);
+				}
+			  }
+			else {
+				console.error('Empty or null JSON input');
+			  }
+		});
+		console.log(networkArry.length);
+	});
+
+}).catch(error => {
+	console.error(`Error downloading file: ${error}`);
+});
 
 // countries
 // axios.get('https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes')
