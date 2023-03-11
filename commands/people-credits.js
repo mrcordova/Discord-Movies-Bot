@@ -126,19 +126,19 @@ module.exports = {
 			currentIndex = 0;
 
 			const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
-			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=${mediaDict[mediaType]}`);
+			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const personCredits = peopleResponse.data;
+            const combined_credits = personCredits.combined_credits;
             
 			// console.log( personCredits[`${mediaDict[mediaType]}`]['cast']);
-			const cast = personCredits[`${mediaDict[mediaType]}`]['cast'].filter(() => dept == 'Acting' || dept === 'all');
-			const crew = personCredits[`${mediaDict[mediaType]}`]['crew'].filter(({ department }) => department == dept || dept === 'all');
+			const cast = combined_credits['cast'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(() => dept == 'Acting' || dept === 'all');
+			const crew = combined_credits['crew'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(({ department }) => department == dept || dept === 'all');
 			credits = cast.concat(crew);
 			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const movieCreditsEmbed = await createPeopleCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of People', personCredits.name.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			console.log(credits);
 			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
