@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { createEmbed, createNoResultEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
-const { searchForTV } = require('../helpers/search-movie.js');
+const { searchForTV } = require('../helpers/search-for.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');

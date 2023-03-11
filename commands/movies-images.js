@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Color
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
-const { searchForMovie } = require('../helpers/search-movie.js');
+const { searchForMovie } = require('../helpers/search-for.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
