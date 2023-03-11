@@ -73,7 +73,7 @@ async function createCollectionDetailEmbed(collectionDetails, parts, user) {
 		},
 		description: collectionDetails.overview,
 		fields: await Promise.all(parts.map(async (media, index) => ({
-			name: `${(index + 1)}. ${media.title} (${time(new Date(media.release_date), 'D')})`,
+			name: `${collectionDetails.currentIndex + (index + 1)}. ${media.title} (${time(new Date(media.release_date), 'D')})`,
 			value: `rating: ${media.vote_average}\nmedia type: ${media.media_type}`,
 		}))),
 		image: {

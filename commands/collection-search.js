@@ -92,6 +92,7 @@ module.exports = {
 
             const current = collection.parts.slice(currentIndex, currentIndex + listSize);
 
+            collection.currentIndex = currentIndex;
 			const collectionDetailsEmbed = await createCollectionDetailEmbed (collection, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
 
@@ -164,6 +165,7 @@ module.exports = {
 
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
+                collection.currentIndex = currentIndex;
 
 				const current = collection.parts.slice(currentIndex, currentIndex + listSize);
 				const collectionEmbed = await createCollectionDetailEmbed(collection, current, i.user);
