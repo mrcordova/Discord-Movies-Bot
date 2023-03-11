@@ -319,9 +319,9 @@ function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', descri
 		});
 }
 
-function createImageEmbed(title, movieImage, user) {
-	if (!movieImage.length) {
-		return createNoResultEmbed();
+function createImageEmbed(title, mediaImages, user, noResultText) {
+	if (!mediaImages.length) {
+		return createNoResultEmbed(Colors.Red, noResultText);
 	}
 
 
@@ -334,13 +334,9 @@ function createImageEmbed(title, movieImage, user) {
 			icon_url: user.displayAvatarURL(),
 			// url: "https://discord.js.org",
 		},
-		// description: movie.overview,
-		// thumbnail: {
-		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
-		// },
 		fields: [],
 		image: {
-			url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+			url: `${images.base_url}${images.poster_sizes[5]}${mediaImages[0].file_path}`,
 		},
 		timestamp: new Date(),
 		footer: {
