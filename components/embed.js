@@ -194,6 +194,27 @@ const createListEmbed = async (start, listSize, moviesList, color = Colors.Blue)
 		},
 	});
 };
+const createPeopleListEmbed = async (start, listSize, peopleList, color = Colors.Blue) => {
+	if (!peopleList.length) {
+		return createNoResultEmbed();
+	}
+
+	const current = peopleList.slice(start, start + listSize);
+	
+	return new EmbedBuilder({
+		color: color,
+		title: `Showing Movies ${start + 1}-${start + current.length} out of ${peopleList.length}`,
+		fields: await Promise.all(current.map(async (person, index) => ({
+			name: `${ start + (index + 1)}. ${person.name} (popularity: ${person.popularity})`,
+			value: person.known_for.map(({ title, name }) => title ?? name ).join(', ') }
+		))),
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	});
+};
 const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
 		return createNoResultEmbed();
@@ -1166,8 +1187,9 @@ module.exports = {
 	createNoResultEmbed,
 	createMovieDetailEmbed,
 	createPeopleCreditListEmbed,
-	createPersonDetailEmbed,
+	createPeopleListEmbed,
 	createPeopleTranslateDetailEmbed,
+	createPersonDetailEmbed,
 	createRatingsEmbed,
 	createReleaseDatesEmbed,
 	createReviewDetailEmbed,
