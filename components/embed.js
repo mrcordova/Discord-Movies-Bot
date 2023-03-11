@@ -661,7 +661,7 @@ const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.B
 	}
 
 	const current = tvList.slice(start, start + listSize);
-	console.log(current);
+	// console.log(current);
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing TV Credits ${start + 1}-${start + current.length} out of ${tvList.length}`,

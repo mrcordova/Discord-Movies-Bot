@@ -129,8 +129,8 @@ module.exports = {
 			// const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
 			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const personCredits = peopleResponse.data;
-            const combined_credits = personCredits.combined_credits;
-            
+			const combined_credits = personCredits.combined_credits;
+
 			// console.log( personCredits[`${mediaDict[mediaType]}`]['cast']);
 			const cast = combined_credits['cast'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(() => dept == 'Acting' || dept === 'all');
 			const crew = combined_credits['crew'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(({ department }) => department == dept || dept === 'all');
@@ -176,7 +176,6 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
 				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
 
 				const chosenMediaType = creditResponse.data.media_type;
