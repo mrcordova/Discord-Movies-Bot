@@ -140,6 +140,8 @@ const siteDict = {
 	'twitter': 'https://www.twitter.com/',
 	'wikidata': 'https://www.wikidata.org/wiki/',
 	'tvdb': 'https://www.thetvdb.com/series/',
+	'youtube': 'https://www.youtube.com/',
+	'tiktok': 'https://www.tiktok.com/',
 };
 
 
