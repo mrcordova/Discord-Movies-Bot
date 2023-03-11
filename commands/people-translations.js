@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed, createPeopleTranslateDetailEmbed } = require('../components/embed.js');
 const { searchForMovie, searchForPeople } = require('../helpers/search-for.js');
 const { translationsCodeDict, countryDict, file } = require('../load-data.js');
 const axios = require('axios');
@@ -149,8 +149,11 @@ module.exports = {
 
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
-
-				const translationDetailEmbed = createTranslateDetailEmbed(selectedTranslation, i.user);
+                // const selectedOption = i.message.components[0].components[0].data.options.find(option => option.value === selected);
+                // const selectedName = selectedOption.label;
+                selectedTranslation.person_name = i.message.components[0].components[0].data.placeholder;
+                // console.log(i.message.components[0].components[0].data)
+				const translationDetailEmbed = createPeopleTranslateDetailEmbed(selectedTranslation, i.user);
 				const content = i.message.content.split('Translation').join('Translation Detail');
 
 				await i.update({

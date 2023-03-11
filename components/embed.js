@@ -417,6 +417,70 @@ function createPersonDetailEmbed(person, credits, user) {
 	};
 
 }
+
+
+function createPeopleTranslateDetailEmbed(translationDetails, user) {
+	if (!translationDetails) {
+		return createNoResultEmbed();
+	}
+
+	// console.log(translationDetails);
+	return {
+		color: Colors.DarkGrey,
+		title: `${translationDetails.person_name}`,
+		// url: `${translationDetails.data.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: translationDetails.data.biography,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			// {
+			// 	name: 'Tagline',
+			// 	value: `${translationDetails.data.tagline == '' ? 'N/A' : translationDetails.data.tagline}`,
+			// 	inline: true,
+			// },
+			// {
+			// 	name: 'Runtime',
+			// 	value: `${translationDetails.data.runtime}`,
+			// 	inline: true,
+			// },
+			{
+				name: 'Language',
+				value: `${translationDetails.name}`,
+				inline: true,
+			},
+			{
+				name: 'English Translation',
+				value: `${translationDetails.english_name}`,
+				inline: true,
+			},
+			{
+				name: 'Region',
+				value: `${translationDetails.iso_3166_1}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
+				value: `${translationDetails.iso_639_1} (${langCodeDict[translationDetails.iso_639_1]})`,
+				inline: true,
+			},
+
+		],
+		// image: {
+		// 	url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+		// },
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
 const createRatingsEmbed = async (start, tvList, title, color = Colors.Blue) => {
 	if (!tvList.length) {
 		return createNoResultEmbed(Colors.Red, 'No TV Show Found', 'No ratings for speific movie with these options');
@@ -597,7 +661,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		return createNoResultEmbed();
 	}
 
-	console.log(translationDetails);
+	// console.log(translationDetails);
 	return {
 		color: Colors.DarkGrey,
 		title: `${translationDetails.data.title}`,
@@ -654,6 +718,7 @@ function createTranslateDetailEmbed(translationDetails, user) {
 		},
 	};
 }
+
 
 const createTvCreditListEmbed = async (start, listSize, tvList, color = Colors.Blue) => {
 	if (!tvList.length) {
@@ -1102,6 +1167,7 @@ module.exports = {
 	createMovieDetailEmbed,
 	createPeopleCreditListEmbed,
 	createPersonDetailEmbed,
+	createPeopleTranslateDetailEmbed,
 	createRatingsEmbed,
 	createReleaseDatesEmbed,
 	createReviewDetailEmbed,
