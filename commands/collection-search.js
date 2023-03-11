@@ -78,7 +78,7 @@ module.exports = {
 			// console.log(company);
 
 
-			const collectionDetailsEmbed = createCollectionDetailEmbed (collection, i.user);
+			const collectionDetailsEmbed = await createCollectionDetailEmbed (collection, i.user);
 			const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
 
 

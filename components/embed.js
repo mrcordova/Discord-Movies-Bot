@@ -39,7 +39,7 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 	});
 };
 
-function createCollectionDetailEmbed(collectionDetails, user) {
+async function createCollectionDetailEmbed(collectionDetails, user) {
 	if (!collectionDetails) {
 		return createNoResultEmbed(Colors.Red, 'No Collection found');
 	}
@@ -48,36 +48,19 @@ function createCollectionDetailEmbed(collectionDetails, user) {
 	return {
 		color: Colors.DarkGrey,
 		title: `${collectionDetails.name}`,
-		url: `${collectionDetails.homepage}`,
+		// url: `${collectionDetails.homepage}`,
 		author: {
 			name: user.username,
 			icon_url: user.displayAvatarURL(),
 			// url: "https://discord.js.org",
 		},
-		description: collectionDetails.description,
-		// thumbnail: {
-		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
-		// },
-		fields: [
-			{
-				name: 'Headquarters',
-				value: `${collectionDetails.headquarters}`,
-				inline: true,
-			},
-			{
-				name: 'Country of Origin',
-				value: `${collectionDetails.origin_country} (${countryCodeDict[collectionDetails.origin_country]})`,
-				inline: true,
-			},
-			{
-				name: 'Parent Company',
-				value: `${collectionDetails.parent_company ?? 'N/A'}`,
-				inline: true,
-			},
-
-		],
+		description: collectionDetails.overview,
+		fields: await Promise.all(collectionDetails.parts.map(async (media, index) => ({
+			name: `${(index + 1)}. ${media.title} (${time(new Date(media.release_date), 'D')})`,
+			value: `rating: ${media.vote_average}\nmedia type: ${media.media_type}`,
+		}))),
 		image: {
-			url: `${images.base_url}${images.poster_sizes[5]}${companyDetails.logo_path}`,
+			url: `${images.base_url}${images.poster_sizes[5]}${collectionDetails.poster_path}`,
 		},
 		timestamp: new Date(),
 		footer: {
