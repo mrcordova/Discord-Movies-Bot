@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed, createPeopleCreditListEmbed } = require('../components/embed.js');
+const { createEmbed, createNoResultEmbed, createCreditListEmbed, createPersonDetailEmbed, createPeopleCreditListEmbed, createTvDetailEmbed } = require('../components/embed.js');
 const { searchForMovie, searchForPeople } = require('../helpers/search-movie.js');
 const { translationsCodeDict, depts, deptEmojis, file } = require('../load-data.js');
 const axios = require('axios');
@@ -10,6 +10,7 @@ const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForSelectMenu, getOptionsForPeopleSelectMenu } = require('../helpers/get-options');
+const { getMediaResponse, getMediaDetail } = require('../helpers/get-media');
 const person_details = '/person';
 
 
@@ -178,28 +179,21 @@ module.exports = {
 				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
 				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
 
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const personDetials = personResponse.data;
-				// console.log(personDetials);
-				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
-				let movieCredits;
-				try {
-					// undefined error for person results
-					movieCredits = imdbResponse.data.person_results[0].known_for;
-				}
-				catch {
-					movieCredits = [{ title: 'N/A', vote_average: -1 }];
-				}
+				const chosenMediaType = creditResponse.data.media_type;
 
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
+				const appendToResponse = chosenMediaType == 'tv' ? ['aggregate_credits', 'content_ratings'] : ['credits', 'release_dates'];
 
+
+				const mediaResponse = await getMediaResponse(chosenMediaType, creditResponse.data.media.id, language, appendToResponse);
+
+				const media = mediaResponse.data;
+				const country = media.origin_country;
+				const mediaDetailsEmbed = getMediaDetail(chosenMediaType, country, language, i, media);
 				await i.update({
-					content: 'Person\'s Detail',
-					embeds: [personCreditsEmbed],
+					content: `${creditResponse.data.media_type}'s Detail`,
+					embeds: [mediaDetailsEmbed],
 					components: [],
+
 				});
 				buttonCollector.stop('Done!');
 				selectMenucollector.stop('Done!');
