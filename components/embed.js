@@ -39,7 +39,7 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 	});
 };
 
-  function createCollectionDetailEmbed(collectionDetails, user) {
+function createCollectionDetailEmbed(collectionDetails, user) {
 	if (!collectionDetails) {
 		return createNoResultEmbed(Colors.Red, 'No Collection found');
 	}
@@ -120,7 +120,58 @@ async function createCollectionListEmbed(collectionDetails, parts, user) {
 		},
 	};
 }
+function createCollectionTranslateDetailEmbed(translationDetails, user) {
+	if (!translationDetails) {
+		return createNoResultEmbed();
+	}
 
+
+	return {
+		color: Colors.DarkGrey,
+		title: `${translationDetails.data.title}`,
+		url: `${translationDetails.data.homepage ?? ''}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: translationDetails.data.overview,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Language',
+				value: `${translationDetails.name}`,
+				inline: true,
+			},
+			{
+				name: 'English Translation',
+				value: `${translationDetails.english_name}`,
+				inline: true,
+			},
+			{
+				name: 'Region',
+				value: `${translationDetails.iso_3166_1}`,
+				inline: true,
+			},
+			{
+				name: 'Language',
+				value: `${translationDetails.iso_639_1} (${langCodeDict[translationDetails.iso_639_1]})`,
+				inline: true,
+			},
+
+		],
+		// image: {
+		// 	url: `${images.base_url}${images.poster_sizes[5]}${movieImage[0].file_path}`,
+		// },
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
 const createCompanyAltListEmbed = async (start, listSize, list, color = Colors.Blue) => {
 
 	if (!list.length) {
@@ -1324,6 +1375,7 @@ module.exports = {
 	createAltListEmbed,
 	createCollectionDetailEmbed,
 	createCollectionListEmbed,
+	createCollectionTranslateDetailEmbed,
 	createCompanyAltListEmbed,
 	createCompanyDetailEmbed,
 	createCreditListEmbed,
