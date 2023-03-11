@@ -125,7 +125,7 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
+			// const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
 			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const personCredits = peopleResponse.data;
             const combined_credits = personCredits.combined_credits;
@@ -215,7 +215,7 @@ module.exports = {
 
 
 				await i.update({
-					content: `Department: ${dept}${deptEmojis[dept]}`,
+					content: `Department: ${dept} ${deptEmojis[dept]}`,
 					embeds: [movieCreditsEmbed],
 					components: [
 						i.message.components[0],

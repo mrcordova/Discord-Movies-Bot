@@ -95,6 +95,7 @@ const deptEmojis = {
 	'Editing' : '🎞️',
 	'Sound' : '🔊',
 	'Production' : '🎥',
+	'all': '🌍',
 };
 
 const numberEmojis = {
