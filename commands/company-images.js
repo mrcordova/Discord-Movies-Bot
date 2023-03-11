@@ -9,11 +9,6 @@ const { MyEvents } = require('../events/DMB-Events');
 const { createSelectMenu } = require('../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const { getOptionsForCompanySelectMenu } = require('../helpers/get-options');
-// const movie_now_playing = '/movie/now_playing';
-
-// https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
-// language string optional
-// include_image_language string optional
 
 
 // Constants
@@ -52,7 +47,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		// if no film is found for certain year.
+
 		const message = await interaction.reply({ content: 'List of Companies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
@@ -73,7 +68,6 @@ module.exports = {
 			const current = companyImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${company.name.slice(0, 80)} Showing Company Image ${currentIndex + current.length} out of ${companyImages.length}`;
 
-			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const companyImageEmbed = createImageEmbed(title, current, i.user, 'No Company Images Found');
 			const newSelectMenu = createSelectMenu('List of Companies', company.name.slice(0, 80), 1, options);
@@ -102,7 +96,6 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
@@ -121,7 +114,7 @@ module.exports = {
 			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing Company Image ${currentIndex + current.length} out of ${companyImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user, 'No Company Images Found');
 
-			// console.log(currentIndex);
+
 			// Respond to interaction by updating message with new embed
 			await m.update({
 				content: m.message.content,
@@ -144,7 +137,6 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
