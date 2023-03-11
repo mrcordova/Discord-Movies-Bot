@@ -89,7 +89,7 @@ module.exports = {
 			const results = company.results;
 			const companyName = companyResponse.data.name;
 
-            console.log(results);
+			// console.log(results);
 			const newSelectMenu = createSelectMenu('List of Companies', companyName, 1, options);
 
 			const altListEmbed = await createCompanyAltListEmbed(currentIndex, listSize, results);
@@ -123,11 +123,11 @@ module.exports = {
 		buttonCollector.on(MyEvents.Collect, async i => {
 
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
-
-			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
+			const results = company.results;
+			const altListEmbed = await createCompanyAltListEmbed(currentIndex, listSize, results);
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: i.message.content,
 				embeds: [altListEmbed],
 				components: [
 					i.message.components[0],
@@ -135,7 +135,7 @@ module.exports = {
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movie.titles.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] })],
 			});
 			selectMenuCollector.resetTimer([{ idle: 30000 }]);
