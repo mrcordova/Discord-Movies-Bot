@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 // eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed } = require('../components/embed.js');
 const { searchForCompany, searchForCollection } = require('../helpers/search-for.js');
 const { file, translationsCodeDict } = require('../load-data.js');
 const axios = require('axios');
@@ -93,7 +93,7 @@ module.exports = {
             const current = collection.parts.slice(currentIndex, currentIndex + listSize);
 
             collection.currentIndex = currentIndex;
-			const collectionDetailsEmbed = await createCollectionDetailEmbed (collection, current, i.user);
+			const collectionDetailsEmbed = await createCollectionListEmbed(collection, current, i.user);
 			const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
 
 			const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
@@ -132,34 +132,7 @@ module.exports = {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
-				const creditResponse = await axios.get(`${api_url}/credit/${i.customId}?api_key=${MOVIE_API_KEY}`);
-
-				const person_id = creditResponse.data.person.id;
-				//  add language option?
-				const personResponse = await axios.get(`${api_url}/person/${person_id}?api_key=${MOVIE_API_KEY}&language=${language}`);
-				const personDetials = personResponse.data;
-				// console.log(personDetials);
-				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
-				let movieCredits;
-				try {
-					// undefined error for person results
-					movieCredits = imdbResponse.data.person_results[0].known_for;
-				}
-				catch {
-					movieCredits = [{ title: 'N/A', vote_average: -1 }];
-				}
-
-				const personCreditsEmbed = createPersonDetailEmbed(personDetials, movieCredits, i.user);
-
-				await i.update({
-					content: 'Person\'s Detail',
-					embeds: [personCreditsEmbed],
-					components: [],
-				});
-				buttonCollector.stop('Done!');
-				selectMenucollector.stop('Done!');
+                
 			}
 			else {
 
@@ -168,7 +141,7 @@ module.exports = {
                 collection.currentIndex = currentIndex;
 
 				const current = collection.parts.slice(currentIndex, currentIndex + listSize);
-				const collectionEmbed = await createCollectionDetailEmbed(collection, current, i.user);
+				const collectionEmbed = await createCollectionListEmbed(collection, current, i.user);
 				const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
 
 

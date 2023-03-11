@@ -44,27 +44,38 @@ async function createCollectionDetailEmbed(collectionDetails, parts, user) {
 		return createNoResultEmbed(Colors.Red, 'No Collection found');
 	}
 
-	// console.log(collectionDetails);
-	// {
-	// 	adult: false,
-	// 	backdrop_path: '/vV5knD9jlW8QaOhCgf4129hbIIh.jpg',
-	// 	id: 980804,
-	// 	title: 'LEGO Star Wars Summer Vacation',
-	// 	original_language: 'en',
-	// 	original_title: 'LEGO Star Wars Summer Vacation',
-	// 	overview: "Looking for a much-needed break, Finn arranges a surprise vacation for his friends Rey, Poe, Rose, Chewie, BB-8, R2-D2, and C-3PO, aboard the luxurious Halcyon. However, Finn's plan to have one last hurrah together quickly goes awry.",
-	// 	poster_path: '/2SatEFCs04oFRqkZuY1fODYXeFI.jpg',
-	// 	media_type: 'movie',
-	// 	genre_ids: [Array],
-	// 	popularity: 16.635,
-	// 	release_date: '2022-08-05',
-	// 	video: false,
-	// 	vote_average: 6.13,
-	// 	vote_count: 50
-	//   }
 	return {
 		color: Colors.DarkGrey,
-		title: `${collectionDetails.name}`,
+		title: `${collectionDetails.name}\nTotal # of items ${collectionDetails.parts.length}`,
+		// url: `${collectionDetails.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: collectionDetails.overview,
+		fields: await Promise.all(parts.map(async (media, index) => ({
+			name: `${collectionDetails.currentIndex + (index + 1)}. ${media.title} (${time(new Date(media.release_date), 'D')})`,
+			value: `rating: ${media.vote_average}\nmedia type: ${media.media_type}`,
+		}))),
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${collectionDetails.poster_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
+async function createCollectionListEmbed(collectionDetails, parts, user) {
+	if (!collectionDetails) {
+		return createNoResultEmbed(Colors.Red, 'No Collection found');
+	}
+
+	return {
+		color: Colors.DarkGrey,
+		title: `${collectionDetails.name}\nTotal # of items ${collectionDetails.parts.length}`,
 		// url: `${collectionDetails.homepage}`,
 		author: {
 			name: user.username,
@@ -1289,6 +1300,7 @@ module.exports = {
 	createEmbed,
 	createAltListEmbed,
 	createCollectionDetailEmbed,
+	createCollectionListEmbed,
 	createCompanyAltListEmbed,
 	createCompanyDetailEmbed,
 	createCreditListEmbed,
