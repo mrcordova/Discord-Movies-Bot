@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createAltListEmbed, createNoResultEmbed, createCompanyAltListEmbed } = require('../components/embed.js');
-const { countryDict, file } = require('../load-data.js');
+const { createEmbed, createNoResultEmbed, createCompanyAltListEmbed } = require('../components/embed.js');
+const { file } = require('../load-data.js');
 
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForCompanySelectMenu } = require('../helpers/get-options');
+const { getOptionsForCompanySelectMenu } = require('../helpers/get-options');
 const { searchForCompany } = require('../helpers/search-for');
 const company_route = '/company';
 const company_alt = 'alternative_names';
@@ -53,7 +53,7 @@ module.exports = {
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
-;
+
 
 		const response = await searchForCompany(query);
 		const companyNames = response.data.results;

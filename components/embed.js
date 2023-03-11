@@ -269,13 +269,13 @@ const createPeopleListEmbed = async (start, listSize, peopleList, color = Colors
 	}
 
 	const current = peopleList.slice(start, start + listSize);
-	
+
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movies ${start + 1}-${start + current.length} out of ${peopleList.length}`,
 		fields: await Promise.all(current.map(async (person, index) => ({
 			name: `${ start + (index + 1)}. ${person.name} (popularity: ${person.popularity})`,
-			value: person.known_for.map(({ title, name }) => title ?? name ).join(', ') }
+			value: person.known_for.map(({ title, name }) => title ?? name).join(', ') }
 		))),
 		timestamp: new Date(),
 		footer: {

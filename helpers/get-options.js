@@ -1,4 +1,4 @@
-const { countryCodeDict } = require("../load-data");
+const { countryCodeDict } = require('../load-data');
 
 function getOptionsForSelectMenu(movieTitles, language = 'en-US') {
 	const options = [];

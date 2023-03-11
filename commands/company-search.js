@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
+// eslint-disable-next-line no-unused-vars
 const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForCompany } = require('../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file } = require('../load-data.js');
+const { searchForCompany } = require('../helpers/search-for.js');
+const { file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
-const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForCompanySelectMenu } = require('../helpers/get-options');
+const { getOptionsForCompanySelectMenu } = require('../helpers/get-options');
 const company_details = '/company';
 
 

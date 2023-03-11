@@ -3,7 +3,7 @@ const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 const { createButton } = require('../components/button.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
-const { createListEmbed, createPeopleListEmbed } = require('../components/embed');
+const { createPeopleListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
 const person_popular = '/person/popular';
@@ -30,15 +30,15 @@ module.exports = {
 				.setDescription('Search for the desired language.')
 				.setMinLength(2)
 				.setAutocomplete(true)),
-		// .addIntegerOption(option =>
-		// 	option.setName('page')
-		// 		.setDescription('1 page equals 20 movies')
-		// 		.setMinValue(1)
-		// 		.setMaxValue(1000))
-		// .addStringOption(option =>
-		// 	option.setName('region')
-		// 		.setDescription('Search for the desired region.')
-		// 		.setAutocomplete(true)),
+	// .addIntegerOption(option =>
+	// 	option.setName('page')
+	// 		.setDescription('1 page equals 20 movies')
+	// 		.setMinValue(1)
+	// 		.setMaxValue(1000))
+	// .addStringOption(option =>
+	// 	option.setName('region')
+	// 		.setDescription('Search for the desired region.')
+	// 		.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -62,7 +62,7 @@ module.exports = {
 
 		const response = await axios.get(`${api_url}${person_popular}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}`);
 		const peoplePopular = response.data.results;
-        // console.log(peoplePopular);
+		// console.log(peoplePopular);
 		const listSize = 5;
 		let currentIndex = 0;
 		const canFitOnOnePage = peoplePopular.length <= listSize;
