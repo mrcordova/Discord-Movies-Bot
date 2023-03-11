@@ -143,7 +143,6 @@ module.exports = {
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
 
-                console.log(selectedTranslation);
 				const translationDetailEmbed = createCollectionTranslateDetailEmbed(selectedTranslation, i.user);
 				const content = i.message.content.split('Translation').join('Translation Detail');
 
