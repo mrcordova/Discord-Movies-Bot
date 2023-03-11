@@ -25,7 +25,7 @@ function getOptionsForPeopleSelectMenu(people) {
 
 	for (const peopleInfo of people) {
 		// known_for_department
-		options.push({ label: `${peopleInfo.name.slice(0, 81)} (${peopleInfo.gender})`, description: `${peopleInfo.known_for_department}`, value: `${peopleInfo.id}` });
+		options.push({ label: `${peopleInfo.name.slice(0, 81)} (${peopleInfo.gender})`, description: `known for ${peopleInfo.known_for_department}`, value: `${peopleInfo.id}` });
 	}
 	return options;
 }
