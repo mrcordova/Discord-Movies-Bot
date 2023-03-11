@@ -38,6 +38,55 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 		},
 	});
 };
+
+function createCollectionDetailEmbed(collectionDetails, user) {
+	if (!collectionDetails) {
+		return createNoResultEmbed(Colors.Red, 'No Collection found');
+	}
+
+	console.log(collectionDetails);
+	return {
+		color: Colors.DarkGrey,
+		title: `${collectionDetails.name}`,
+		url: `${collectionDetails.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: collectionDetails.description,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Headquarters',
+				value: `${collectionDetails.headquarters}`,
+				inline: true,
+			},
+			{
+				name: 'Country of Origin',
+				value: `${collectionDetails.origin_country} (${countryCodeDict[collectionDetails.origin_country]})`,
+				inline: true,
+			},
+			{
+				name: 'Parent Company',
+				value: `${collectionDetails.parent_company ?? 'N/A'}`,
+				inline: true,
+			},
+
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${companyDetails.logo_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
+
 const createCompanyAltListEmbed = async (start, listSize, list, color = Colors.Blue) => {
 
 	if (!list.length) {
@@ -108,6 +157,7 @@ function createCompanyDetailEmbed(companyDetails, user) {
 		},
 	};
 }
+
 
 const createCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -1238,6 +1288,7 @@ const createWatchProviderListEmbed = async (title, watchProvidersList, user, col
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
+	createCollectionDetailEmbed,
 	createCompanyAltListEmbed,
 	createCompanyDetailEmbed,
 	createCreditListEmbed,

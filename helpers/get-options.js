@@ -40,5 +40,14 @@ function getOptionsForCompanySelectMenu(companies) {
 	}
 	return options;
 }
+function getOptionsForCollectionSelectMenu(collections) {
+	const options = [];
 
-module.exports = { getOptionsForCompanySelectMenu, getOptionsForPeopleSelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };
+	for (const collectionInfo of collections) {
+		// known_for_department
+		options.push({ label: `${collectionInfo.name.slice(0, 81)}`, value: `${collectionInfo.id}` });
+	}
+	return options;
+}
+
+module.exports = { getOptionsForCollectionSelectMenu, getOptionsForCompanySelectMenu, getOptionsForPeopleSelectMenu, getOptionsForSelectMenu, getOptionsForTvSelectMenu };

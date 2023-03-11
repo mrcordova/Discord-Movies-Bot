@@ -12,15 +12,6 @@ const { getOptionsForCompanySelectMenu } = require('../helpers/get-options');
 const company_details = '/company';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
-
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('company-search')
@@ -85,13 +76,13 @@ module.exports = {
 			// console.log(company);
 
 
-			const movieDetailsEmbed = createCompanyDetailEmbed(company, i.user);
+			const companyDetailsEmbed = createCompanyDetailEmbed(company, i.user);
 			const newSelectMenu = createSelectMenu('List of Companies', company.name.slice(0, 81), 1, options);
 
 
 			await i.update({
 				content: 'Selected Company:',
-				embeds: [movieDetailsEmbed],
+				embeds: [companyDetailsEmbed],
 				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
 				files: [file],
 			});
