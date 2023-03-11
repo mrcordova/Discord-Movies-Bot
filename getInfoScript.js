@@ -47,24 +47,28 @@ axios({
 
 	// Parse each line as JSON
 	gunzip.on('end', () => {
-		let networkArry = [];
+		const networkArry = [];
 		data.split('\n').forEach(line => {
 			if (line) {
 				try {
-				  const json = JSON.parse(line);
-				  // Do something with the parsed JSON object
-				//   console.log(json);
-				  networkArry.push(json);
+					const json = JSON.parse(line);
+					// Do something with the parsed JSON object
+					//   console.log(json);
+					networkArry.push(json);
 				}
 				catch (error) {
-				  console.error(`Error parsing JSON: ${error}`);
+					console.error(`Error parsing JSON: ${error}`);
 				}
-			  }
+			}
 			else {
 				console.error('Empty or null JSON input');
-			  }
+			}
 		});
-		console.log(networkArry.length);
+		const json = JSON.stringify(networkArry, null, 2);
+		fs.writeFile('data/networks.json', json, (err) => {
+			if (err) throw err;
+			console.log('Network data written to file');
+		});
 	});
 
 }).catch(error => {
