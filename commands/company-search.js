@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed } = require('../components/embed.js');
 const { searchForMovie, searchForCompany } = require('../helpers/search-for.js');
 const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
@@ -58,7 +58,6 @@ module.exports = {
 		const response = await searchForCompany(query);
 		const companyNames = response.data.results;
 
-        console.log(companyNames);
 		if (!companyNames.length) {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Companies Found', 'Please make a new command with a different year')], files: [file] });
 			return;
@@ -83,39 +82,15 @@ module.exports = {
 
 			const companyResponse = await axios.get(`${api_url}${company_details}/${selected}?api_key=${MOVIE_API_KEY}`);
 			const company = companyResponse.data;
-			console.log(company);
-			let movieRating;
-			// || tv.origin_country.includes(iso_3166_1)
-			try {
-				// console.log(movie.production_companies);
-				const countryObj = movie.release_dates.results.find(({ iso_3166_1 }) => country && iso_3166_1 == country);
-				movieRating = countryObj['release_dates'].find(({ type, certification }) => (type == 3 && certification) || (type == 2 && certification)).certification;
-				// console.log(countryObj['release_dates']);
-			}
-			catch {
-				try {
-					const originCountry = movie.production_companies.filter(({ origin_country }) => origin_country.length ? origin_country : false).sort((a, b) => a.id - b.id)[0].origin_country;
-					// console.log(movie.production_companies.filter(({ origin_country }) => origin_country.length ? origin_country : false).sort((a, b) => a.id - b.id)[0]);
-					const countryObj = movie.release_dates.results.find(({ iso_3166_1 }) => iso_3166_1 == region || originCountry == iso_3166_1);
-					movieRating = countryObj['release_dates'].find(({ type, certification }) => (type == 3 && certification) || (type == 2 && certification)).certification;
-				}
-				catch {
-					movieRating = 'N/A';
-				}
-			}
-			movie.rating = movieRating;
+			// console.log(company);
 
-			const formatter = createCurrencyFormatter();
-			const prod = getProductionCompany(movie['production_companies']);
-			const directors = getCrewMember(movie.credits['crew'], 'director');
-			const actors = getCast(movie.credits['cast'], 3);
 
-			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Aqua });
-			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
+			const movieDetailsEmbed = createCompanyDetailEmbed(company, i.user);
+			const newSelectMenu = createSelectMenu('List of Companies', company.name.slice(0, 81), 1, options);
 
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: 'Selected Company:',
 				embeds: [movieDetailsEmbed],
 				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
 				files: [file],

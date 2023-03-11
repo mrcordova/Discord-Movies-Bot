@@ -39,6 +39,53 @@ const createAltListEmbed = async (start, listSize, list, color = Colors.Blue) =>
 	});
 };
 
+function createCompanyDetailEmbed(companyDetails, user) {
+	if (!companyDetails) {
+		return createNoResultEmbed();
+	}
+
+	// console.log(translationDetails);
+	return {
+		color: Colors.DarkGrey,
+		title: `${companyDetails.name}`,
+		url: `${companyDetails.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		description: companyDetails.description,
+		// thumbnail: {
+		// 	url: `${images.base_url}${images.logo_sizes[1]}${prod.logo_path}`,
+		// },
+		fields: [
+			{
+				name: 'Headquarters',
+				value: `${companyDetails.headquarters}`,
+				inline: true,
+			},
+			{
+				name: 'Country of Origin',
+				value: `${companyDetails.origin_country} (${countryCodeDict[companyDetails.origin_country]})`,
+				inline: true,
+			},
+			{
+				name: 'Parent Company',
+				value: `${companyDetails.parent_company ?? 'N/A'}`,
+				inline: true,
+			},
+
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${companyDetails.logo_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
 
 const createCreditListEmbed = async (start, listSize, moviesList, color = Colors.Blue) => {
 	if (!moviesList.length) {
@@ -502,6 +549,7 @@ function createPeopleTranslateDetailEmbed(translationDetails, user) {
 		},
 	};
 }
+
 const createRatingsEmbed = async (start, tvList, title, color = Colors.Blue) => {
 	if (!tvList.length) {
 		return createNoResultEmbed(Colors.Red, 'No TV Show Found', 'No ratings for speific movie with these options');
@@ -523,13 +571,7 @@ const createRatingsEmbed = async (start, tvList, title, color = Colors.Blue) => 
 			catch {
 				ratingMeaning = 'N/A';
 			}
-			// try {
-			// 	releaseRating = release.certification.length ? release.certification : 'N/A';
-			// }
-			// catch {
-			// 	releaseRating = 'N/A';
-			// }
-			// console.log(ratings.certifications[movie.iso_3166_1])
+
 			return {
 				name: `${start + (index + 1)}. ${language ?? 'N/A'}`,
 				value: `${underscore('Rating:')} ${rating}\n${underscore('Rating meaning:')} ${ratingMeaning}`,
@@ -1178,6 +1220,7 @@ const createWatchProviderListEmbed = async (title, watchProvidersList, user, col
 module.exports = {
 	createEmbed,
 	createAltListEmbed,
+	createCompanyDetailEmbed,
 	createCreditListEmbed,
 	createEpisodeDetailEmbed,
 	createJustWatchNoResultEmbed,
