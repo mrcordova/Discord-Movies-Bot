@@ -1,19 +1,19 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createAltListEmbed, createNoResultEmbed } = require('../components/embed.js');
-const { countryDict, file } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createNoResultEmbed, createListsEmbed } = require('../../components/embed.js');
+const { translationsCodeDict, file } = require('../../load-data.js');
 
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { createButton } = require('../components/button');
-const { getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu } = require('../helpers/get-options');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createButton } = require('../../components/button');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForSelectMenu } = require('../../helpers/get-options');
 const movie_route = '/movie';
-const movie_alt = 'alternative_titles';
+const movie_lists = 'lists';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}/alternative_titles?api_key=<<api_key>>&country=v%20vc%20
+// https://api.themoviedb.org/3/movie/{movie_id}/lists?api_key=<<api_key>>&country=v%20vc%20
 // country string optional
 
 const backId = 'back';
@@ -25,15 +25,15 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-alt-titles')
-		.setDescription('Get alternative titles for a movie.')
+		.setName('movies-lists')
+		.setDescription('Get a list of lists that this movie belongs to.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired film.')
 				.setRequired(true))
 		.addStringOption(option =>
-			option.setName('country')
-				.setDescription('Search speific country.')
+			option.setName('language')
+				.setDescription('Search with speific language.')
 				.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
@@ -41,8 +41,8 @@ module.exports = {
 
 		let choices;
 
-		if (focusedOption.name === 'country') {
-			choices = countryDict;
+		if (focusedOption.name === 'language') {
+			choices = translationsCodeDict;
 		}
 		// if (focusedOption.name === 'region') {
 		// 	choices = countryDict;
@@ -56,16 +56,16 @@ module.exports = {
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
-		const country = interaction.options.getString('country') ?? '';
+		const language = interaction.options.getString('language') ?? 'en-US';
 		const response = await axios.get(`${api_url}/search/movie?api_key=${MOVIE_API_KEY}&query=${query}&include_adult=false`);
 		const movieTitles = response.data.results;
 
 		if (!movieTitles.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies with that title.', 'Please make a new command with a different year')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Movies with that title.', 'Please make a new command with a different options')], files: [file] });
 			return;
 		}
 
-		const options = getOptionsForSelectMenu(movieTitles);
+		const options = getOptionsForSelectMenu(movieTitles, language);
 
 
 		const selectMenu = createSelectMenu('List of Movies', 'Choose an option', 1, options);
@@ -88,23 +88,26 @@ module.exports = {
 		selectMenuCollector.on(MyEvents.Collect, async i => {
 			const selected = i.values[0];
 			currentIndex = 0;
-			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_alt}&country=${country}`);
-			movie = movieResponse.data.alternative_titles;
+			const movieResponse = await axios.get(`${api_url}${movie_route}/${selected}?api_key=${MOVIE_API_KEY}&append_to_response=${movie_lists}&country=${language}`);
+			movie = movieResponse.data.lists;
 			const movieTitle = movieResponse.data.title;
+
 
 			const newSelectMenu = createSelectMenu('List of Movies', movieTitle, 1, options);
 
-			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
+
+			const listsEmbed = await createListsEmbed(currentIndex, listSize, movie.results);
+
 			await i.update({
 				content: 'Selected Movie:',
-				embeds: [altListEmbed],
+				embeds: [listsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movie.titles.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < movie.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
 				],
 				files: [file],
@@ -120,24 +123,26 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
+
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
+			const listsEmbed = await createListsEmbed(currentIndex, listSize, movie.results);
 
 			await i.update({
 				content: 'Selected Movie:',
-				embeds: [altListEmbed],
+				embeds: [listsEmbed],
 				components: [
 					i.message.components[0],
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < movie.titles.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < movie.results.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] })],
 			});
 			selectMenuCollector.resetTimer([{ idle: 30000 }]);
@@ -148,10 +153,12 @@ module.exports = {
 		buttonCollector.on(MyEvents.Ignore, args => {
 			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
+
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
 		});
 	},
 };

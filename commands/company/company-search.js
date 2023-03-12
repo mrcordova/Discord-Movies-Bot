@@ -1,14 +1,13 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-// eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed } = require('../components/embed.js');
-const { searchForCompany } = require('../helpers/search-for.js');
-const { file } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createNoResultEmbed, createCompanyDetailEmbed } = require('../../components/embed.js');
+const { searchForCompany } = require('../../helpers/search-for.js');
+const { file } = require('../../load-data.js');
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForCompanySelectMenu } = require('../helpers/get-options');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForCompanySelectMenu } = require('../../helpers/get-options');
 const company_details = '/company';
 
 
