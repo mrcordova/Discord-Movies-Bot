@@ -44,7 +44,7 @@ function createCollectionDetailEmbed(collectionDetails, user) {
 		return createNoResultEmbed(Colors.Red, 'No Collection found');
 	}
 
-// TODO: maybe get genre with genrre_id in collection parent
+	// TODO: maybe get genre with genrre_id in collection parent
 	const releaseDate = new Date(collectionDetails.release_date);
 	// console.log(collecti onDetails.release_date);
 

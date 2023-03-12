@@ -40,7 +40,7 @@ module.exports = {
 		await interaction.respond(
 			filtered.map(choice => ({ name: `${choice.name}`, value: choice.id })),
 		);
-	 },
+	},
 	async execute(interaction) {
 
 		const network_id = interaction.options.getInteger('name');
@@ -68,9 +68,9 @@ module.exports = {
 		const listSize = 1;
 		let currentIndex = 0;
 		const networkImages = networkInfo.logos;
-        // console.log(networkImages);
+		// console.log(networkImages);
 		// start, listSize, list, color = Colors.Blue)
-        const current = networkImages.slice(currentIndex, currentIndex + listSize);
+		const current = networkImages.slice(currentIndex, currentIndex + listSize);
 		const title = `Showing Network Image ${currentIndex + 1} out of ${networkImages.length}`;
 		const networkDetailEmbed = createImageEmbed(title, current, interaction.user, 'No Network Images Found');
 		const filter = ({ user }) => interaction.user.id == user.id;
@@ -96,16 +96,16 @@ module.exports = {
 		// selectMenucollector.on(MyEvents.Collect, async i => {
 		// 	if (!i.isStringSelectMenu()) return;
 		// 	const selected = i.values[0];
-        //     currentIndex = 0;
+		//     currentIndex = 0;
 
 		// 	const collectionResponse = await axios.get(`${api_url}${collection_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}`);
 		// 	collection = collectionResponse.data;
 		// 	// console.log(company);
 
 
-        //     const current = collection.parts.slice(currentIndex, currentIndex + listSize);
+		//     const current = collection.parts.slice(currentIndex, currentIndex + listSize);
 
-        //     collection.currentIndex = currentIndex;
+		//     collection.currentIndex = currentIndex;
 		// 	const collectionDetailsEmbed = await createCollectionListEmbed(collection, current, i.user);
 		// 	const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
 
@@ -115,15 +115,15 @@ module.exports = {
 		// 		content: `Selected Collection: ${collection.name}`,
 		// 		embeds: [collectionDetailsEmbed],
 		// 		components: [
-        //             new ActionRowBuilder().addComponents(newSelectMenu),
-        //             new ActionRowBuilder({ components:  [
+		//             new ActionRowBuilder().addComponents(newSelectMenu),
+		//             new ActionRowBuilder({ components:  [
 		// 				// back button if it isn't the start
 		// 				...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 		// 				// forward button if it isn't the end
 		// 				...(currentIndex + listSize < collection.parts.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 		// 			] }),
 		// 			new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Collection member found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-        //         ],
+		//         ],
 		// 		files: [file],
 		// 	});
 		// 	// collector.resetTimer([{time: 15000}]);
