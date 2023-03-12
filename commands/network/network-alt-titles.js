@@ -1,12 +1,12 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
 // eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed, createCompanyAltListEmbed } = require('../components/embed.js');
-const { file, availableNetworks } = require('../load-data.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed, createCompanyAltListEmbed } = require('../../components/embed.js');
+const { file, availableNetworks } = require('../../load-data.js');
 const axios = require('axios');
-const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { createButton } = require('../components/button');
+const { MyEvents } = require('../../events/DMB-Events');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { createButton } = require('../../components/button');
 const network_details = '/network';
 
 const backId = 'back';

@@ -1,17 +1,21 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-// eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed } = require('../components/embed.js');
-const { searchForCollection } = require('../helpers/search-for.js');
-const { file, translationsCodeDict } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createCollectionTranslateDetailEmbed } = require('../../components/embed.js');
+const { searchForCollection } = require('../../helpers/search-for.js');
+const { translationsCodeDict, file } = require('../../load-data.js');
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForCollectionSelectMenu } = require('../helpers/get-options');
-const { createButton } = require('../components/button');
-const { getEmoji } = require('../helpers/get-emoji');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createButton } = require('../../components/button');
+const { getEmoji } = require('../../helpers/get-emoji');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForCollectionSelectMenu } = require('../../helpers/get-options');
 const collection_details = '/collection';
+
+
+// https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=credits
+// language en-US optional
+
 
 const backId = 'back';
 const forwardId = 'forward';
@@ -21,8 +25,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '�
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('collection-search')
-		.setDescription('Search for collections.')
+		.setName('collection-translations')
+		.setDescription('Get a list of translations that have been created for a collection.')
 		.addStringOption(option =>
 			option.setName('title')
 				.setDescription('Search for the desired collection.')
@@ -49,71 +53,75 @@ module.exports = {
 	},
 	async execute(interaction) {
 
+
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
-		// const region = interaction.options.getString('region') ?? 'US';
-		// const country = interaction.options.getString('region');
-		// const releaseYear = interaction.options.getInteger('release-year') ?? 0;
+
+		// const dept = interaction.options.getString('department') ?? '';
 
 		const response = await searchForCollection(query, language);
 		const collectionNames = response.data.results;
 
 		if (!collectionNames.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Collections Found', 'Please make a new command')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Collections Found for that query', 'Please make a new command with a different options')], files:[file] });
 			return;
 		}
-		const options = getOptionsForCollectionSelectMenu(collectionNames);
+		const options = getOptionsForCollectionSelectMenu(collectionNames, language);
 
-		const selectMenu = createSelectMenu('List of Collections', 'Choose an option', 1, options);
+		const selectMenu = createSelectMenu('List of Collection', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Collection will appear here', 'Some description here', 'https://discord.js.org/');
+		const embed = createEmbed(Colors.Blue, 'Collection Translations will appear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const listSize = 5;
-		let currentIndex = 0;
-		let collection;
-		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Collection matching your query. :smiley:', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+
+
+		const listSize = 5;
+		let currentIndex = 0;
+		let translations;
+
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			const collectionResponse = await axios.get(`${api_url}${collection_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}`);
-			collection = collectionResponse.data;
-			// console.log(company);
+			const collectionResponse = await axios.get(`${api_url}${collection_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=translations`);
+			const collection = collectionResponse.data;
 
+			translations = collection.translations.translations;
 
-			const current = collection.parts.slice(currentIndex, currentIndex + listSize);
+			const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
+			const newSelectMenu = createSelectMenu('List of Movies', collection.name.slice(0, 81), 1, options);
 
-			collection.currentIndex = currentIndex;
-			const collectionDetailsEmbed = await createCollectionListEmbed(collection, current, i.user);
-			const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
+			// console.log(recommendations);
 
-			const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
-
+			const current = translations.slice(currentIndex, currentIndex + listSize);
+			// console.log(current);
+			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
-				content: `Selected Collection: ${collection.name}`,
-				embeds: [collectionDetailsEmbed],
+				content: `Translations for ${collection.name.slice(0, 81)}`,
+				embeds: [movieTranslationsEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 						// forward button if it isn't the end
-						...(currentIndex + listSize < collection.parts.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+						...(currentIndex + listSize < translations.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Collection member found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
+					new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Movies found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
 				],
-				files: [file],
+				files:[file],
 			});
-			// collector.resetTimer([{time: 15000}]);
+
+			buttonCollector.resetTimer([{ idle: 30000 }]);
+
 		});
 
 		selectMenucollector.on(MyEvents.Dispose, i => {
@@ -127,44 +135,46 @@ module.exports = {
 			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
-
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
 			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 
-				const media = collection.parts.find(({ id }) => id == i.customId);
-				const mediaDetailsEmbed = createCollectionDetailEmbed(media, i.user);
+				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
+
+
+				const translationDetailEmbed = createCollectionTranslateDetailEmbed(selectedTranslation, i.user);
+				const content = i.message.content.split('Translation').join('Translation Detail');
 
 				await i.update({
-					embeds: [mediaDetailsEmbed],
+					content: `${content}`,
+					embeds: [translationDetailEmbed],
 					components: [],
-
 				});
 				buttonCollector.stop('Done!');
 				selectMenucollector.stop('Done!');
+
 			}
 			else {
 
 
 				i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
-				collection.currentIndex = currentIndex;
 
-				const current = collection.parts.slice(currentIndex, currentIndex + listSize);
-				const collectionEmbed = await createCollectionListEmbed(collection, current, i.user);
-				const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
+				const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
+				const current = translations.slice(currentIndex, currentIndex + listSize);
+				const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 
 
 				await i.update({
 					content: i.message.content,
-					embeds: [collectionEmbed],
+					embeds: [movieTranslationsEmbed],
 					components: [
 						i.message.components[0],
 						new ActionRowBuilder({ components:  [
 							// back button if it isn't the start
 							...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
 							// forward button if it isn't the end
-							...(currentIndex + listSize < collection.parts.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+							...(currentIndex + listSize < translations.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 						] }),
 						new ActionRowBuilder({ components:  moreDetailBtns }),
 					],
@@ -183,6 +193,5 @@ module.exports = {
 		buttonCollector.on(MyEvents.End, async (c, r) => {
 			getEditReply(interaction, r);
 		});
-
 	},
 };
