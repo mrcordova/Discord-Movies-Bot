@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-// eslint-disable-next-line no-unused-vars
 const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed, createCompanyAltListEmbed, createImageEmbed } = require('../components/embed.js');
-const { searchForCompany, searchForCollection, searchForNetwork } = require('../helpers/search-for.js');
-const { file, translationsCodeDict, availableNetworks } = require('../load-data.js');
+const { file, availableNetworks } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
@@ -28,16 +26,16 @@ module.exports = {
 			option.setName('name')
 				.setDescription('Search for the desired network.')
 				.setRequired(true)
-                .setAutocomplete(true)),
-	 async autocomplete(interaction) {
+				.setAutocomplete(true)),
+	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
 
-	 	let choices;
+		let choices;
 
-	 	if (focusedOption.name === 'name') {
-	 		choices = availableNetworks;
-	 	}
+		if (focusedOption.name === 'name') {
+			choices = availableNetworks;
+		}
 
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);

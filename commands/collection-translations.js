@@ -1,15 +1,15 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed, createCollectionTranslateDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForCollection } = require('../helpers/search-for.js');
-const { translationsCodeDict, countryDict, file } = require('../load-data.js');
+const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createCollectionTranslateDetailEmbed } = require('../components/embed.js');
+const { searchForCollection } = require('../helpers/search-for.js');
+const { translationsCodeDict, file } = require('../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../components/selectMenu');
 const { MyEvents } = require('../events/DMB-Events');
 const { createButton } = require('../components/button');
 const { getEmoji } = require('../helpers/get-emoji');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForCollectionSelectMenu } = require('../helpers/get-options');
+const { getOptionsForCollectionSelectMenu } = require('../helpers/get-options');
 const collection_details = '/collection';
 
 
