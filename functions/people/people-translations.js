@@ -1,15 +1,15 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed, createPeopleTranslateDetailEmbed } = require('../components/embed.js');
-const { searchForMovie, searchForPeople } = require('../helpers/search-for.js');
-const { translationsCodeDict, countryDict, file } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createNoResultEmbed, createTranslateListEmbed, createTranslateDetailEmbed, createPeopleTranslateDetailEmbed } = require('../../components/embed.js');
+const { searchForMovie, searchForPeople } = require('../../helpers/search-for.js');
+const { translationsCodeDict, countryDict, file } = require('../../load-data.js');
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { createButton } = require('../components/button');
-const { getEmoji } = require('../helpers/get-emoji');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForPeopleSelectMenu } = require('../helpers/get-options');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createButton } = require('../../components/button');
+const { getEmoji } = require('../../helpers/get-emoji');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForSelectMenu, getOptionsForPeopleSelectMenu } = require('../../helpers/get-options');
 const person_details = '/person';
 
 
