@@ -6,10 +6,10 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const movie_upcoming = '/movie/upcoming';
+const movie_top_rated = '/movie/top_rated';
 
 
-// https://api.themoviedb.org/3/movie/upcoming?api_key=<<api_key>>&language=en-US&page=1
+// https://api.themoviedb.org/3/movie/top_rated?api_key=<<api_key>>&language=en-US&page=1
 // language optional
 // page optional
 // region optional
@@ -23,18 +23,13 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-upcoming')
-		.setDescription(' Get a list of upcoming movies.')
+		.setName('movies-top-rated')
+		.setDescription('Get the top rated movies on TMDB.')
 		.addStringOption(option =>
 			option.setName('language')
 				.setDescription('Search for the desired language.')
 				.setMinLength(2)
 				.setAutocomplete(true))
-		// .addIntegerOption(option =>
-		// 	option.setName('page')
-		// 		.setDescription('1 page equals 20 movies')
-		// 		.setMinValue(1)
-		// 		.setMaxValue(1000))
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
@@ -60,19 +55,18 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 
-		const response = await axios.get(`${api_url}${movie_upcoming}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
-		// const moviesUpcoming = response.data.results.sort((a, b) => (new Date(b.release_date)) - (new Date(a.release_date)));
-		const moviesUpcoming = response.data.results;
+		const response = await axios.get(`${api_url}${movie_top_rated}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
+		const moviesTopRated = response.data.results;
 		const listSize = 5;
 		let currentIndex = 0;
 		// dates = response.data.dates;
 
-		const canFitOnOnePage = moviesUpcoming.length <= listSize;
+		const canFitOnOnePage = moviesTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
-			content: 'Upcoming Movies',
-			embeds: [await createListEmbed(currentIndex, listSize, moviesUpcoming)],
+			content: 'Top Rated Movies',
+			embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
-			files:[file],
+			files: [file],
 		});
 
 		// Exit if there is only one page of guilds (no need for all of this)
@@ -87,24 +81,22 @@ module.exports = {
 			customId:'list',
 			idle: 30000,
 		});
-
 		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				content: 'Upcoming Movies',
-				embeds: [await createListEmbed(currentIndex, listSize, moviesUpcoming)],
+				content: 'Top Rated Movies',
+				embeds: [await createListEmbed(currentIndex, listSize, moviesTopRated)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
 					...(currentIndex ? [backButton] : []),
 					// forward button if it isn't the end
-					...(currentIndex + listSize < moviesUpcoming.length ? [forwardButton] : []),
+					...(currentIndex + listSize < moviesTopRated.length ? [forwardButton] : []),
 				] }) ],
 			});
 		});
-
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
 		});
@@ -116,5 +108,6 @@ module.exports = {
 			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
+
 	},
 };
