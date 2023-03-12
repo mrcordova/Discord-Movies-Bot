@@ -9,22 +9,22 @@ const commands = [];
 
 const commandsPath = path.join(__dirname, 'temp');
 // get folders and concat together
-const commandFolders = fs.readdirSync(commandsPath);
+const commandFiles = fs.readdirSync(commandsPath);
 
-for (const folder of commandFolders) {
-	const commandFiles = fs.readdirSync(`./temp/${folder}`).filter(file => file.endsWith('.js'));
+// for (const folder of commandFolders) {
+// 	const commandFiles = fs.readdirSync(`./temp/${folder}`).filter(file => file.endsWith('.js'));
 
-	for (const file of commandFiles) {
-		const command = require(`./temp/${folder}/${file}`);
-		//   console.log(command);
-		commands.push(command.data.toJSON());
-	}
-}
-// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
-// for (const file of commandFiles) {
-// 	const command = require(`./temp/${file}`);
-// 	commands.push(command.data.toJSON());
+// 	for (const file of commandFiles) {
+// 		const command = require(`./temp/${folder}/${file}`);
+// 		//   console.log(command);
+// 		commands.push(command.data.toJSON());
+// 	}
 // }
+// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+for (const file of commandFiles) {
+	const command = require(`./temp/${file}`);
+	commands.push(command.data.toJSON());
+}
 
 // Construct and prepare an instance of the REST module
 const rest = new REST({ version: '10' }).setToken(token);
