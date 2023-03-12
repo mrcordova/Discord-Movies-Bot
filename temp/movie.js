@@ -1,4 +1,3 @@
-
 const { SlashCommandBuilder } = require('discord.js');
 
 const altTitle = require('../functions/movie/movies-alt-titles');
@@ -510,6 +509,9 @@ module.exports = {
 			break;
 		case 'search':
 			await search.execute(interaction);
+			break;
+		case 'similar':
+			await similar.execute(interaction);
 			break;
 		case 'top-rated':
 			await topRated.execute(interaction);

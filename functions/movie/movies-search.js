@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed } = require('../components/embed.js');
-const { searchForMovie } = require('../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed } = require('../../components/embed.js');
+const { searchForMovie } = require('../../helpers/search-for.js');
+const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../helpers/get-production-info');
-const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForSelectMenu } = require('../helpers/get-options');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../../helpers/get-production-info');
+const { MyEvents } = require('../../events/DMB-Events');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForSelectMenu } = require('../../helpers/get-options');
 const movie_details = '/movie';
 
 
