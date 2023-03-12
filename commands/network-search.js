@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 // eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed } = require('../components/embed.js');
 const { searchForCompany, searchForCollection } = require('../helpers/search-for.js');
 const { file, translationsCodeDict, availableNetworks } = require('../load-data.js');
 const axios = require('axios');
@@ -47,7 +47,7 @@ module.exports = {
 	 },
 	async execute(interaction) {
 
-		const query = interaction.options.getInteger('name');
+		const network_id = interaction.options.getInteger('name');
 		// const language = interaction.options.getString('language') ?? 'en-US';
 		// const region = interaction.options.getString('region') ?? 'US';
 		// const country = interaction.options.getString('region');
@@ -56,28 +56,28 @@ module.exports = {
 		// const response = await searchForCollection(query, language);
 		// const collectionNames = response.data.results;
 
-        const response = await axios.get(`${api_url}${network_details}/${query}?api_key=${MOVIE_API_KEY}`);
+        const response = await axios.get(`${api_url}${network_details}/${network_id}?api_key=${MOVIE_API_KEY}`);
         const networkInfo = response.data;
-        console.log(networkInfo);
-		if (!networkInfo.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Collections Found', 'Please make a new command')], files: [file] });
+
+        if (!networkInfo) {
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Network Found', 'Please make a new command')], files: [file] });
 			return;
 		}
-		const options = getOptionsForCollectionSelectMenu(networkInfo);
+		// const options = getOptionsForCollectionSelectMenu(networkInfo);
 
-		const selectMenu = createSelectMenu('List of Collections', 'Choose an option', 1, options);
-		const row = new ActionRowBuilder().addComponents(selectMenu);
+		// const selectMenu = createSelectMenu('List of Collections', 'Choose an option', 1, options);
+		// const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		const embed = createEmbed(Colors.Blue, 'Collection will appear here', 'Some description here', 'https://discord.js.org/');
+		// const embed = createEmbed(Colors.Blue, 'Collection will appear here', 'Some description here', 'https://discord.js.org/');
 
-
+        const networkDetailEmbed = createNetworkDetailEmbed(networkInfo, interaction.user);
 		const filter = ({ user }) => interaction.user.id == user.id;
 
         const listSize = 5;
 		let currentIndex = 0;
 		let collection;
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [networkDetailEmbed], components: [] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 

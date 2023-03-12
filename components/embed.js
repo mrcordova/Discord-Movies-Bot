@@ -440,7 +440,44 @@ const createListsEmbed = async (start, listSize, moviesList, color = Colors.Blue
 		},
 	});
 };
+function createNetworkDetailEmbed(network, user) {
+	if (!network) {
+		return createNoResultEmbed(Colors.Red, 'No Network');
+	}
 
+	return {
+		color: Colors.DarkGrey,
+		title: `${network.name}`,
+		url: `${network.homepage}`,
+		author: {
+			name: user.username,
+			icon_url: user.displayAvatarURL(),
+			// url: "https://discord.js.org",
+		},
+		fields: [
+			{
+				name: 'Headquarters',
+				value: network.headquarters,
+			},
+			{
+				name: 'Country of Origin',
+				value: network.origin_country,
+			},
+			{
+				name: 'Netwrok ID',
+				value: network.id,
+			},
+		],
+		image: {
+			url: `${images.base_url}${images.poster_sizes[5]}${network.logo_path}`,
+		},
+		timestamp: new Date(),
+		footer: {
+			text: tmdbName,
+			icon_url: tmdbIconUrl,
+		},
+	};
+}
 
 function createNoResultEmbed(color = 'ff0000', title = 'No Movies Found', description = 'Please enter new options.') {
 	return new EmbedBuilder()
@@ -1384,6 +1421,7 @@ module.exports = {
 	createListEmbed,
 	createListsEmbed,
 	createImageEmbed,
+	createNetworkDetailEmbed,
 	createNoResultEmbed,
 	createMovieDetailEmbed,
 	createPeopleCreditListEmbed,
