@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../config.json');
 // eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed } = require('../components/embed.js');
+const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed, createCompanyAltListEmbed } = require('../components/embed.js');
 const { searchForCompany, searchForCollection, searchForNetwork } = require('../helpers/search-for.js');
 const { file, translationsCodeDict, availableNetworks } = require('../load-data.js');
 const axios = require('axios');
@@ -22,8 +22,8 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('network-search')
-		.setDescription('Get the details of a network.')
+		.setName('network-alt-titles')
+		.setDescription('Get the alternative names of a network.')
 		.addIntegerOption(option =>
 			option.setName('name')
 				.setDescription('Search for the desired network.')
@@ -56,10 +56,10 @@ module.exports = {
 		// const response = await searchForCollection(query, language);
 		// const collectionNames = response.data.results;
 
-        const response = await searchForNetwork(network_id);
-        const networkInfo = response.data;
+		const response = await axios.get(`${api_url}${network_details}/${network_id}/alternative_names?api_key=${MOVIE_API_KEY}`);
+		const networkInfo = response.data;
 
-        if (!networkInfo) {
+		if (!networkInfo) {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Network Found', 'Please make a new command')], files: [file] });
 			return;
 		}
@@ -69,17 +69,30 @@ module.exports = {
 		// const row = new ActionRowBuilder().addComponents(selectMenu);
 
 		// const embed = createEmbed(Colors.Blue, 'Collection will appear here', 'Some description here', 'https://discord.js.org/');
+		const listSize = 5;
+		let currentIndex = 0;
+		const networkList = networkInfo.results;
+		// start, listSize, list, color = Colors.Blue)
+		const networkDetailEmbed = await createCompanyAltListEmbed(currentIndex, listSize, networkList);
+		const filter = ({ user }) => interaction.user.id == user.id;
 
-        const networkDetailEmbed = createNetworkDetailEmbed(networkInfo, interaction.user);
-		// const filter = ({ user }) => interaction.user.id == user.id;
 
-        // const listSize = 5;
-		// let currentIndex = 0;
-		// let collection;
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [networkDetailEmbed], components: [] });
+		const message = await interaction.reply({
+			content: 'List of Alternative titles matching your query.',
+			ephemeral: true,
+			embeds: [networkDetailEmbed],
+			components: [
+				new ActionRowBuilder({ components:  [
+					// back button if it isn't the start
+					...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+					// forward button if it isn't the end
+					...(currentIndex + listSize < networkList.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+				] }),
+			],
+		});
 		// const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-		// const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
+		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
 		// selectMenucollector.on(MyEvents.Collect, async i => {
 		// 	if (!i.isStringSelectMenu()) return;
@@ -129,61 +142,44 @@ module.exports = {
 		// 	getPrivateFollowUp(args);
 		// });
 
-        // buttonCollector.on(MyEvents.Collect, async i => {
-		// 	if (i.customId == 'empty') return;
-		// 	// console.log(i.customId);
-		// 	if (i.customId != backId && i.customId != forwardId) {
-
-        //         const media = collection.parts.find(({ id }) => id == i.customId);
-        //         const mediaDetailsEmbed =  createCollectionDetailEmbed(media, i.user);
-
-		// 		await i.update({
-		// 			embeds: [mediaDetailsEmbed],
-		// 			components: [],
-
-		// 		});
-		// 		buttonCollector.stop('Done!');
-		// 		selectMenucollector.stop('Done!');
-		// 	}
-		// 	else {
+		buttonCollector.on(MyEvents.Collect, async i => {
+			if (i.customId == 'empty') return;
 
 
-		// 		i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
-        //         collection.currentIndex = currentIndex;
+			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-		// 		const current = collection.parts.slice(currentIndex, currentIndex + listSize);
-		// 		const collectionEmbed = await createCollectionListEmbed(collection, current, i.user);
-		// 		const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
+			// const current = collection.parts.slice(currentIndex, currentIndex + listSize);
+			const networkEmbed = await createCompanyAltListEmbed(currentIndex, listSize, networkList);
+			// const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
 
 
-		// 		await i.update({
-		// 			content: i.message.content,
-		// 			embeds: [collectionEmbed],
-		// 			components: [
-		// 				i.message.components[0],
-		// 				new ActionRowBuilder({ components:  [
-		// 					// back button if it isn't the start
-		// 					...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-		// 					// forward button if it isn't the end
-		// 					...(currentIndex + listSize < collection.parts.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-		// 				] }),
-		// 				new ActionRowBuilder({ components:  moreDetailBtns }),
-		// 			],
-		// 		});
-		// 	}
-		// 	selectMenucollector.resetTimer([{ idle: 30000 }]);
-		// });
-		// buttonCollector.on(MyEvents.Dispose, i => {
-		// 	console.log(`button dispose: ${i}`);
-		// });
-		// buttonCollector.on(MyEvents.Ignore, args => {
-		// 	// console.log(`button ignore: ${args}`);
-		// 	getPrivateFollowUp(args);
-		// });
-		// // eslint-disable-next-line no-unused-vars
-		// buttonCollector.on(MyEvents.End, async (c, r) => {
-		// 	getEditReply(interaction, r);
-		// });
+			await i.update({
+				content: i.message.content,
+				embeds: [networkEmbed],
+				components: [
+					new ActionRowBuilder({ components:  [
+						// back button if it isn't the start
+						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
+						// forward button if it isn't the end
+						...(currentIndex + listSize < networkList.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
+					] }),
+					// new ActionRowBuilder({ components:  moreDetailBtns }),
+				],
+			});
+
+			// selectMenucollector.resetTimer([{ idle: 30000 }]);
+		});
+		buttonCollector.on(MyEvents.Dispose, i => {
+			console.log(`button dispose: ${i}`);
+		});
+		buttonCollector.on(MyEvents.Ignore, args => {
+			// console.log(`button ignore: ${args}`);
+			getPrivateFollowUp(args);
+		});
+		// eslint-disable-next-line no-unused-vars
+		buttonCollector.on(MyEvents.End, async (c, r) => {
+			getEditReply(interaction, r);
+		});
 
 	},
 };
