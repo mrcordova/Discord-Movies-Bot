@@ -6,35 +6,30 @@ const { countryDict, translationsCodeDict, file } = require('../load-data.js');
 const { createListEmbed } = require('../components/embed');
 const { MyEvents } = require('../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const movie_now_playing = '/movie/now_playing';
+const movie_popular = '/movie/popular';
 
-// https://api.themoviedb.org/3/movie/now_playing?api_key=<<api_key>>&language=en&page=1&region=us
+
+// https://api.themoviedb.org/3/movie/popular?api_key=<<api_key>>&language=en-US&page=1
 // language optional
 // page optional
 // region optional
 
-
-// Constants
 const backId = 'back';
 const forwardId = 'forward';
 
 const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
+
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('movies-now-playing')
-		.setDescription(' Get a list of movies currently playing.')
+		.setName('movies-popular')
+		.setDescription('Get a list of the current popular movies on TMDB. This list updates daily.')
 		.addStringOption(option =>
 			option.setName('language')
-				.setDescription('Search for the desired translation.')
+				.setDescription('Search for the desired language.')
 				.setMinLength(2)
 				.setAutocomplete(true))
-		// .addIntegerOption(option =>
-		// 	option.setName('page')
-		// 		.setDescription('1 page equals 20 movies')
-		// 		.setMinValue(1)
-		// 		.setMaxValue(1000))
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
@@ -60,14 +55,14 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 
-		const response = await axios.get(`${api_url}${movie_now_playing}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
-		const moviesNowPlaying = response.data.results;
+		const response = await axios.get(`${api_url}${movie_popular}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}&region=${region}`);
+		const moviesPopular = response.data.results;
 		const listSize = 5;
-		const canFitOnOnePage = moviesNowPlaying.length <= listSize;
 		let currentIndex = 0;
+		const canFitOnOnePage = moviesPopular.length <= listSize;
 		const embedMessage = await interaction.reply({
-			content: 'Movies Now Playing',
-			embeds: [await createListEmbed(currentIndex, listSize, moviesNowPlaying)],
+			content: 'Popular Movies',
+			embeds: [await createListEmbed(currentIndex, listSize, moviesPopular)],
 			components: canFitOnOnePage ? [] : [new ActionRowBuilder({ components: [forwardButton] })],
 			files: [file],
 		});
@@ -85,24 +80,22 @@ module.exports = {
 			idle: 30000,
 		});
 
-
 		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
 			// Respond to interaction by updating message with new embed
 			await m.update({
-				content: 'Movies Now Playing',
-				embeds: [await createListEmbed(currentIndex, listSize, moviesNowPlaying)],
+				content: 'Popular Movies',
+				embeds: [await createListEmbed(currentIndex, listSize, moviesPopular)],
 				components: [new ActionRowBuilder({ components: [
 					// back button if it isn't the start
 					...(currentIndex ? [backButton] : []),
 					// forward button if it isn't the end
-					...(currentIndex + listSize < moviesNowPlaying.length ? [forwardButton] : []),
+					...(currentIndex + listSize < moviesPopular.length ? [forwardButton] : []),
 				] }) ],
 			});
 		});
-
 
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`dispose: ${i}`);
