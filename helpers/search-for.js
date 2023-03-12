@@ -6,6 +6,7 @@ const search_tv = '/search/tv';
 const search_people = '/search/person';
 const search_company = '/search/company';
 const search_collection = '/search/collection';
+const network = '/network';
 // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
 // language en-US optional
 // query String required
@@ -36,5 +37,15 @@ async function searchForCompany(query, page = 1) {
 async function searchForCollection(query, language = 'en-US', page = 1) {
 	return await axios.get(`${api_url}${search_collection}?api_key=${MOVIE_API_KEY}&query=${query.toLowerCase().trim()}&language=${language}&page=${page}`);
 }
+async function searchForNetwork(networkId) {
+	return await axios.get(`${api_url}${network}/${networkId}?api_key=${MOVIE_API_KEY}`);
+}
 
-module.exports = { searchForCollection, searchForCompany, searchForMovie, searchForTV, searchForPeople };
+module.exports = {
+	searchForCollection,
+	searchForCompany,
+	searchForNetwork,
+	searchForMovie,
+	searchForTV,
+	searchForPeople,
+};
