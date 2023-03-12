@@ -1,11 +1,11 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType } = require('discord.js');
 const axios = require('axios');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createButton } = require('../components/button.js');
-const { countryDict, translationsCodeDict, file } = require('../load-data.js');
-const { createPeopleListEmbed } = require('../components/embed');
-const { MyEvents } = require('../events/DMB-Events');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createButton } = require('../../components/button.js');
+const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
+const { createPeopleListEmbed } = require('../../components/embed');
+const { MyEvents } = require('../../events/DMB-Events');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
 const person_popular = '/person/popular';
 
 
