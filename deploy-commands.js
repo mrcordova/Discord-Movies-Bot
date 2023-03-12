@@ -15,9 +15,9 @@ for (const folder of commandFolders) {
 	const commandFiles = fs.readdirSync(`./temp/${folder}`).filter(file => file.endsWith('.js'));
 
 	for (const file of commandFiles) {
-	  const command = require(`./temp/${folder}/${file}`);
-	//   console.log(command);
-	commands.push(command.data.toJSON());
+		const command = require(`./temp/${folder}/${file}`);
+		//   console.log(command);
+		commands.push(command.data.toJSON());
 	}
 }
 // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
