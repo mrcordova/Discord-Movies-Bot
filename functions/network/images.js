@@ -78,56 +78,9 @@ module.exports = {
 				] }),
 			],
 		});
-		// const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
-		// selectMenucollector.on(MyEvents.Collect, async i => {
-		// 	if (!i.isStringSelectMenu()) return;
-		// 	const selected = i.values[0];
-		//     currentIndex = 0;
 
-		// 	const collectionResponse = await axios.get(`${api_url}${collection_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}`);
-		// 	collection = collectionResponse.data;
-		// 	// console.log(company);
-
-
-		//     const current = collection.parts.slice(currentIndex, currentIndex + listSize);
-
-		//     collection.currentIndex = currentIndex;
-		// 	const collectionDetailsEmbed = await createCollectionListEmbed(collection, current, i.user);
-		// 	const newSelectMenu = createSelectMenu('List of Collections', collection.name.slice(0, 81), 1, options);
-
-		// 	const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
-
-		// 	await i.update({
-		// 		content: `Selected Collection: ${collection.name}`,
-		// 		embeds: [collectionDetailsEmbed],
-		// 		components: [
-		//             new ActionRowBuilder().addComponents(newSelectMenu),
-		//             new ActionRowBuilder({ components:  [
-		// 				// back button if it isn't the start
-		// 				...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
-		// 				// forward button if it isn't the end
-		// 				...(currentIndex + listSize < collection.parts.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
-		// 			] }),
-		// 			new ActionRowBuilder({ components:  moreDetailBtns.length ? moreDetailBtns : [createButton('No Collection member found', ButtonStyle.Danger, 'empty', '🪹').setDisabled(true)] }),
-		//         ],
-		// 		files: [file],
-		// 	});
-		// 	// collector.resetTimer([{time: 15000}]);
-		// });
-
-		// selectMenucollector.on(MyEvents.Dispose, i => {
-		// 	console.log(`dispose: ${i}`);
-		// });
-		// // eslint-disable-next-line no-unused-vars
-		// selectMenucollector.on(MyEvents.End, async (c, r) => {
-		// 	getEditReply(interaction, r);
-		// });
-		// selectMenucollector.on(MyEvents.Ignore, args => {
-		// 	// console.log(`ignore: ${args}`);
-		// 	getPrivateFollowUp(args);
-		// });
 		buttonCollector.on(MyEvents.Collect, async m => {
 			// Increase/decrease index
 			m.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
