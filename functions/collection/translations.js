@@ -24,17 +24,17 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('collection-translations')
-		.setDescription('Get a list of translations that have been created for a collection.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired collection.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('collection-translations')
+	// 	.setDescription('Get a list of translations that have been created for a collection.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired collection.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
