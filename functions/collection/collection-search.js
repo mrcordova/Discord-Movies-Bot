@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
-// eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed } = require('../../components/embed.js');
+
+const { createEmbed, createNoResultEmbed, createCollectionDetailEmbed, createCollectionListEmbed } = require('../../components/embed.js');
 const { searchForCollection } = require('../../helpers/search-for.js');
 const { file, translationsCodeDict } = require('../../load-data.js');
 const axios = require('axios');
