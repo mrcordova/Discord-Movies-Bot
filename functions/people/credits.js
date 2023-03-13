@@ -31,42 +31,33 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('people-credits')
-		.setDescription('Search for a person\'s credits')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired film.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('department')
-				.setDescription('Choose desired dept.')
-				.setChoices(
-					...depts.reduce((arry, dept) => {
-						arry.push({ name: dept, value: dept });
-						return arry;
-					}, []))
-				)
-		.addStringOption(option =>
-			option.setName('media-type')
-				.setDescription('Select the type of media')
-				.setChoices(
-					{ name: 'Tv', value: 'tv' },
-					{ name: 'Movie', value: 'movie' },
-				))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true)),
-	// .addStringOption(option =>
-	// 	option.setName('region')
-	// 		.setDescription('Search for the desired region.')
-	// 		.setAutocomplete(true))
-	// .addIntegerOption(option =>
-	// 	option.setName('release-year')
-	// 		.setDescription('Search for the desired year.')
-	// 		.setMinValue(1800)
-	// 		.setMaxValue(3000)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('people-credits')
+	// 	.setDescription('Search for a person\'s credits')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired film.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('department')
+	// 			.setDescription('Choose desired dept.')
+	// 			.setChoices(
+	// 				...depts.reduce((arry, dept) => {
+	// 					arry.push({ name: dept, value: dept });
+	// 					return arry;
+	// 				}, []))
+	// 			)
+	// 	.addStringOption(option =>
+	// 		option.setName('media-type')
+	// 			.setDescription('Select the type of media')
+	// 			.setChoices(
+	// 				{ name: 'Tv', value: 'tv' },
+	// 				{ name: 'Movie', value: 'movie' },
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -76,9 +67,7 @@ module.exports = {
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
+
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 		await interaction.respond(
@@ -126,16 +115,13 @@ module.exports = {
 			const selected = i.values[0];
 			currentIndex = 0;
 
-			// const mediaDict = { 'tv': 'tv_credits', 'movie': 'movie_credits', 'combine': 'combined_credits' };
 			const peopleResponse = await axios.get(`${api_url}${person_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const personCredits = peopleResponse.data;
 			const combined_credits = personCredits.combined_credits;
 
-			// console.log( personCredits[`${mediaDict[mediaType]}`]['cast']);
 			const cast = combined_credits['cast'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(() => dept == 'Acting' || dept === 'all');
 			const crew = combined_credits['crew'].filter(({ media_type }) => media_type == mediaType || mediaType == 'combine').filter(({ department }) => department == dept || dept === 'all');
 			credits = cast.concat(crew);
-			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const movieCreditsEmbed = await createPeopleCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of People', personCredits.name.slice(0, 81), 1, options);
 

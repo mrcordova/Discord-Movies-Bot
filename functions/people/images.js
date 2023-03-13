@@ -24,22 +24,22 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('people-images')
-		.setDescription('Get the images for a person.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired person.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('people-images')
+	// 	.setDescription('Get the images for a person.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired person.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -61,7 +61,6 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		// const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
 		const response = await searchForPeople(query, language, region);
 		const peopleNames = response.data.results;
@@ -100,7 +99,6 @@ module.exports = {
 			const current = personImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${person.name.slice(0, 80)} Showing Person Image ${currentIndex + current.length} out of ${personImages.length}`;
 
-			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const personImageEmbed = createImageEmbed(title, current, i.user);
 			const newSelectMenu = createSelectMenu('List of People', person.name.slice(0, 80), 1, options);

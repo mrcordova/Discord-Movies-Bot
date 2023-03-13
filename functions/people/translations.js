@@ -24,21 +24,21 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('people-translations')
-		.setDescription('Get a list of translations that have been created for a person.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired person.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('people-translations')
+	// 	.setDescription('Get a list of translations that have been created for a person.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired person.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -63,8 +63,7 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		// const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		// const dept = interaction.options.getString('department') ?? '';
+
 
 		const response = await searchForPeople(query, language, region);
 		const peopleNames = response.data.results;
@@ -106,10 +105,8 @@ module.exports = {
 			const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 			const newSelectMenu = createSelectMenu('List of Movies', person.name.slice(0, 81), 1, options);
 
-			// console.log(recommendations);
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
 			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${person.name.slice(0, 81)}`,
@@ -144,15 +141,12 @@ module.exports = {
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
-			// console.log(i.customId);
+
 			if (i.customId != backId && i.customId != forwardId) {
 
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
 
-				// const selectedOption = i.message.components[0].components[0].data.options.find(option => option.value === selected);
-				// const selectedName = selectedOption.label;
 				selectedTranslation.person_name = i.message.components[0].components[0].data.placeholder;
-				// console.log(i.message.components[0].components[0].data)
 				const translationDetailEmbed = createPeopleTranslateDetailEmbed(selectedTranslation, i.user);
 				const content = i.message.content.split('Translation').join('Translation Detail');
 
