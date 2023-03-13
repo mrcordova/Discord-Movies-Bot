@@ -12,7 +12,7 @@ To use CineBot on your Discord server, you'll need to have Node.js and Discord.j
 4. Run `npm install` to install the required dependencies.
 5. Run `node index.js` to start the bot.
 
-Once the bot is up and running, you can use the `!help` command to see a list of available commands. Examples of other commands include `!movie`, `!tv`, `!person`, `!network`, `!company`, and `!collection`, which will return information about the specified topic.
+Once the bot is up and running, you can use the `/help` command to see a list of available commands. Examples of other commands include `!movie`, `/tv`, `/person`, `/network`, `/company`, and `/collection`, which will return information about the specified topic.
 
 ## Contributions
 
