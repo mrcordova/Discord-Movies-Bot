@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { depts, siteArray, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
+const { ReleaseTypes } = require('../events/DMB-Events');
 
 const altTitle = require('../functions/movie/movies-alt-titles');
 const credit = require('../functions/movie/movies-credits');
@@ -17,8 +19,6 @@ const translation = require('../functions/movie/movies-translations');
 const upcoming = require('../functions/movie/movies-upcoming');
 const video = require('../functions/movie/movies-videos');
 const watchProviders = require('../functions/movie/movies-watch-providers');
-const { depts, siteArray, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
-const { ReleaseTypes } = require('../events/DMB-Events');
 
 
 module.exports = {
