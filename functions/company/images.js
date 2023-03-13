@@ -19,13 +19,13 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('company-images')
-		.setDescription('Get a companies logos.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired company.')
-				.setRequired(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('company-images')
+	// 	.setDescription('Get a companies logos.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired company.')
+	// 			.setRequired(true)),
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 
