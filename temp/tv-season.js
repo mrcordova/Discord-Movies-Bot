@@ -2,17 +2,17 @@ const { SlashCommandBuilder } = require('discord.js');
 const { depts, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
 
 
-const seasonCredit = require('../functions/tv/tv-season-credits');
-const seasonExternal = require('../functions/tv/tv-season-external');
-const seasonImage = require('../functions/tv/tv-season-images');
-const seasonSearch = require('../functions/tv/tv-season-search');
-const seasonTranslation = require('../functions/tv/tv-season-translations');
-const seasonVideo = require('../functions/tv/tv-season-videos');
+const seasonCredit = require('../functions/tv/season-credits');
+const seasonExternal = require('../functions/tv/season-external');
+const seasonImage = require('../functions/tv/season-images');
+const seasonSearch = require('../functions/tv/season-search');
+const seasonTranslation = require('../functions/tv/season-translations');
+const seasonVideo = require('../functions/tv/season-videos');
 
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('season')
+		.setName('tv-season')
 		.setDescription('Get info for tv season')
 		.addSubcommand(subcommand =>
 			subcommand
