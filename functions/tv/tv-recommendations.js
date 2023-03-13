@@ -1,15 +1,15 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
-const { createEmbed, createNoResultEmbed, createTvListEmbed, createTvDetailEmbed } = require('../components/embed.js');
-const { searchForTV } = require('../helpers/search-for.js');
-const { translationsCodeDict, countryDict, file } = require('../load-data.js');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { createButton } = require('../components/button');
-const { getEmoji } = require('../helpers/get-emoji');
-const { getProductionCompany, getCast } = require('../helpers/get-production-info');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const { getMediaResponse } = require('../helpers/get-media');
+const { createEmbed, createNoResultEmbed, createTvListEmbed, createTvDetailEmbed } = require('../../components/embed.js');
+const { searchForTV } = require('../../helpers/search-for.js');
+const { translationsCodeDict, countryDict, file } = require('../../load-data.js');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createButton } = require('../../components/button');
+const { getEmoji } = require('../../helpers/get-emoji');
+const { getProductionCompany, getCast } = require('../../helpers/get-production-info');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
+const { getMediaResponse } = require('../../helpers/get-media');
 const TV = 'tv';
 
 // https://api.themoviedb.org/3/movie/{tv_is}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=aggregate_credits

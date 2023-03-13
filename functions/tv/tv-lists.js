@@ -1,16 +1,16 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createEmbed, createNoResultEmbed, createTvListsEmbed } = require('../components/embed.js');
-const { translationsCodeDict, file } = require('../load-data.js');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createEmbed, createNoResultEmbed, createTvListsEmbed } = require('../../components/embed.js');
+const { translationsCodeDict, file } = require('../../load-data.js');
 
 const axios = require('axios');
-const { createSelectMenu } = require('../components/selectMenu');
-const { MyEvents } = require('../events/DMB-Events');
-const { createButton } = require('../components/button');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const { searchForTV } = require('../helpers/search-for');
-const { getMediaResponse } = require('../helpers/get-media');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createButton } = require('../../components/button');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
+const { searchForTV } = require('../../helpers/search-for');
+const { getMediaResponse } = require('../../helpers/get-media');
 const TV = 'tv';
 // const movie_lists = 'lists';
 
