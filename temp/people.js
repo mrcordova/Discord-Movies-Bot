@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { depts, siteArray, translationsCodeDict, countryDict } = require('../load-data');
 
 
 const search = require('../functions/people/people-search');
@@ -7,7 +8,6 @@ const image = require('../functions/people/people-images');
 const external = require('../functions/people/people-external');
 const popular = require('../functions/people/people-popular');
 const translation = require('../functions/people/people-translations');
-const { depts, siteArray, translationsCodeDict, countryDict } = require('../load-data');
 
 
 module.exports = {
