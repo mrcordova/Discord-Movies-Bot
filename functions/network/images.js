@@ -17,14 +17,14 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('network-images')
-		.setDescription('Get the TV network logos')
-		.addIntegerOption(option =>
-			option.setName('name')
-				.setDescription('Search for the desired network.')
-				.setRequired(true)
-				.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('network-images')
+	// 	.setDescription('Get the TV network logos')
+	// 	.addIntegerOption(option =>
+	// 		option.setName('name')
+	// 			.setDescription('Search for the desired network.')
+	// 			.setRequired(true)
+	// 			.setAutocomplete(true)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -44,13 +44,7 @@ module.exports = {
 	async execute(interaction) {
 
 		const network_id = interaction.options.getInteger('name');
-		// const language = interaction.options.getString('language') ?? 'en-US';
-		// const region = interaction.options.getString('region') ?? 'US';
-		// const country = interaction.options.getString('region');
-		// const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 
-		// const response = await searchForCollection(query, language);
-		// const collectionNames = response.data.results;
 
 		const response = await axios.get(`${api_url}${network_details}/${network_id}/images?api_key=${MOVIE_API_KEY}`);
 		const networkInfo = response.data;
@@ -59,17 +53,11 @@ module.exports = {
 			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No Network Found', 'Please make a new command')], files: [file] });
 			return;
 		}
-		// const options = getOptionsForCollectionSelectMenu(networkInfo);
 
-		// const selectMenu = createSelectMenu('List of Collections', 'Choose an option', 1, options);
-		// const row = new ActionRowBuilder().addComponents(selectMenu);
-
-		// const embed = createEmbed(Colors.Blue, 'Collection will appear here', 'Some description here', 'https://discord.js.org/');
 		const listSize = 1;
 		let currentIndex = 0;
 		const networkImages = networkInfo.logos;
-		// console.log(networkImages);
-		// start, listSize, list, color = Colors.Blue)
+
 		const current = networkImages.slice(currentIndex, currentIndex + listSize);
 		const title = `Showing Network Image ${currentIndex + 1} out of ${networkImages.length}`;
 		const networkDetailEmbed = createImageEmbed(title, current, interaction.user, 'No Network Images Found');
