@@ -262,7 +262,150 @@ module.exports = {
 							option.setName('video_language')
 								.setDescription('Search for the desired video language.')
 								.setAutocomplete(true)),
+				),
+		)
+		.addSubcommandGroup(group =>
+			group
+				.setName('season')
+				.setDescription('Get info for tv season')
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName('credits')
+						.setDescription('Search for a tv season\'s cast and crew')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv season.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('department')
+								.setDescription('Choose desired dept.')
+								.setChoices(
+									...depts.reduce((arry, dept) => {
+										arry.push({ name: dept, value: dept });
+										return arry;
+									}, []))
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setAutocomplete(true)),
 				)
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName('external-link')
+						.setDescription('Get the external links for a TV season. We currently support TVDB.')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv show season.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setAutocomplete(true))
+						.addStringOption(option =>
+							option.setName('region')
+								.setDescription('Search for the desired region.')
+								.setAutocomplete(true))
+						.addIntegerOption(option =>
+							option.setName('release-year')
+								.setDescription('Search for the desired year.')
+								.setMinValue(1800)
+								.setMaxValue(3000)),
+
+				)
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName('images')
+						.setDescription('Get the images that belong to a TV show season.')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv show season.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setMinLength(2)
+								.setAutocomplete(true))
+						.addStringOption(option =>
+							option.setName('region')
+								.setDescription('Search for the desired region.')
+								.setAutocomplete(true))
+						.addIntegerOption(option =>
+							option.setName('release-year')
+								.setDescription('Search for the desired year.')
+								.setMinValue(1800)
+								.setMaxValue(3000))
+						.addStringOption(option =>
+							option.setName('image_language')
+								.setDescription('Search for the desired image language.')
+								.setAutocomplete(true)),
+
+				)
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName('search')
+						.setDescription('Search for tv show search based on a text query.')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired TV Show\'s season.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setAutocomplete(true))
+						.addStringOption(option =>
+							option.setName('region')
+								.setDescription('Search for the desired region.')
+								.setAutocomplete(true))
+						.addIntegerOption(option =>
+							option.setName('release-year')
+								.setDescription('Search for the desired year.')
+								.setMinValue(1800)
+								.setMaxValue(3000))
+				)
+				.addSubcommand(subcommand =>
+					subcommand
+                    .setName('translations')
+                    .setDescription('Get a list of translations that have been created for a tv show.')
+                    .addStringOption(option =>
+                        option.setName('title')
+                            .setDescription('Search for the desired tv show.')
+                            .setRequired(true))
+                    .addIntegerOption(option =>
+                        option.setName('season')
+                            .setDescription('Search for the desired season.')
+                            .setRequired(true))
+                    .addStringOption(option =>
+                        option.setName('language')
+                            .setDescription('Search for the desired translation.')
+                            .setAutocomplete(true))
+                    .addStringOption(option =>
+                        option.setName('region')
+                            .setDescription('Search for the desired region.')
+                            .setAutocomplete(true))
+                    .addIntegerOption(option =>
+                        option.setName('release-year')
+                            .setDescription('Search for the desired year.')
+                            .setMinValue(1800)
+                            .setMaxValue(3000))
+				)
+
 		),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
