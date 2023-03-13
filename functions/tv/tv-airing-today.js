@@ -30,11 +30,6 @@ module.exports = {
 				.setDescription('Search for the desired language.')
 				.setMinLength(2)
 				.setAutocomplete(true))
-		// .addIntegerOption(option =>
-		// 	option.setName('page')
-		// 		.setDescription('1 page equals 20 movies')
-		// 		.setMinValue(1)
-		// 		.setMaxValue(1000))
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')

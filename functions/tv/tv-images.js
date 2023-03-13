@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const axios = require('axios');
-const { api_url, MOVIE_API_KEY } = require('../config.json');
-const { createButton } = require('../components/button.js');
-const { searchForTV } = require('../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../components/embed');
-const { MyEvents } = require('../events/DMB-Events');
-const { createSelectMenu } = require('../components/selectMenu');
-const { getEditReply, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
+const { api_url, MOVIE_API_KEY } = require('../../config.json');
+const { createButton } = require('../../components/button.js');
+const { searchForTV } = require('../../helpers/search-for.js');
+const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
+const { createNoResultEmbed, createEmbed, createImageEmbed } = require('../../components/embed');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
 // const movie_now_playing = '/movie/now_playing';
 
 // https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
@@ -105,7 +105,7 @@ module.exports = {
 			// const appendToResponse = ['images', `include_image_language=${imgLang},null`];
 			const mediaResponse = await axios.get(`${api_url}/tv/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=images&include_image_language=${imgLang},null`);
 			const tv = mediaResponse.data;
-			
+
 			tvImages = tv.images.posters.concat(tv.images.posters.backdrops);
 
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
