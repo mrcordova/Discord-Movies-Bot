@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
-const { createButton } = require('../components/button.js');
-const { searchForTV } = require('../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file, availableProviders, justWatchFile } = require('../load-data.js');
-const { createNoResultEmbed, createEmbed, createWatchProviderListEmbed } = require('../components/embed');
-const { MyEvents } = require('../events/DMB-Events');
-const { createSelectMenu } = require('../components/selectMenu');
-const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../helpers/get-reply');
-const { getKey, TMDB_WATCH_LINK } = require('../helpers/get-key');
-const { getOptionsForTvSelectMenu } = require('../helpers/get-options');
-const { getMediaResponse } = require('../helpers/get-media');
+const { createButton } = require('../../components/button.js');
+const { searchForTV } = require('../../helpers/search-for.js');
+const { countryDict, translationsCodeDict, file, availableProviders, justWatchFile } = require('../../load-data.js');
+const { createNoResultEmbed, createEmbed, createWatchProviderListEmbed } = require('../../components/embed');
+const { MyEvents } = require('../../events/DMB-Events');
+const { createSelectMenu } = require('../../components/selectMenu');
+const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getKey, TMDB_WATCH_LINK } = require('../../helpers/get-key');
+const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
+const { getMediaResponse } = require('../../helpers/get-media');
 // const movie_now_playing = '/movie/now_playing';
 
 // flatrate: HBO, DirectTV, Cable TV, Locke etc...

@@ -27,18 +27,6 @@ module.exports = {
 		.setDescription('Get tv info.')
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('alt-titles')
-				.setDescription('Get alternative titles for a tv.')
-				.addStringOption(option =>
-					option.setName('title')
-						.setDescription('Search for the desired film.')
-						.setRequired(true))
-				.addStringOption(option =>
-					option.setName('country')
-						.setDescription('Search speific country.')
-						.setAutocomplete(true)))
-		.addSubcommand((subcommand) =>
-			subcommand
 				.setName('airing-today')
 				.setDescription('Get a list of TV shows that are airing today (Eastern Time UTC-05:00).')
 				.addStringOption(option =>
@@ -52,11 +40,66 @@ module.exports = {
 						.setAutocomplete(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('credits')
-				.setDescription('Search for a movie\'s cast and crew')
+				.setName('alt-titles')
+				.setDescription('Get alternative titles for a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
+						.setRequired(true))
+				.addStringOption(option =>
+					option.setName('country')
+						.setDescription('Search speific country.')
+						.setAutocomplete(true)))
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('availability')
+				.setDescription('Get a list of the availabilities per country by platform')
+				.addStringOption(option =>
+					option.setName('title')
+						.setDescription('Search for the desired tv.')
+						.setRequired(true))
+				.addStringOption(option =>
+					option.setName('language')
+						.setDescription('Search for the desired translation.')
+						.setMinLength(2)
+						.setAutocomplete(true))
+				.addStringOption(option =>
+					option.setName('region')
+						.setDescription('Search for the desired region.')
+						.setAutocomplete(true))
+				.addIntegerOption(option =>
+					option.setName('platform')
+						.setDescription('Search with speific platform.')
+						.setAutocomplete(true))
+				.addStringOption(option =>
+					option.setName('content-type')
+						.setDescription('Search availability with specific Content Availability Type')
+						.setChoices(
+							{
+								name: 'Streaming',
+								value: 'flatrate',
+							},
+							{
+								name: 'Rent',
+								value: 'rent',
+							},
+							{
+								name: 'Buy',
+								value: 'buy',
+							},
+						))
+				.addIntegerOption(option =>
+					option.setName('release-year')
+						.setDescription('Search for the desired year.')
+						.setMinValue(1800)
+						.setMaxValue(3000)))
+		.addSubcommand((subcommand) =>
+			subcommand
+				.setName('credits')
+				.setDescription('Search for a tv\'s cast and crew')
+				.addStringOption(option =>
+					option.setName('title')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('department')
@@ -74,10 +117,10 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('external-link')
-				.setDescription('Get the external links for a movie.')
+				.setDescription('Get the external links for a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -104,7 +147,7 @@ module.exports = {
 				.setDescription(' Get a list of a movies\' images.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -127,10 +170,10 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('lists')
-				.setDescription('Get a list of lists that this movie belongs to.')
+				.setDescription('Get a list of lists that this tv belongs to.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -138,8 +181,8 @@ module.exports = {
 						.setAutocomplete(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('now-playing')
-				.setDescription(' Get a list of movies currently playing.')
+				.setName('on-the-air')
+				.setDescription(' Get a list of tv currently playing.')
 				.addStringOption(option =>
 					option.setName('language')
 						.setDescription('Search for the desired translation.')
@@ -187,46 +230,14 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('recommendations')
-				.setDescription('Get a list of recommended movies for a movie.')
+				.setDescription('Get a list of recommended movies for a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
 						.setDescription('Search for the desired translation.')
-						.setAutocomplete(true))
-				.addStringOption(option =>
-					option.setName('region')
-						.setDescription('Search for the desired region.')
-						.setAutocomplete(true))
-				.addIntegerOption(option =>
-					option.setName('release-year')
-						.setDescription('Search for the desired year.')
-						.setMinValue(1800)
-						.setMaxValue(3000)))
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('release-dates')
-				.setDescription(' Get a list of a movies\' release dates.')
-				.addStringOption(option =>
-					option.setName('title')
-						.setDescription('Search for the desired film.')
-						.setRequired(true))
-				.addIntegerOption(option =>
-					option.setName('release-type')
-						.setDescription('Select the type of release')
-						.setRequired(true)
-						.setChoices(
-							...Object.values(ReleaseTypes).reduce((arry, releaseType) => {
-								arry.push({ name: releaseType.toString, value: releaseType.value });
-								return arry;
-							}, []),
-						))
-				.addStringOption(option =>
-					option.setName('language')
-						.setDescription('Search for the desired translation.')
-						.setMinLength(2)
 						.setAutocomplete(true))
 				.addStringOption(option =>
 					option.setName('region')
@@ -240,10 +251,10 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('reviews')
-				.setDescription('Get the user reviews for a movie.')
+				.setDescription('Get the user reviews for a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -264,7 +275,7 @@ module.exports = {
 				.setDescription('Search for movies based on a text query.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -285,7 +296,7 @@ module.exports = {
 				.setDescription('Get a list of similar movies (uses keywords and genres). Not the same as the "Recommendation".')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -299,9 +310,7 @@ module.exports = {
 					option.setName('release-year')
 						.setDescription('Search for the desired year.')
 						.setMinValue(1800)
-						.setMaxValue(3000)),
-
-		)
+						.setMaxValue(3000)))
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('top-rated')
@@ -314,16 +323,14 @@ module.exports = {
 				.addStringOption(option =>
 					option.setName('region')
 						.setDescription('Search for the desired region.')
-						.setAutocomplete(true)),
-
-		)
+						.setAutocomplete(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('translations')
-				.setDescription('Get a list of translations that have been created for a movie.')
+				.setDescription('Get a list of translations that have been created for a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('language')
@@ -337,30 +344,14 @@ module.exports = {
 					option.setName('release-year')
 						.setDescription('Search for the desired year.')
 						.setMinValue(1800)
-						.setMaxValue(3000)),
-
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('upcoming')
-				.setDescription(' Get a list of upcoming movies.')
-				.addStringOption(option =>
-					option.setName('language')
-						.setDescription('Search for the desired language.')
-						.setMinLength(2)
-						.setAutocomplete(true))
-				.addStringOption(option =>
-					option.setName('region')
-						.setDescription('Search for the desired region.')
-						.setAutocomplete(true)),
-		)
+						.setMaxValue(3000)))
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('videos')
-				.setDescription('Get the videos that have been added to a movie.')
+				.setDescription('Get the videos that have been added to a tv.')
 				.addStringOption(option =>
 					option.setName('title')
-						.setDescription('Search for the desired film.')
+						.setDescription('Search for the desired tv.')
 						.setRequired(true))
 				.addStringOption(option =>
 					option.setName('video-type')
@@ -421,55 +412,7 @@ module.exports = {
 				.addStringOption(option =>
 					option.setName('video-language')
 						.setDescription('Search for the desired video language.')
-						.setAutocomplete(true)),
-
-		)
-		.addSubcommand((subcommand) =>
-			subcommand
-				.setName('availability')
-				.setDescription('Get a list of the availabilities per country by platform')
-				.addStringOption(option =>
-					option.setName('title')
-						.setDescription('Search for the desired film.')
-						.setRequired(true))
-				.addStringOption(option =>
-					option.setName('language')
-						.setDescription('Search for the desired translation.')
-						.setMinLength(2)
-						.setAutocomplete(true))
-				.addStringOption(option =>
-					option.setName('region')
-						.setDescription('Search for the desired region.')
-						.setAutocomplete(true))
-				.addIntegerOption(option =>
-					option.setName('platform')
-						.setDescription('Search with speific platform.')
-						.setAutocomplete(true))
-				.addStringOption(option =>
-					option.setName('content-type')
-						.setDescription('Search availability with specific Content Availability Type')
-						.setChoices(
-							{
-								name: 'Streaming',
-								value: 'flatrate',
-							},
-							{
-								name: 'Rent',
-								value: 'rent',
-							},
-							{
-								name: 'Buy',
-								value: 'buy',
-							},
-						))
-				.addIntegerOption(option =>
-					option.setName('release-year')
-						.setDescription('Search for the desired year.')
-						.setMinValue(1800)
-						.setMaxValue(3000)),
-
-		),
-
+						.setAutocomplete(true))),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
