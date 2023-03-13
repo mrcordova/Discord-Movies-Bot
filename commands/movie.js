@@ -226,7 +226,7 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('search')
-				.setDescription('Search for movies based on a text query.')
+				.setDescription('Search for movie.')
 				.addStringOption(option =>
 					option.setName('title')
 						.setDescription('Search for the desired film.')

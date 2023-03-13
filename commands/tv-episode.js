@@ -115,7 +115,7 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('search')
-				.setDescription('Get the TV episode details')
+				.setDescription('Search for TV episode details')
 				.addStringOption(option =>
 					option.setName('title')
 						.setDescription('Search for the desired episode of TV Show.')
