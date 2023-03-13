@@ -21,7 +21,7 @@ const client = new Client({
 
 client.commands = new Collection();
 
-const commandsPath = path.join(__dirname, 'temp');
+const commandsPath = path.join(__dirname, 'commands');
 // get folders and concat together
 const commandFiles = fs.readdirSync(commandsPath);
 
