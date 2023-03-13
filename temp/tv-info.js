@@ -1,29 +1,59 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { depts, siteArray, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
 
-const airToday = require('../functions/tv/tv-airing-today');
-const altTitle = require('../functions/tv/tv-alt-titles');
-const credit = require('../functions/tv/tv-credits');
-const external = require('../functions/tv/tv-external');
-const image = require('../functions/tv/tv-images');
-const list = require('../functions/tv/tv-lists');
-const onTheAir = require('../functions/tv/tv-on-the-air');
-const popular = require('../functions/tv/tv-popular');
-const rating = require('../functions/tv/tv-ratings');
-const recommendation = require('../functions/tv/tv-recommendations');
-const review = require('../functions/tv/tv-reviews');
-const search = require('../functions/tv/tv-search');
-const similar = require('../functions/tv/tv-similar');
-const topRated = require('../functions/tv/tv-top-rated');
-const translation = require('../functions/tv/tv-translations');
-const video = require('../functions/tv/tv-videos');
-const watchProviders = require('../functions/tv/tv-watch-providers');
+
+const credit = require('../functions/tv/tv-episode-credits');
+const external = require('../functions/tv/tv-episode-external');
+const image = require('../functions/tv/tv-episode-images');
+const search = require('../functions/tv/tv-episode-search');
+const translation = require('../functions/tv/tv-episode-translations');
+const video = require('../functions/tv/tv-episode-videos');
+
+
+const seasonCredit = require('../functions/tv/tv-season-credits');
+const seasonExternal = require('../functions/tv/tv-season-external');
+const seasonImage = require('../functions/tv/tv-season-images');
+const seasonSearch = require('../functions/tv/tv-season-search');
+const seasonTranslation = require('../functions/tv/tv-season-translations');
+const seasonVideo = require('../functions/tv/tv-season-videos');
+
 
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('tv-info')
 		.setDescription('Get tv info.')
+		.addSubcommandGroup(group =>
+			group
+            .setName('season')
+            .setDescription('Get info for tv season')
+            .addSubcommand(subcommand =>
+					subcommand
+						.setName('credits')
+						.setDescription('Search for a tv season\'s cast and crew')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv .')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('department')
+								.setDescription('Choose desired dept.')
+								.setChoices(
+									...depts.reduce((arry, dept) => {
+										arry.push({ name: dept, value: dept });
+										return arry;
+									}, []))
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setAutocomplete(true))
+				)
+        )
 		.addSubcommandGroup(group =>
 			group
 				.setName('episode')
@@ -53,7 +83,7 @@ module.exports = {
 										arry.push({ name: dept, value: dept });
 										return arry;
 									}, []))
-								.setRequired(true)),
+								.setRequired(true))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -89,7 +119,7 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -124,7 +154,7 @@ module.exports = {
 						.addStringOption(option =>
 							option.setName('image_language')
 								.setDescription('Search for the desired image language.')
-								.setAutocomplete(true)),
+								.setAutocomplete(true))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -154,7 +184,7 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -184,12 +214,12 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
 						.setName('videos')
-						.setDescription('Get the videos that have been added to a TV season.')
+						.setDescription('Get the videos that have been added to a TV episode.')
 						.addStringOption(option =>
 							option.setName('title')
 								.setDescription('Search for the desired tv show.')
@@ -261,8 +291,8 @@ module.exports = {
 						.addStringOption(option =>
 							option.setName('video_language')
 								.setDescription('Search for the desired video language.')
-								.setAutocomplete(true)),
-				),
+								.setAutocomplete(true))
+				)
 		)
 		.addSubcommandGroup(group =>
 			group
@@ -292,7 +322,7 @@ module.exports = {
 						.addStringOption(option =>
 							option.setName('language')
 								.setDescription('Search for the desired translation.')
-								.setAutocomplete(true)),
+								.setAutocomplete(true))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -318,7 +348,7 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 
 				)
 				.addSubcommand(subcommand =>
@@ -350,7 +380,7 @@ module.exports = {
 						.addStringOption(option =>
 							option.setName('image_language')
 								.setDescription('Search for the desired image language.')
-								.setAutocomplete(true)),
+								.setAutocomplete(true))
 
 				)
 				.addSubcommand(subcommand =>
@@ -377,7 +407,7 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -403,7 +433,7 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000)),
+								.setMaxValue(3000))
 				)
 				.addSubcommand(subcommand =>
 					subcommand
@@ -476,7 +506,7 @@ module.exports = {
 						.addStringOption(option =>
 							option.setName('video_language')
 								.setDescription('Search for the desired video language.')
-								.setAutocomplete(true)),
+								.setAutocomplete(true))
 
 				)
 
@@ -517,57 +547,25 @@ module.exports = {
 	async execute(interaction) {
 
 		const subCmd = interaction.options.getSubcommand();
+		const subCmdGrp = interaction.options.getSubcommandGroup();
 		switch (subCmd) {
-		case 'airing-today':
-			await airToday.execute(interaction);
-			break;
-		case 'alt-titles':
-			await altTitle.execute(interaction);
-			break;
-		case 'availability':
-			await watchProviders.execute(interaction);
-			break;
 		case 'credits':
-			await credit.execute(interaction);
+			subCmdGrp == 'episode' ? await credit.execute(interaction) : await seasonCredit.execute(interaction);
 			break;
 		case 'external-link':
-			await external.execute(interaction);
+			subCmdGrp == 'episode' ? await external.execute(interaction) : await seasonExternal.execute(interaction);
 			break;
 		case 'images':
-			await image.execute(interaction);
-			break;
-		case 'lists':
-			await list.execute(interaction);
-			break;
-		case 'on-the-air':
-			await onTheAir.execute(interaction);
-			break;
-		case 'popular':
-			await popular.execute(interaction);
-			break;
-		case 'ratings':
-			await rating.execute(interaction);
-			break;
-		case 'recommendations':
-			await recommendation.execute(interaction);
-			break;
-		case 'reviews':
-			await review.execute(interaction);
+			subCmdGrp == 'episode' ? await image.execute(interaction) : await seasonImage.execute(interaction);
 			break;
 		case 'search':
-			await search.execute(interaction);
-			break;
-		case 'similar':
-			await similar.execute(interaction);
-			break;
-		case 'top-rated':
-			await topRated.execute(interaction);
+			subCmdGrp == 'episode' ? await search.execute(interaction) : await seasonSearch.execute(interaction);
 			break;
 		case 'translations':
-			await translation.execute(interaction);
+			subCmdGrp == 'episode' ? await translation.execute(interaction) : await seasonTranslation.execute(interaction);
 			break;
 		case 'videos':
-			await video.execute(interaction);
+			subCmdGrp == 'episode' ? await video.execute(interaction) : await seasonVideo.execute(interaction);
 			break;
 		}
 	},
