@@ -1,23 +1,23 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { depts, siteArray, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
 
-const airToday = require('../functions/tv/tv-airing-today');
-const altTitle = require('../functions/tv/tv-alt-titles');
-const credit = require('../functions/tv/tv-credits');
-const external = require('../functions/tv/tv-external');
-const image = require('../functions/tv/tv-images');
-const list = require('../functions/tv/tv-lists');
-const onTheAir = require('../functions/tv/tv-on-the-air');
-const popular = require('../functions/tv/tv-popular');
-const rating = require('../functions/tv/tv-ratings');
-const recommendation = require('../functions/tv/tv-recommendations');
-const review = require('../functions/tv/tv-reviews');
-const search = require('../functions/tv/tv-search');
-const similar = require('../functions/tv/tv-similar');
-const topRated = require('../functions/tv/tv-top-rated');
-const translation = require('../functions/tv/tv-translations');
-const video = require('../functions/tv/tv-videos');
-const watchProviders = require('../functions/tv/tv-watch-providers');
+const airToday = require('../functions/tv/airing-today');
+const altTitle = require('../functions/tv/alt-titles');
+const credit = require('../functions/tv/credits');
+const external = require('../functions/tv/external');
+const image = require('../functions/tv/images');
+const list = require('../functions/tv/lists');
+const onTheAir = require('../functions/tv/on-the-air');
+const popular = require('../functions/tv/popular');
+const rating = require('../functions/tv/ratings');
+const recommendation = require('../functions/tv/recommendations');
+const review = require('../functions/tv/reviews');
+const search = require('../functions/tv/search');
+const similar = require('../functions/tv/similar');
+const topRated = require('../functions/tv/top-rated');
+const translation = require('../functions/tv/translations');
+const video = require('../functions/tv/videos');
+const watchProviders = require('../functions/tv/watch-providers');
 
 
 module.exports = {
