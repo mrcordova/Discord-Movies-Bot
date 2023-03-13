@@ -1,14 +1,13 @@
 const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createPersonDetailEmbed } = require('../../components/embed.js');
-const { searchForMovie, searchForPeople } = require('../../helpers/search-for.js');
+const { createEmbed, createNoResultEmbed, createPersonDetailEmbed } = require('../../components/embed.js');
+const { searchForPeople } = require('../../helpers/search-for.js');
 const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../../components/selectMenu');
-const { getCrewMember, getCast, getProductionCompany, createCurrencyFormatter } = require('../../helpers/get-production-info');
 const { MyEvents } = require('../../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
-const { getOptionsForSelectMenu, getOptionsForTvSelectMenu, getOptionsForPeopleSelectMenu } = require('../../helpers/get-options');
+const { getOptionsForPeopleSelectMenu } = require('../../helpers/get-options');
 const people_details = '/person';
 
 
@@ -60,7 +59,6 @@ module.exports = {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		const country = interaction.options.getString('region');
 
 
 		const response = await searchForPeople(query, language, region);
@@ -90,8 +88,8 @@ module.exports = {
 
 			const peopleResponse = await axios.get(`${api_url}${people_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=combined_credits`);
 			const people = peopleResponse.data;
-            
-            const credits = people.combined_credits.cast.concat(people.combined_credits.crew);
+
+			const credits = people.combined_credits.cast.concat(people.combined_credits.crew);
 
 			const movieDetailsEmbed = createPersonDetailEmbed(people, credits, i.user);
 			const newSelectMenu = createSelectMenu('List of Movies', people.name.slice(0, 81), 1, options);

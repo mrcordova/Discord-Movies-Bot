@@ -469,9 +469,7 @@ module.exports = {
 		}
 	},
 	async execute(interaction) {
-        const query = interaction.options.getString('title');
-		const language = interaction.options.getString('language');
-        
+
 		const subCmd = interaction.options.getSubcommand();
 		switch (subCmd) {
 		case 'alt-title':
