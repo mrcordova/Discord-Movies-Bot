@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { depts, siteArray, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
-const { ReleaseTypes } = require('../events/DMB-Events');
 
 const airToday = require('../functions/tv/tv-airing-today');
 const altTitle = require('../functions/tv/tv-alt-titles');
@@ -114,6 +113,7 @@ module.exports = {
 					option.setName('language')
 						.setDescription('Search for the desired translation.')
 						.setAutocomplete(true)))
+
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('external-link')
@@ -453,7 +453,7 @@ module.exports = {
 		case 'airing-today':
 			await airToday.execute(interaction);
 			break;
-		case 'alt-title':
+		case 'alt-titles':
 			await altTitle.execute(interaction);
 			break;
 		case 'availability':
