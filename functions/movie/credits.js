@@ -50,15 +50,6 @@ module.exports = {
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
 				.setAutocomplete(true)),
-	// .addStringOption(option =>
-	// 	option.setName('region')
-	// 		.setDescription('Search for the desired region.')
-	// 		.setAutocomplete(true))
-	// .addIntegerOption(option =>
-	// 	option.setName('release-year')
-	// 		.setDescription('Search for the desired year.')
-	// 		.setMinValue(1800)
-	// 		.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -68,9 +59,6 @@ module.exports = {
 		if (focusedOption.name === 'language') {
 			choices = translationsCodeDict;
 		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
 
 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 		await interaction.respond(
@@ -121,16 +109,13 @@ module.exports = {
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits`);
 			const movie = movieResponse.data;
 
-			// console.log(movie);
 			const cast = movie.credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
 			const crew = movie.credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew);
-			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
 			const movieCreditsEmbed = await createCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 
 			const current = credits.slice(currentIndex, currentIndex + listSize);
-			// console.log(credits);
 			const moreDetailBtns = current.map((credit, index) => createButton(`${credit.name}`, ButtonStyle.Secondary, `${credit.credit_id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Department: ${dept} ${deptEmojis[dept]}`,
