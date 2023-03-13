@@ -4,9 +4,9 @@ const { SlashCommandBuilder } = require('discord.js');
 const { availableNetworks } = require('../load-data.js');
 
 
-const search = require('../functions/network/network-search');
-const altTitles = require('../functions/network/network-alt-titles');
-const image = require('../functions/network/network-images');
+const search = require('../functions/network/search');
+const altTitles = require('../functions/network/alt-titles');
+const image = require('../functions/network/images');
 
 
 module.exports = {

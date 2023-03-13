@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 
-const collectionSearch = require('../functions/collection/collection-search');
-const collectionTranslation = require('../functions/collection/collection-translations');
-const collectionImage = require('../functions/collection/collection-images');
+const collectionSearch = require('../functions/collection/search');
+const collectionTranslation = require('../functions/collection/translations');
+const collectionImage = require('../functions/collection/images');
 const { translationsCodeDict } = require('../load-data');
 
 
