@@ -36,7 +36,7 @@ module.exports = {
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('search')
-				.setDescription('search company')
+				.setDescription('search network')
 				.addIntegerOption(option =>
 					option
 						.setName('name')
