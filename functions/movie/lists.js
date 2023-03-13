@@ -13,9 +13,6 @@ const movie_route = '/movie';
 const movie_lists = 'lists';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}/lists?api_key=<<api_key>>&country=v%20vc%20
-// country string optional
-
 const backId = 'back';
 const forwardId = 'forward';
 
@@ -24,35 +21,35 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('movies-lists')
-		.setDescription('Get a list of lists that this movie belongs to.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired film.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search with speific language.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('movies-lists')
+	// 	.setDescription('Get a list of lists that this movie belongs to.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired film.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search with speific language.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	// if (focusedOption.name === 'region') {
+	// 	// 	choices = countryDict;
+	// 	// }
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
