@@ -43,13 +43,6 @@ module.exports = {
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
 				.setAutocomplete(true))
-		// add back if more site soucres added.
-		// .addStringOption(option =>
-		// 	option.setName('site')
-		// 		.setDescription('Select the type of site')
-		// 		.setChoices(
-		// 			{ name: 'TVDB', value: 'tvdb' },
-		// 		))
 		.addStringOption(option =>
 			option.setName('region')
 				.setDescription('Search for the desired region.')
