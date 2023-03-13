@@ -111,8 +111,8 @@ module.exports = {
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
-            const selectedOption = i.message.components[0].components[0].data.options.find(option => option.value === selected);
-            const selectedName = selectedOption.label;
+			const selectedOption = i.message.components[0].components[0].data.options.find(option => option.value === selected);
+			const selectedName = selectedOption.label;
 			currentIndex = 0;
 
 			let tvResponse;

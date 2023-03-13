@@ -42,7 +42,7 @@ module.exports = {
 		.addIntegerOption(option =>
 			option.setName('season')
 				.setDescription('Search for the desired season.')
-				.setRequired(true))	
+				.setRequired(true))
 		.addIntegerOption(option =>
 			option.setName('episode')
 				.setDescription('Search for the desired episode.')
