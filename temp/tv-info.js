@@ -189,7 +189,7 @@ module.exports = {
 				.addSubcommand(subcommand =>
 					subcommand
 						.setName('videos')
-						.setDescription('Get the videos that have been added to a TV episode.')
+						.setDescription('Get the videos that have been added to a TV season.')
 						.addStringOption(option =>
 							option.setName('title')
 								.setDescription('Search for the desired tv show.')
@@ -274,7 +274,7 @@ module.exports = {
 						.setDescription('Search for a tv season\'s cast and crew')
 						.addStringOption(option =>
 							option.setName('title')
-								.setDescription('Search for the desired tv season.')
+								.setDescription('Search for the desired tv .')
 								.setRequired(true))
 						.addIntegerOption(option =>
 							option.setName('season')
@@ -300,7 +300,7 @@ module.exports = {
 						.setDescription('Get the external links for a TV season. We currently support TVDB.')
 						.addStringOption(option =>
 							option.setName('title')
-								.setDescription('Search for the desired tv show season.')
+								.setDescription('Search for the desired tv show.')
 								.setRequired(true))
 						.addIntegerOption(option =>
 							option.setName('season')
@@ -327,7 +327,7 @@ module.exports = {
 						.setDescription('Get the images that belong to a TV show season.')
 						.addStringOption(option =>
 							option.setName('title')
-								.setDescription('Search for the desired tv show season.')
+								.setDescription('Search for the desired tv show.')
 								.setRequired(true))
 						.addIntegerOption(option =>
 							option.setName('season')
@@ -356,10 +356,10 @@ module.exports = {
 				.addSubcommand(subcommand =>
 					subcommand
 						.setName('search')
-						.setDescription('Search for tv show search based on a text query.')
+						.setDescription('Search for tv season search based on a text query.')
 						.addStringOption(option =>
 							option.setName('title')
-								.setDescription('Search for the desired TV Show\'s season.')
+								.setDescription('Search for the desired TV Show.')
 								.setRequired(true))
 						.addIntegerOption(option =>
 							option.setName('season')
@@ -382,7 +382,7 @@ module.exports = {
 				.addSubcommand(subcommand =>
 					subcommand
 						.setName('translations')
-						.setDescription('Get a list of translations that have been created for a tv show.')
+						.setDescription('Get a list of translations that have been created for a tv season.')
 						.addStringOption(option =>
 							option.setName('title')
 								.setDescription('Search for the desired tv show.')
