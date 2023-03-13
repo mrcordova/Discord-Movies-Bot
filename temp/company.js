@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require('discord.js');
-
-
-const search = require('../functions/company/company-search');
-const altTitles = require('../functions/company/company-alt-titles');
-const image = require('../functions/company/company-images');
 const { translationsCodeDict } = require('../load-data');
+
+
+const search = require('../functions/company/search');
+const altTitles = require('../functions/company/alt-titles');
+const image = require('../functions/company/images');
 
 
 module.exports = {

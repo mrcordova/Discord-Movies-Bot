@@ -2,12 +2,12 @@ const { SlashCommandBuilder } = require('discord.js');
 const { depts, siteArray, translationsCodeDict, countryDict } = require('../load-data');
 
 
-const search = require('../functions/people/people-search');
-const credits = require('../functions/people/people-credits');
-const image = require('../functions/people/people-images');
-const external = require('../functions/people/people-external');
-const popular = require('../functions/people/people-popular');
-const translation = require('../functions/people/people-translations');
+const search = require('../functions/people/search');
+const credits = require('../functions/people/credits');
+const image = require('../functions/people/images');
+const external = require('../functions/people/external');
+const popular = require('../functions/people/popular');
+const translation = require('../functions/people/translations');
 
 
 module.exports = {
