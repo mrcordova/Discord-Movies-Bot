@@ -2,12 +2,12 @@ const { SlashCommandBuilder } = require('discord.js');
 const { depts, translationsCodeDict, availableProviders, countryDict } = require('../load-data');
 
 
-const seasonCredit = require('../functions/tv/season-credits');
-const seasonExternal = require('../functions/tv/season-external');
-const seasonImage = require('../functions/tv/season-images');
-const seasonSearch = require('../functions/tv/season-search');
-const seasonTranslation = require('../functions/tv/season-translations');
-const seasonVideo = require('../functions/tv/season-videos');
+const credit = require('../functions/tv/season-credits');
+const external = require('../functions/tv/season-external');
+const image = require('../functions/tv/season-images');
+const search = require('../functions/tv/season-search');
+const translation = require('../functions/tv/season-translations');
+const video = require('../functions/tv/season-videos');
 
 
 module.exports = {
@@ -262,22 +262,22 @@ module.exports = {
 		const subCmd = interaction.options.getSubcommand();
 		switch (subCmd) {
 		case 'credits':
-			await seasonCredit.execute(interaction);
+			await credit.execute(interaction);
 			break;
 		case 'external-link':
-			await seasonExternal.execute(interaction);
+			await external.execute(interaction);
 			break;
 		case 'images':
-			await seasonImage.execute(interaction);
+			await image.execute(interaction);
 			break;
 		case 'search':
-			await seasonSearch.execute(interaction);
+			await search.execute(interaction);
 			break;
 		case 'translations':
-			await seasonTranslation.execute(interaction);
+			await translation.execute(interaction);
 			break;
 		case 'videos':
-			await seasonVideo.execute(interaction);
+			await video.execute(interaction);
 			break;
 		}
 	},
