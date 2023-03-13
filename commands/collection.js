@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
-
-const collectionSearch = require('../functions/collection/search');
-const collectionTranslation = require('../functions/collection/translations');
-const collectionImage = require('../functions/collection/images');
 const { translationsCodeDict } = require('../load-data');
+
+const search = require('../functions/collection/search');
+const translation = require('../functions/collection/translations');
+const image = require('../functions/collection/images');
 
 
 module.exports = {
@@ -75,14 +75,14 @@ module.exports = {
 		const subCmd = interaction.options.getSubcommand();
 		switch (subCmd) {
 		case 'search':
-			await collectionSearch.execute(interaction);
+			await search.execute(interaction);
 			break;
 
 		case 'images':
-			await collectionImage.execute(interaction);
+			await image.execute(interaction);
 			break;
 		case 'translation':
-			await collectionTranslation.execute(interaction);
+			await translation.execute(interaction);
 			break;
 		}
 	},
