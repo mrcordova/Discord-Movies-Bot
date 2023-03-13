@@ -22,23 +22,15 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('people-popular')
-		.setDescription('Get the list of popular people on TMDB. This list updates daily.')
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired language.')
-				.setMinLength(2)
-				.setAutocomplete(true)),
-	// .addIntegerOption(option =>
-	// 	option.setName('page')
-	// 		.setDescription('1 page equals 20 movies')
-	// 		.setMinValue(1)
-	// 		.setMaxValue(1000))
-	// .addStringOption(option =>
-	// 	option.setName('region')
-	// 		.setDescription('Search for the desired region.')
-	// 		.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('people-popular')
+	// 	.setDescription('Get the list of popular people on TMDB. This list updates daily.')
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired language.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true)),
+
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -58,11 +50,9 @@ module.exports = {
 	},
 	async execute(interaction) {
 		const language = interaction.options.getString('language') ?? 'en-US';
-		// const region = interaction.options.getString('region') ?? 'US';
 
 		const response = await axios.get(`${api_url}${person_popular}?api_key=${MOVIE_API_KEY}&language=${language}&page=${1}`);
 		const peoplePopular = response.data.results;
-		// console.log(peoplePopular);
 		const listSize = 5;
 		let currentIndex = 0;
 		const canFitOnOnePage = peoplePopular.length <= listSize;

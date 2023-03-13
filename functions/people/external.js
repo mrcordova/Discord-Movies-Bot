@@ -11,16 +11,6 @@ const { getOptionsForPeopleSelectMenu } = require('../../helpers/get-options');
 const person_details = '/person';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
-
-
 // const backId = 'back';
 // const forwardId = 'forward';
 
@@ -28,32 +18,32 @@ const person_details = '/person';
 // const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('people-external-link')
-		.setDescription('Get the external links for a person.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired person.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('site')
-				.setDescription('Select the type of site')
-				.setChoices(
-					...siteArray.concat([{ name: 'Tiktok', value: 'tiktok' }, { name: 'YouTube', value: 'youtube' }]),
-				))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('people-external-link')
+	// 	.setDescription('Get the external links for a person.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired person.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('site')
+	// 			.setDescription('Select the type of site')
+	// 			.setChoices(
+	// 				...siteArray.concat([{ name: 'Tiktok', value: 'tiktok' }, { name: 'YouTube', value: 'youtube' }]),
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
@@ -93,25 +83,17 @@ module.exports = {
 		const selectMenu = createSelectMenu('List of People', 'Choose an option', 1, options);
 		const row = new ActionRowBuilder().addComponents(selectMenu);
 
-		// const embed = createEmbed(Colors.Blue, 'Movie will apear here', 'Some description here', 'https://discord.js.org/');
 
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		const message = await interaction.reply({ content: 'List of People matching your query. :smiley:', ephemeral: false, embeds: [], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
-		// const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
-
-
-		// const listSize = 5;
-		// let currentIndex = 0;
-		// let credits;
 
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
 			if (!i.isStringSelectMenu()) return;
 			const selected = i.values[0];
-			// currentIndex = 0;
 
 			const movieResponse = await axios.get(`${api_url}${person_details}/${selected}/external_ids?api_key=${MOVIE_API_KEY}`);
 			const movieLinks = movieResponse.data;
