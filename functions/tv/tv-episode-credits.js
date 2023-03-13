@@ -59,15 +59,6 @@ module.exports = {
 			option.setName('language')
 				.setDescription('Search for the desired translation.')
 				.setAutocomplete(true)),
-	// .addStringOption(option =>
-	// 	option.setName('region')
-	// 		.setDescription('Search for the desired region.')
-	// 		.setAutocomplete(true))
-	// .addIntegerOption(option =>
-	// 	option.setName('release-year')
-	// 		.setDescription('Search for the desired year.')
-	// 		.setMinValue(1800)
-	// 		.setMaxValue(3000)),
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
