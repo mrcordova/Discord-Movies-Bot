@@ -377,33 +377,107 @@ module.exports = {
 							option.setName('release-year')
 								.setDescription('Search for the desired year.')
 								.setMinValue(1800)
-								.setMaxValue(3000))
+								.setMaxValue(3000)),
 				)
 				.addSubcommand(subcommand =>
 					subcommand
-                    .setName('translations')
-                    .setDescription('Get a list of translations that have been created for a tv show.')
-                    .addStringOption(option =>
-                        option.setName('title')
-                            .setDescription('Search for the desired tv show.')
-                            .setRequired(true))
-                    .addIntegerOption(option =>
-                        option.setName('season')
-                            .setDescription('Search for the desired season.')
-                            .setRequired(true))
-                    .addStringOption(option =>
-                        option.setName('language')
-                            .setDescription('Search for the desired translation.')
-                            .setAutocomplete(true))
-                    .addStringOption(option =>
-                        option.setName('region')
-                            .setDescription('Search for the desired region.')
-                            .setAutocomplete(true))
-                    .addIntegerOption(option =>
-                        option.setName('release-year')
-                            .setDescription('Search for the desired year.')
-                            .setMinValue(1800)
-                            .setMaxValue(3000))
+						.setName('translations')
+						.setDescription('Get a list of translations that have been created for a tv show.')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv show.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setAutocomplete(true))
+						.addStringOption(option =>
+							option.setName('region')
+								.setDescription('Search for the desired region.')
+								.setAutocomplete(true))
+						.addIntegerOption(option =>
+							option.setName('release-year')
+								.setDescription('Search for the desired year.')
+								.setMinValue(1800)
+								.setMaxValue(3000)),
+				)
+				.addSubcommand(subcommand =>
+					subcommand
+						.setName('videos')
+						.setDescription('Get the videos that have been added to a TV show season.')
+						.addStringOption(option =>
+							option.setName('title')
+								.setDescription('Search for the desired tv show.')
+								.setRequired(true))
+						.addIntegerOption(option =>
+							option.setName('season')
+								.setDescription('Search for the desired season.')
+								.setRequired(true))
+						.addStringOption(option =>
+							option.setName('video-type')
+								.setDescription('Select the type of release')
+								.setChoices(
+									{
+										name: 'Trailer',
+										value: 'Trailer',
+									},
+									{
+										name: 'Behind the Scenes',
+										value: 'Behind the Scenes',
+									},
+									{
+										name: 'Bloopers',
+										value: 'Bloopers',
+									},
+									{
+										name: 'Clip',
+										value: 'Clip',
+									},
+									{
+										name: 'Teaser',
+										value: 'Teaser',
+									},
+									{
+										name: 'Featurette',
+										value: 'Featurette',
+									},
+								))
+						.addStringOption(option =>
+							option.setName('site')
+								.setDescription('Select the type of site')
+								.setChoices(
+									{
+										name: 'Youtube',
+										value: 'https://www.youtube.com/watch?v=',
+									},
+									{
+										name: 'Vimeo',
+										value: 'https://vimeo.com/',
+									},
+								))
+						.addStringOption(option =>
+							option.setName('language')
+								.setDescription('Search for the desired translation.')
+								.setMinLength(2)
+								.setAutocomplete(true))
+						.addStringOption(option =>
+							option.setName('region')
+								.setDescription('Search for the desired region.')
+								.setAutocomplete(true))
+						.addIntegerOption(option =>
+							option.setName('release-year')
+								.setDescription('Search for the desired year.')
+								.setMinValue(1800)
+								.setMaxValue(3000))
+						.addStringOption(option =>
+							option.setName('video_language')
+								.setDescription('Search for the desired video language.')
+								.setAutocomplete(true)),
+
 				)
 
 		),
