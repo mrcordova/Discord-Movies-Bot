@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 
 
-
 const search = require('../functions/people/people-search');
 const credits = require('../functions/people/people-credits');
 const image = require('../functions/people/people-images');
@@ -143,8 +142,6 @@ module.exports = {
 		);
 	},
 	async execute(interaction) {
-		const query = interaction.options.getString('title');
-		const language = interaction.options.getString('language');
 
 		const subCmd = interaction.options.getSubcommand();
 		switch (subCmd) {
