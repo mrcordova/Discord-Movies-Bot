@@ -13,16 +13,6 @@ const { getOptionsForSelectMenu } = require('../../helpers/get-options');
 const movie_details = '/movie';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
-
-
 const backId = 'back';
 const forwardId = 'forward';
 
