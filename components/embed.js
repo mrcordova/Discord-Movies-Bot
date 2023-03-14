@@ -250,7 +250,7 @@ const createCreditListEmbed = async (start, listSize, moviesList, color = Colors
 	}
 
 	const current = moviesList.slice(start, start + listSize);
-	console.log(current);
+
 	return new EmbedBuilder({
 		color: color,
 		title: `Showing Movie Credits ${start + 1}-${start + current.length} out of ${moviesList.length}`,
