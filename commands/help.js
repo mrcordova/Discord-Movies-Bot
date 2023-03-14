@@ -17,39 +17,39 @@ const commandFiles = fs.readdirSync(commandsPath);
 
 const commandsInfo = [
 	{
-		name: '/collection',
+		name: '/collection <title>',
 		value: 'Displays information about a collection with the given title.',
 	},
 	{
-		name: '/company',
+		name: '/company <title>',
 		value: 'Displays information about a company with the given title.',
 	},
 	{
-		name: '/help',
+		name: '/help <title>',
 		value: 'Displays information about all available commands',
 	},
 	{
-		name: '/movie',
+		name: '/movie <title>',
 		value: 'Displays information about a movie with the given title.',
 	},
 	{
-		name: '/network',
+		name: '/network <title>',
 		value: 'Displays information about a TV network with the given name.',
 	},
 	{
-		name: '/people',
+		name: '/people <title>',
 		value: 'Displays information about a person with the given name.',
 	},
 	{
-		name: '/tv-episode',
+		name: '/tv-episode <title>',
 		value: 'Displays information about a tv episode with the given title.',
 	},
 	{
-		name: '/tv-season',
+		name: '/tv-season <title>',
 		value: 'Displays information about a tv season with the given name.',
 	},
 	{
-		name: '/tv',
+		name: '/tv <title>',
 		value: 'Displays information about a tv with the given name.',
 	},
 ];

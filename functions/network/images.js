@@ -43,7 +43,7 @@ module.exports = {
 	},
 	async execute(interaction) {
 
-		const network_id = interaction.options.getInteger('name');
+		const network_id = interaction.options.getInteger('title');
 
 
 		const response = await axios.get(`${api_url}${network_details}/${network_id}/images?api_key=${MOVIE_API_KEY}`);
