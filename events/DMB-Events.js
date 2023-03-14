@@ -51,7 +51,6 @@ class EpisodeGroupTypes {
     }
 
     get toString() {
-      console.log('here');
       switch (this.value) {
         case EpisodeGroupTypes.OriginalAirDate.value:
          return 'Original airdate';

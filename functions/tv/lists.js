@@ -26,35 +26,35 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-lists')
-		.setDescription('Get all of the episode groups that have been created for a TV show.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired film.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search with speific language.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-lists')
+	// 	.setDescription('Get all of the episode groups that have been created for a TV show.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired film.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search with speific language.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	// if (focusedOption.name === 'region') {
+	// 	// 	choices = countryDict;
+	// 	// }
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
@@ -79,7 +79,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -101,8 +101,6 @@ module.exports = {
 
 			const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
 			// TODO: add btns for going through epsodes
-			// const current = tv.results.slice(currentIndex, currentIndex + listSize);
-			// const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 			await i.update({
@@ -131,12 +129,10 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
-			// console.log(i.customId);
 
 			if (i.customId != backId && i.customId != forwardId) {
 				const mediaResponse = await axios.get(`${api_url}/tv/episode_group/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
@@ -154,7 +150,7 @@ module.exports = {
 				const listsEmbed = await createTvListsEmbed(currentIndex, listSize, tv.results);
 
 				await i.update({
-					content: 'Selected TV:',
+					content: i.message.content,
 					embeds: [listsEmbed],
 					components: [
 						i.message.components[0],
@@ -173,13 +169,11 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 	},
