@@ -13,10 +13,6 @@ const { getMediaResponse } = require('../../helpers/get-media');
 const TV = 'tv';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-
-
 const backId = 'back';
 const forwardId = 'forward';
 
@@ -24,44 +20,44 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-similar')
-		.setDescription('Get a list of similar tv shows (uses keywords and genres). Not the same as the "Recommendation".')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-similar')
+	// 	.setDescription('Get a list of similar tv shows (uses keywords and genres). Not the same as the "Recommendation".')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 
@@ -112,10 +108,8 @@ module.exports = {
 			const tvRecommendsEmbed = await createTvListEmbed(currentIndex, listSize, similar);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
-			// console.log(recommendations);
 
 			const current = similar.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
 			const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Similar to ${tv.name.slice(0, 81)}`,
@@ -145,14 +139,11 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
-			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/credit/{credit_id}?api_key=<<api_key>>
 				const appendToRespnse = ['aggregate_credits', 'content_ratings'];
 				const creditResponse = await getMediaResponse(TV, i.customId, language, appendToRespnse);
 				const tvDetails = creditResponse.data;
@@ -167,14 +158,10 @@ module.exports = {
 				}
 				tvDetails.rating = tvRating;
 				const network = getProductionCompany(tvDetails['networks']);
-				// const creators = getCrewMember(tv.credits['crew'], 'Creator');
-				// console.log(tv.aggregate_credits['crew']);
 				const actors = getCast(tvDetails.aggregate_credits['cast'], 10);
 				tvDetails.language = language;
-				// console.log(tv.credits['crew']);
 
 				const tvDetailsEmbed = createTvDetailEmbed({ user: i.user, tv: tvDetails, network, actors, color: Colors.Aqua });
-				// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 				await i.update({
 					content: 'TV\'s Detail',
@@ -215,7 +202,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
