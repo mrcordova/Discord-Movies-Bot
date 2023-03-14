@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../../components/selectMenu');
 const { MyEvents } = require('../../events/DMB-Events');
 const { createButton } = require('../../components/button');
-const { getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getPrivateFollowUp, getEditReply } = require('../../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
 const tv_route = '/tv';
 const tv_alt = 'alternative_titles';
@@ -24,33 +24,33 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-alt-titles')
-		.setDescription('Get alternative titles for a tv show.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired TV Show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('country')
-				.setDescription('Search speific country.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-alt-titles')
+	// 	.setDescription('Get alternative titles for a tv show.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired TV Show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('country')
+	// 			.setDescription('Search speific country.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'country') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'country') {
+	// 		choices = countryDict;
+	// 	}
 
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
@@ -75,7 +75,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -95,7 +95,7 @@ module.exports = {
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, tv.results);
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: 'Selected Tv Show:',
 				embeds: [altListEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -119,7 +119,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 
@@ -128,7 +128,7 @@ module.exports = {
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, tv.results);
 
 			await i.update({
-				content: 'Selected TV Show:',
+				content: i.message.content,
 				embeds: [altListEmbed],
 				components: [
 					i.message.components[0],
@@ -150,7 +150,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
 		});
 	},
 };
