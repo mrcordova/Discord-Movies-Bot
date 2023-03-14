@@ -9,11 +9,7 @@ const { MyEvents } = require('../../events/DMB-Events');
 const { createSelectMenu } = require('../../components/selectMenu');
 const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
-// const movie_now_playing = '/movie/now_playing';
 
-// https://api.themoviedb.org/3/movie/{movie_id}/images?api_key=<<api_key>>&language=en-US
-// language string optional
-// include_image_language string optional
 
 // Constants
 const backId = 'back';
@@ -23,56 +19,56 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-episode-images')
-		.setDescription('Get the images that belong to a TV show episode.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show episode.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Search for the desired season.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('episode')
-				.setDescription('Search for the desired episode.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000))
-		.addStringOption(option =>
-			option.setName('image_language')
-				.setDescription('Search for the desired image language.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-episode-images')
+	// 	.setDescription('Get the images that belong to a TV show episode.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show episode.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('season')
+	// 			.setDescription('Search for the desired season.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('episode')
+	// 			.setDescription('Search for the desired episode.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000))
+	// 	.addStringOption(option =>
+	// 		option.setName('image_language')
+	// 			.setDescription('Search for the desired image language.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language' || focusedOption.name === 'image_language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language' || focusedOption.name === 'image_language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
@@ -99,7 +95,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -130,18 +126,14 @@ module.exports = {
 				return;
 			}
 			const tv = tvResponse.data;
-			// console.log(tv.images);
-			// tvImages = tv.images.posters.concat(tv.images.posters.backdrops).filter((obj) => obj);
 			tvImages = tv.images.stills;
 
 
 			const current = tvImages.slice(currentIndex, currentIndex + listSize);
 			const title = `${tv.name.slice(0, 80)}\nShowing Episode Image ${currentIndex + current.length} out of ${tvImages.length}`;
 
-			// const file = new AttachmentBuilder('./images/TMDb-logo.png');
 
 			const tvImageEmbed = createImageEmbed(title, current, i.user);
-			// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
 
 			await i.update({
 				content: `Selected TV show: ${selectedName}`,
@@ -186,7 +178,6 @@ module.exports = {
 			const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show Season Image ${currentIndex + current.length} out of ${tvImages.length}`;
 			const movieCreditsEmbed = createImageEmbed(title, current, m.user);
 
-			// console.log(currentIndex);
 			// Respond to interaction by updating message with new embed
 			await m.update({
 				content: m.message.content,
@@ -209,11 +200,9 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
