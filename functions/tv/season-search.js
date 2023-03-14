@@ -14,13 +14,6 @@ const { getEmoji } = require('../../helpers/get-emoji');
 const tv_details = '/tv';
 
 
-// https://api.themoviedb.org/3/search/tv?api_key=<<api_key>>&language=en-US&page=1&include_adult=false
-// language string Pass a ISO 639-1 value to display translated data for the fields that support it.
-// page integer Specify which page to query. optional
-// query string Pass a text query to search. This value should be URI encoded. required
-// include_adult false optional
-// first_air_date_year integer optional
-
 const backId = 'back';
 const forwardId = 'forward';
 
@@ -28,54 +21,53 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-season-search')
-		.setDescription('Search for tv show search based on a text query.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired TV Show\'s season.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Search for the desired season.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-season-search')
+	// 	.setDescription('Search for tv show search based on a text query.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired TV Show\'s season.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('season')
+	// 			.setDescription('Search for the desired season.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
-		const country = interaction.options.getString('region');
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		const seasonNum = interaction.options.getInteger('season');
 
@@ -97,7 +89,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 		let currentIndex = 0;
@@ -126,7 +118,6 @@ module.exports = {
 
 			tv = tvResponse.data;
 
-			// console.log(tv.credits['crew']);
 			episodes = tv.episodes;
 			const current = episodes.slice(currentIndex, currentIndex + listSize);
 			tv.count = `Showing Episodes ${currentIndex + 1} - ${currentIndex + current.length} out of ${episodes.length}`;
@@ -151,7 +142,6 @@ module.exports = {
 				],
 				files: [file],
 			});
-			// collector.resetTimer([{time: 15000}]);
 			buttonCollector.resetTimer([{ idle: 30000 }]);
 		});
 
@@ -163,17 +153,14 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenuCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
 		buttonCollector.on(MyEvents.Collect, async i => {
-			// console.log(i.customId);
 
 			if (i.customId != backId && i.customId != forwardId) {
 				const episode = episodes.find(({ id }) => id == i.customId);
-				// console.log(episode);
-				// const episodeDetailDetailEmbed;
+
 				const crew = episode.crew;
 				episode.writers = getCrewMember(crew, 'writer');
 				episode.directors = getCrewMember(crew, 'director');
@@ -222,13 +209,11 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			// await interaction.editReply({ content: 'Time\'s up!', components: [] });
 			getEditReply(interaction, r);
 		});
 	},
