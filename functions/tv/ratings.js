@@ -21,44 +21,44 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-content-ratings')
-		.setDescription(' Get a list of a TV Show\'s content ratings.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired TV Show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-content-ratings')
+	// 	.setDescription(' Get a list of a TV Show\'s content ratings.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired TV Show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language' || focusedOption.name === 'image_language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language' || focusedOption.name === 'image_language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
@@ -83,7 +83,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -99,19 +99,17 @@ module.exports = {
 			const appendToResponse = ['content_ratings'];
 			const tvResponse = await getMediaResponse(TV, selected, language, appendToResponse);
 			const tv = tvResponse.data;
-			// tvReleaseDates = tv.release_dates.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 			tvRatings = tv.content_ratings.results.filter((countryCode) => countryCode.iso_3166_1 == country || country == 'All');
 			const current = tvRatings.slice(currentIndex, currentIndex + listSize, tvRatings);
 
 			const title = `Showing Ratings ${currentIndex + current.length} out of ${tvRatings.length}`;
 
-			// (start, tvList, title, color = Colors.Blue)
 			const tvRatingEmbed = await createRatingsEmbed(currentIndex, current, title);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
 
 			await i.update({
-				content: `Ratins for ${tv.name.slice(0, 81)}`,
+				content: `Ratings for ${tv.name.slice(0, 81)}`,
 				embeds: [tvRatingEmbed],
 				components: [
 					new ActionRowBuilder().addComponents(newSelectMenu),
@@ -136,7 +134,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
@@ -148,7 +145,6 @@ module.exports = {
 			const title = `Showing Ratings ${currentIndex + 1}-${currentIndex + current.length} out of ${tvRatings.length}`;
 
 			const movieReleaseDateEmbed = await createRatingsEmbed(currentIndex, current, title);
-			// const newSelectMenu = createSelectMenu('List of Movies', m.message.components[0].placeHolderText, 1, options);
 
 
 			// Respond to interaction by updating message with new embed
@@ -176,7 +172,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 
 		});
