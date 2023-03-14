@@ -14,16 +14,6 @@ const { getMediaDetail, getMediaResponse } = require('../../helpers/get-media');
 const tv_details = '/tv';
 
 
-// https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US&append_to_response=credits
-// language en-US optional
-// query String required
-// page 1 optional
-// include_adult false optional
-// region String optional
-// year Integer optional  includes dvd, blu-ray  dates ect
-// primary_release_year Integer optional - oldest release date
-
-
 const backId = 'back';
 const forwardId = 'forward';
 
@@ -31,26 +21,26 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-credits')
-		.setDescription('Search for a tv show\'s cast and crew')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('department')
-				.setDescription('Choose desired dept.')
-				.setChoices(
-					...depts.reduce((arry, dept) => {
-						arry.push({ name: dept, value: dept });
-						return arry;
-					}, []))
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true)),
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-credits')
+	// 	.setDescription('Search for a tv show\'s cast and crew')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('department')
+	// 			.setDescription('Choose desired dept.')
+	// 			.setChoices(
+	// 				...depts.reduce((arry, dept) => {
+	// 					arry.push({ name: dept, value: dept });
+	// 					return arry;
+	// 				}, []))
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true)),
 	// .addStringOption(option =>
 	// 	option.setName('region')
 	// 		.setDescription('Search for the desired region.')
@@ -60,24 +50,24 @@ module.exports = {
 	// 		.setDescription('Search for the desired year.')
 	// 		.setMinValue(1800)
 	// 		.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		// if (focusedOption.name === 'region') {
-		// 	choices = countryDict;
-		// }
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	// if (focusedOption.name === 'region') {
+	// 	// 	choices = countryDict;
+	// 	// }
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 
@@ -123,11 +113,11 @@ module.exports = {
 			const tvResponse = await axios.get(`${api_url}${tv_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=aggregate_credits`);
 			const tv = tvResponse.data;
 
-			// console.log(tv);
+
 			const cast = tv.aggregate_credits['cast'].filter(({ known_for_department }) => known_for_department == dept);
 			const crew = tv.aggregate_credits['crew'].filter(({ known_for_department }) => known_for_department == dept);
 			credits = cast.concat(crew);
-			// console.log(movie.credits['cast'].filter(({name}) => name.includes('Michael')));
+
 			const tvCreditsEmbed = await createTvCreditListEmbed(currentIndex, listSize, credits);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
@@ -157,7 +147,6 @@ module.exports = {
 			console.log(`dispose: ${i}`);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
@@ -166,16 +155,12 @@ module.exports = {
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
-			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId && !i.customId.includes('known_for_')) {
-				// https://api.themoviedb.org/3/credit/{id}?api_key=<<api_key>>
 
-				// TODO: add btns to known for media
 				const personResponse = await axios.get(`${api_url}/person/${i.customId}?api_key=${MOVIE_API_KEY}&language=${language}`);
 				const personDetials = personResponse.data;
-				// console.log(personDetials);
 				const imdbResponse = await axios.get(`${api_url}/find/${personDetials.imdb_id}?api_key=${MOVIE_API_KEY}&language=${language}&external_source=imdb_id`);
-				// console.log(imdbResponse.data);
+
 				let tvCredits;
 				try {
 					// undefined error for person results
@@ -187,7 +172,7 @@ module.exports = {
 
 				const personCreditsEmbed = createPersonDetailEmbed(personDetials, tvCredits, i.user);
 				const moreDetailBtns = tvCredits.map((credit, index) => createButton(`${credit.name ?? credit.title}`, ButtonStyle.Secondary, `known_for_${credit.media_type}_${credit.id}`, getEmoji((index + 1))));
-				// console.log(moreDetailBtns);
+
 				await i.update({
 					content: 'Person\'s Detail',
 					embeds: [personCreditsEmbed],
