@@ -24,45 +24,45 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-reviews')
-		.setDescription('Get the user reviews for a TV Show.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired TV show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-reviews')
+	// 	.setDescription('Get the user reviews for a TV Show.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired TV show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 
@@ -116,7 +116,6 @@ module.exports = {
 			const newSelectMenu = createSelectMenu('List of Movies', tv.name.slice(0, 81), 1, options);
 
 			const current = reviews.slice(currentIndex, currentIndex + listSize);
-			// console.log(credits);
 			const moreDetailBtns = current.map((review, index) => createButton(`${review.author_details.username}`, ButtonStyle.Secondary, `${review.id}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Reviews for ${tv.name.slice(0, 81)}`,
@@ -146,14 +145,12 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
-			// console.log(i.customId);
+
 			if (i.customId != backId && i.customId != forwardId) {
-				// https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key=<<api_key>>&language=en-US&page=1
 
 				const userReview = reviews.find((review) => i.customId == review.id);
 
@@ -198,7 +195,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 
 		});
