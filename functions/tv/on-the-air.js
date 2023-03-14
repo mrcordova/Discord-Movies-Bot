@@ -22,40 +22,35 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 // TODO: create new embed for on the air and airing today to show next episode date?
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-on-the-air')
-		.setDescription('Get a list of Tv shows currently airing with an episode in the next 7 days.')
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired language.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		// .addIntegerOption(option =>
-		// 	option.setName('page')
-		// 		.setDescription('1 page equals 20 movies')
-		// 		.setMinValue(1)
-		// 		.setMaxValue(1000))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-on-the-air')
+	// 	.setDescription('Get a list of Tv shows currently airing with an episode in the next 7 days.')
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired language.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
@@ -64,7 +59,6 @@ module.exports = {
 		const tvTopRated = response.data.results;
 		const listSize = 5;
 		let currentIndex = 0;
-		// dates = response.data.dates;
 
 		const canFitOnOnePage = tvTopRated.length <= listSize;
 		const embedMessage = await interaction.reply({
