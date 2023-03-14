@@ -70,7 +70,7 @@ module.exports = {
 		const embed = await new EmbedBuilder({
 			color: Colors.Green,
 			title: 'List of Commands',
-			description: `Use ${inlineCode('/help')} followed by a command name to get more additional information on a command. For example: ${inlineCode('/help /tv')}\n-----------------------------------------------------`,
+			description: `Use ${inlineCode('/help')} followed by a command name to get more additional information on a command. For example: ${inlineCode('/help /tv')}\n${'-'.repeat(40)}`,
 			fields: await Promise.all(commandsInfo.map(async (cmd) => {
 				// const filePath = path.join(commandsPath, file);
 				// const command = require(filePath);
