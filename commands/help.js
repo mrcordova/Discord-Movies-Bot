@@ -77,7 +77,7 @@ module.exports = {
 
 
 				return {
-					name: cmd.name,
+					name: inlineCode(cmd.name),
 					value: cmd.value,
 				};
 			},
