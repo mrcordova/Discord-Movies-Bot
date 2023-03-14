@@ -10,18 +10,6 @@ const { createSelectMenu } = require('../../components/selectMenu');
 const { getEmoji } = require('../../helpers/get-emoji');
 const { getEditReplyWithoutEmebed, getPrivateFollowUp } = require('../../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
-// const movie_now_playing = '/movie/now_playing';
-
-// 1 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY
-// 2 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR
-// 3 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de,pt
-// 4 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&language=pt-BR&include_video_language=en,fr,es,de
-// 5 - https://api.themoviedb.org/3/movie/550/videos?api_key=THE_KEY&include_video_language=en,fr,es,de,pt
-// 1 - If you don't use &language= parameter, it gets the default in English. en.
-// 2 - If you only use the &language= parameter, receive in the chosen language
-// 3 - If you also use the &include_video_language= parameter, you receive only in the languages specified in that parameter,
-// 4 - and don't receive the referring to &language= if the language is not in the list of &include_video_language=
-// 5 - If you only use the &include_video_language= parameter, receive in the languages specified in that par
 
 
 // Constants
@@ -32,94 +20,94 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-season-videos')
-		.setDescription('Get the videos that have been added to a TV show season.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Search for the desired season.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('video-type')
-				.setDescription('Select the type of release')
-				.setChoices(
-					{
-						name: 'Trailer',
-						value: 'Trailer',
-					},
-					{
-						name: 'Behind the Scenes',
-						value: 'Behind the Scenes',
-					},
-					{
-						name: 'Bloopers',
-						value: 'Bloopers',
-					},
-					{
-						name: 'Clip',
-						value: 'Clip',
-					},
-					{
-						name: 'Teaser',
-						value: 'Teaser',
-					},
-					{
-						name: 'Featurette',
-						value: 'Featurette',
-					},
-				))
-		.addStringOption(option =>
-			option.setName('site')
-				.setDescription('Select the type of site')
-				.setChoices(
-					{
-						name: 'Youtube',
-						value: 'https://www.youtube.com/watch?v=',
-					},
-					{
-						name: 'Vimeo',
-						value: 'https://vimeo.com/',
-					},
-				))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000))
-		.addStringOption(option =>
-			option.setName('video_language')
-				.setDescription('Search for the desired video language.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-season-videos')
+	// 	.setDescription('Get the videos that have been added to a TV show season.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('season')
+	// 			.setDescription('Search for the desired season.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('video-type')
+	// 			.setDescription('Select the type of release')
+	// 			.setChoices(
+	// 				{
+	// 					name: 'Trailer',
+	// 					value: 'Trailer',
+	// 				},
+	// 				{
+	// 					name: 'Behind the Scenes',
+	// 					value: 'Behind the Scenes',
+	// 				},
+	// 				{
+	// 					name: 'Bloopers',
+	// 					value: 'Bloopers',
+	// 				},
+	// 				{
+	// 					name: 'Clip',
+	// 					value: 'Clip',
+	// 				},
+	// 				{
+	// 					name: 'Teaser',
+	// 					value: 'Teaser',
+	// 				},
+	// 				{
+	// 					name: 'Featurette',
+	// 					value: 'Featurette',
+	// 				},
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('site')
+	// 			.setDescription('Select the type of site')
+	// 			.setChoices(
+	// 				{
+	// 					name: 'Youtube',
+	// 					value: 'https://www.youtube.com/watch?v=',
+	// 				},
+	// 				{
+	// 					name: 'Vimeo',
+	// 					value: 'https://vimeo.com/',
+	// 				},
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000))
+	// 	.addStringOption(option =>
+	// 		option.setName('video_language')
+	// 			.setDescription('Search for the desired video language.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language' || focusedOption.name === 'video_language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language' || focusedOption.name === 'video_language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
@@ -147,7 +135,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -215,13 +203,11 @@ module.exports = {
 			getEditReplyWithoutEmebed(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
 		buttonCollector.on(MyEvents.Collect, async m => {
 			if (m.customId == 'empty') return;
-			// console.log(m.customId);
 			if (m.customId != backId && m.customId != forwardId) {
 				const sites = {
 					'youtube': 'https://www.youtube.com/watch?v=',
@@ -247,8 +233,6 @@ module.exports = {
 				const current = tvVideos.slice(currentIndex, currentIndex + listSize);
 
 
-				// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
-				// console.log(m.message.components[0].components[0].placeholder)
 				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show season Video ${currentIndex + current.length} out of ${tvVideos.length}`;
 				const tvVideoEmbed = createVideoEmbed(title, current, m.user);
 				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
@@ -282,7 +266,6 @@ module.exports = {
 			getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
