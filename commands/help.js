@@ -1,4 +1,4 @@
-const { Colors, EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 // Here are the available commands:
@@ -70,7 +70,8 @@ module.exports = {
 		const embed = await new EmbedBuilder({
 			color: Colors.Green,
 			title: 'List of Commands',
-			fields: await Promise.all(commandsInfo.map(async (cmd, index) => {
+            description: `Use ${inlineCode('/help')} followed by a command name to get more additional information on a command. For example: ${inlineCode('/help /tv')}`,
+			fields: await Promise.all(commandsInfo.map(async (cmd) => {
 				// const filePath = path.join(commandsPath, file);
 				// const command = require(filePath);
 
