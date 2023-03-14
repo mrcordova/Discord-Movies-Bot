@@ -39,87 +39,86 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 // Example usage: /streaming movie="The Matrix" country=US provider="Netflix"
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-availability')
-		.setDescription('get a list of the availabilities per country by provider')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('platform')
-				.setDescription('Search with speific platform.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('content-type')
-				.setDescription('Search availability with specific Content Availability Type')
-				.setChoices(
-					{
-						name: 'Streaming',
-						value: 'flatrate',
-					},
-					{
-						name: 'Rent',
-						value: 'rent',
-					},
-					{
-						name: 'Buy',
-						value: 'buy',
-					},
-				))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-availability')
+	// 	.setDescription('get a list of the availabilities per country by provider')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('platform')
+	// 			.setDescription('Search with speific platform.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('content-type')
+	// 			.setDescription('Search availability with specific Content Availability Type')
+	// 			.setChoices(
+	// 				{
+	// 					name: 'Streaming',
+	// 					value: 'flatrate',
+	// 				},
+	// 				{
+	// 					name: 'Rent',
+	// 					value: 'rent',
+	// 				},
+	// 				{
+	// 					name: 'Buy',
+	// 					value: 'buy',
+	// 				},
+	// 			))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'platform') {
-			choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : provider_id }));
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'platform') {
+	// 		choices = availableProviders.map(({ provider_name, provider_id }) => ({ name : provider_name, value : provider_id }));
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		try {
-			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	try {
+	// 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
 
-			await interaction.respond(
-				filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-			);
-		}
-		catch {
-			const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-			// console.log(filtered);
-			await interaction.respond(
-				filtered.map(choice => ({ name: `${choice.name}`, value: choice.value })),
-			);
+	// 		await interaction.respond(
+	// 			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 		);
+	// 	}
+	// 	catch {
+	// 		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 		// console.log(filtered);
+	// 		await interaction.respond(
+	// 			filtered.map(choice => ({ name: `${choice.name}`, value: choice.value })),
+	// 		);
 
-		}
-	},
+	// 	}
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const country = interaction.options.getString('region');
-		// const vidLang = (interaction.options.getString('video_language') ?? 'en').split('-')[0];
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
 		const platform = interaction.options.getInteger('platform');
 		const contentType = interaction.options.getString('content-type');
@@ -272,15 +271,10 @@ module.exports = {
 
 
 		selectMenucollector.on(MyEvents.End, async (c, r) => {
-			// const temp = await message.client.channels.fetch(message.interaction.channelId);
-			// console.log(await temp.messages.fetch());
-
 			getEditReplyWithoutEmebed(interaction, r);
 
 		});
 		selectMenucollector.on(MyEvents.Ignore, async args => {
-			// await args.update({ });
-			// await args.followUp({ content: 'The select menu isn\'t for you!', ephemeral: true });
 			getPrivateFollowUp(args);
 		});
 
@@ -324,9 +318,6 @@ module.exports = {
 			getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, async args => {
-
-			// await args.update({ });
-			// await args.followUp({ content: 'The button isn\'t for you!', ephemeral: true });
 			getPrivateFollowUp(args);
 
 		});
