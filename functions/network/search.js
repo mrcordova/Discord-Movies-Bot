@@ -38,7 +38,7 @@ module.exports = {
 	},
 	async execute(interaction) {
 
-		const network_id = interaction.options.getInteger('name');
+		const network_id = interaction.options.getInteger('title');
 
 		const response = await searchForNetwork(network_id);
 		const networkInfo = response.data;

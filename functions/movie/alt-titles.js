@@ -7,7 +7,7 @@ const axios = require('axios');
 const { createSelectMenu } = require('../../components/selectMenu');
 const { MyEvents } = require('../../events/DMB-Events');
 const { createButton } = require('../../components/button');
-const { getPrivateFollowUp } = require('../../helpers/get-reply');
+const { getPrivateFollowUp, getEditReply } = require('../../helpers/get-reply');
 const { getOptionsForSelectMenu } = require('../../helpers/get-options');
 const movie_route = '/movie';
 const movie_alt = 'alternative_titles';
@@ -72,7 +72,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of Movies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Movies matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -115,7 +115,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		selectMenuCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 
@@ -124,7 +124,7 @@ module.exports = {
 			const altListEmbed = await createAltListEmbed(currentIndex, listSize, movie.titles);
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: i.message.content,
 				embeds: [altListEmbed],
 				components: [
 					i.message.components[0],
@@ -146,7 +146,7 @@ module.exports = {
 		});
 		// eslint-disable-next-line no-unused-vars
 		buttonCollector.on(MyEvents.End, async (c, r) => {
-			await interaction.editReply({ content: 'Time\'s up!', components: [] });
+			getEditReply(interaction, r);
 		});
 	},
 };

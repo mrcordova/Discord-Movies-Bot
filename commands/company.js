@@ -22,7 +22,7 @@ module.exports = {
 						.setRequired(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('alternative-titles')
+				.setName('alt-titles')
 				.setDescription('get company alternative titles')
 				.addStringOption(option =>
 					option
@@ -64,7 +64,7 @@ module.exports = {
 		case 'images':
 			await image.execute(interaction);
 			break;
-		case 'alternative-titles':
+		case 'alt-titles':
 			await altTitles.execute(interaction);
 			break;
 		}

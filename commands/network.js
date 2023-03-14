@@ -19,17 +19,17 @@ module.exports = {
 				.setDescription('get network images')
 				.addIntegerOption(option =>
 					option
-						.setName('name')
+						.setName('title')
 						.setDescription('Search for the desired network.')
 						.setRequired(true)
 						.setAutocomplete(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
-				.setName('alternative-titles')
+				.setName('alt-titles')
 				.setDescription('get network alternative titles')
 				.addIntegerOption(option =>
 					option
-						.setName('name')
+						.setName('title')
 						.setDescription('Search for the desired network.')
 						.setRequired(true)
 						.setAutocomplete(true)))
@@ -39,7 +39,7 @@ module.exports = {
 				.setDescription('search network')
 				.addIntegerOption(option =>
 					option
-						.setName('name')
+						.setName('title')
 						.setDescription('Search for the desired network.')
 						.setRequired(true)
 						.setAutocomplete(true))),
@@ -49,7 +49,7 @@ module.exports = {
 
 		let choices;
 
-		if (focusedOption.name === 'name') {
+		if (focusedOption.name === 'title') {
 			choices = availableNetworks;
 		}
 
@@ -70,7 +70,7 @@ module.exports = {
 		case 'images':
 			await image.execute(interaction);
 			break;
-		case 'alternative-titles':
+		case 'alt-titles':
 			await altTitles.execute(interaction);
 			break;
 		}

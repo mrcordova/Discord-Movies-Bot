@@ -472,7 +472,7 @@ module.exports = {
 
 		const subCmd = interaction.options.getSubcommand();
 		switch (subCmd) {
-		case 'alt-title':
+		case 'alt-titles':
 			await altTitle.execute(interaction);
 			break;
 		case 'availability':
