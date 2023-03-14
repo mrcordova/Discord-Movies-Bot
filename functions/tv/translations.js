@@ -23,44 +23,44 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-translations')
-		.setDescription('Get a list of translations that have been created for a tv show.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-translations')
+	// 	.setDescription('Get a list of translations that have been created for a tv show.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 
@@ -68,7 +68,6 @@ module.exports = {
 		const language = interaction.options.getString('language') ?? 'en-US';
 		const region = interaction.options.getString('region') ?? 'US';
 		const releaseYear = interaction.options.getInteger('release-year') ?? 0;
-		// const dept = interaction.options.getString('department') ?? '';
 
 		const response = await searchForTV(query, language, region, releaseYear);
 		const tvTitles = response.data.results;
@@ -110,10 +109,8 @@ module.exports = {
 			const tvTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 			const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 81), 1, options);
 
-			// console.log(recommendations);
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
 			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${tv.name.slice(0, 81)}`,
@@ -143,7 +140,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
@@ -197,7 +193,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
