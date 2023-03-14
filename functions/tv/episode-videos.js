@@ -32,98 +32,98 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('tv-episode-videos')
-		.setDescription('Get the videos that have been added to a TV episode.')
-		.addStringOption(option =>
-			option.setName('title')
-				.setDescription('Search for the desired tv show.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('season')
-				.setDescription('Search for the desired season.')
-				.setRequired(true))
-		.addIntegerOption(option =>
-			option.setName('episode')
-				.setDescription('Search for the desired episode.')
-				.setRequired(true))
-		.addStringOption(option =>
-			option.setName('video-type')
-				.setDescription('Select the type of release')
-				.setChoices(
-					{
-						name: 'Trailer',
-						value: 'Trailer',
-					},
-					{
-						name: 'Behind the Scenes',
-						value: 'Behind the Scenes',
-					},
-					{
-						name: 'Bloopers',
-						value: 'Bloopers',
-					},
-					{
-						name: 'Clip',
-						value: 'Clip',
-					},
-					{
-						name: 'Teaser',
-						value: 'Teaser',
-					},
-					{
-						name: 'Featurette',
-						value: 'Featurette',
-					},
-				))
-		.addStringOption(option =>
-			option.setName('site')
-				.setDescription('Select the type of site')
-				.setChoices(
-					{
-						name: 'Youtube',
-						value: 'https://www.youtube.com/watch?v=',
-					},
-					{
-						name: 'Vimeo',
-						value: 'https://vimeo.com/',
-					},
-				))
-		.addStringOption(option =>
-			option.setName('language')
-				.setDescription('Search for the desired translation.')
-				.setMinLength(2)
-				.setAutocomplete(true))
-		.addStringOption(option =>
-			option.setName('region')
-				.setDescription('Search for the desired region.')
-				.setAutocomplete(true))
-		.addIntegerOption(option =>
-			option.setName('release-year')
-				.setDescription('Search for the desired year.')
-				.setMinValue(1800)
-				.setMaxValue(3000))
-		.addStringOption(option =>
-			option.setName('video_language')
-				.setDescription('Search for the desired video language.')
-				.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// data: new SlashCommandBuilder()
+	// 	.setName('tv-episode-videos')
+	// 	.setDescription('Get the videos that have been added to a TV episode.')
+	// 	.addStringOption(option =>
+	// 		option.setName('title')
+	// 			.setDescription('Search for the desired tv show.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('season')
+	// 			.setDescription('Search for the desired season.')
+	// 			.setRequired(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('episode')
+	// 			.setDescription('Search for the desired episode.')
+	// 			.setRequired(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('video-type')
+	// 			.setDescription('Select the type of release')
+	// 			.setChoices(
+	// 				{
+	// 					name: 'Trailer',
+	// 					value: 'Trailer',
+	// 				},
+	// 				{
+	// 					name: 'Behind the Scenes',
+	// 					value: 'Behind the Scenes',
+	// 				},
+	// 				{
+	// 					name: 'Bloopers',
+	// 					value: 'Bloopers',
+	// 				},
+	// 				{
+	// 					name: 'Clip',
+	// 					value: 'Clip',
+	// 				},
+	// 				{
+	// 					name: 'Teaser',
+	// 					value: 'Teaser',
+	// 				},
+	// 				{
+	// 					name: 'Featurette',
+	// 					value: 'Featurette',
+	// 				},
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('site')
+	// 			.setDescription('Select the type of site')
+	// 			.setChoices(
+	// 				{
+	// 					name: 'Youtube',
+	// 					value: 'https://www.youtube.com/watch?v=',
+	// 				},
+	// 				{
+	// 					name: 'Vimeo',
+	// 					value: 'https://vimeo.com/',
+	// 				},
+	// 			))
+	// 	.addStringOption(option =>
+	// 		option.setName('language')
+	// 			.setDescription('Search for the desired translation.')
+	// 			.setMinLength(2)
+	// 			.setAutocomplete(true))
+	// 	.addStringOption(option =>
+	// 		option.setName('region')
+	// 			.setDescription('Search for the desired region.')
+	// 			.setAutocomplete(true))
+	// 	.addIntegerOption(option =>
+	// 		option.setName('release-year')
+	// 			.setDescription('Search for the desired year.')
+	// 			.setMinValue(1800)
+	// 			.setMaxValue(3000))
+	// 	.addStringOption(option =>
+	// 		option.setName('video_language')
+	// 			.setDescription('Search for the desired video language.')
+	// 			.setAutocomplete(true)),
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language' || focusedOption.name === 'video_language') {
-			choices = translationsCodeDict;
-		}
-		if (focusedOption.name === 'region') {
-			choices = countryDict;
-		}
+	// 	if (focusedOption.name === 'language' || focusedOption.name === 'video_language') {
+	// 		choices = translationsCodeDict;
+	// 	}
+	// 	if (focusedOption.name === 'region') {
+	// 		choices = countryDict;
+	// 	}
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
@@ -152,7 +152,7 @@ module.exports = {
 
 		const filter = ({ user }) => interaction.user.id == user.id;
 
-		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of TV Shows matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -188,7 +188,6 @@ module.exports = {
 			const title = `${tv.name.slice(0, 80)} Showing TV show episode videos ${currentIndex + current.length} out of ${tvVideos.length}`;
 
 			const tvVideoEmbed = createVideoEmbed(title, current, m.user);
-			// const newSelectMenu = createSelectMenu('List of TV Shows', tv.name.slice(0, 80), 1, options);
 
 			const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
 
@@ -197,7 +196,6 @@ module.exports = {
 				content: 'Selected TV show episode video: ',
 				embeds: [tvVideoEmbed],
 				components: [
-					// new ActionRowBuilder().addComponents(newSelectMenu),
 					new ActionRowBuilder({ components:  [
 						// back button if it isn't the start
 						...(currentIndex ? [backButton.setDisabled(false)] : [backButton.setDisabled(true)]),
@@ -252,8 +250,6 @@ module.exports = {
 				const current = tvVideos.slice(currentIndex, currentIndex + listSize);
 
 
-				// console.log(m.message.embeds[0].title.split('Showing Movie Videos').join(`Showing Movie Videos ${currentIndex + current.length} out of ${movieVideos.length}`));
-				// console.log(m.message.components[0].components[0].placeholder)
 				const title = `${m.message.components[0].components[0].placeholder.slice(0, 60)} Showing TV Show season Video ${currentIndex + current.length} out of ${tvVideos.length}`;
 				const tvVideoEmbed = createVideoEmbed(title, current, m.user);
 				const moreDetailBtns = current.map((tvInfo, index) => createButton(`${tvInfo.name.slice(0, 80)}`, ButtonStyle.Secondary, `${tvInfo.id}`, getEmoji(currentIndex + (index + 1))));
@@ -287,7 +283,6 @@ module.exports = {
 			getEditReplyWithoutEmebed(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
