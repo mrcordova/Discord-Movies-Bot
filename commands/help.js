@@ -208,10 +208,10 @@ module.exports = {
 				},
 				)),
 				timestamp: new Date(),
-				// footer: {
-				//     text: tmdbName,
-				//     icon_url: tmdbIconUrl,
-				// },
+				footer: {
+					text: '"<>" is required, "()" is optional',
+					// icon_url: tmdbIconUrl,
+				},
 			});
 
 
