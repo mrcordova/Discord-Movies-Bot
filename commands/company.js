@@ -27,7 +27,8 @@ module.exports = {
 				.addStringOption(option =>
 					option
 						.setName('title')
-						.setDescription('Search for the desired collection.')))
+						.setDescription('Search for the desired collection.')
+						.setRequired(true)))
 		.addSubcommand((subcommand) =>
 			subcommand
 				.setName('search')
