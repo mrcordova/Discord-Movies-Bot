@@ -182,7 +182,7 @@ module.exports = {
 						name: `${bold(cmd) }`,
 						value: options.map(option => `${underscore(option)}: ${optionDescDict[option]}\n`).join(''),
 					};
-				}
+				},
 				)),
 				timestamp: new Date(),
 				footer: {
@@ -192,7 +192,7 @@ module.exports = {
 			});
 		}
 		else {
-			embed = await new EmbedBuilder({
+			embed = new EmbedBuilder({
 				color: Colors.Green,
 				title: 'List of Commands',
 				description: `Use ${inlineCode('/help')} followed by a command name to get more additional information on a command. For example: ${inlineCode('/help /tv')}\n${'-'.repeat(40)}`,
