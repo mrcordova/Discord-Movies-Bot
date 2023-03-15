@@ -64,7 +64,7 @@ module.exports = {
 		// if no film is found for certain year.
 		const message = await interaction.reply({
 			content: 'List of Alternative titles matching your query.',
-			ephemeral: true,
+			ephemeral: false,
 			embeds: [networkDetailEmbed],
 			components: [
 				new ActionRowBuilder({ components:  [
