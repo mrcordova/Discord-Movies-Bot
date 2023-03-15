@@ -35,29 +35,28 @@ module.exports = {
 	// 		option.setName('language')
 	// 			.setDescription('Search for the desired translation.')
 	// 			.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
 
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language') ?? 'en-US';
 
-		// const dept = interaction.options.getString('department') ?? '';
 
 		const response = await searchForCollection(query, language);
 		const collectionNames = response.data.results;
@@ -99,10 +98,8 @@ module.exports = {
 			const movieTranslationsEmbed = await createTranslateListEmbed(currentIndex, listSize, translations);
 			const newSelectMenu = createSelectMenu('List of Movies', collection.name.slice(0, 81), 1, options);
 
-			// console.log(recommendations);
 
 			const current = translations.slice(currentIndex, currentIndex + listSize);
-			// console.log(current);
 			const moreDetailBtns = current.map((translation, index) => createButton(`${translation.name}-${translation.iso_3166_1}`, ButtonStyle.Secondary, `${translation.iso_3166_1}-${translation.iso_639_1}`, getEmoji(currentIndex + (index + 1))));
 			await i.update({
 				content: `Translations for ${collection.name.slice(0, 81)}`,
@@ -132,12 +129,10 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		buttonCollector.on(MyEvents.Collect, async i => {
 			if (i.customId == 'empty') return;
-			// console.log(i.customId);
 			if (i.customId != backId && i.customId != forwardId) {
 
 				const selectedTranslation = translations.find((translation) => i.customId == `${translation.iso_3166_1}-${translation.iso_639_1}`);
@@ -186,7 +181,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars

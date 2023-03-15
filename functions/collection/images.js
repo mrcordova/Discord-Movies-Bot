@@ -30,21 +30,21 @@ module.exports = {
 	// 		option.setName('language')
 	// 			.setDescription('Search for the desired translation.')
 	// 			.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
-		let choices;
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
+	// 	let choices;
 
-		if (focusedOption.name === 'language') {
-			choices = translationsCodeDict;
-		}
+	// 	if (focusedOption.name === 'language') {
+	// 		choices = translationsCodeDict;
+	// 	}
 
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
+	// 	);
+	// },
 	async execute(interaction) {
 		const query = interaction.options.getString('title');
 		const language = interaction.options.getString('language');
@@ -68,7 +68,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 
-		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -119,7 +119,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 
 		});
@@ -160,7 +159,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
