@@ -24,22 +24,22 @@ module.exports = {
 	// 			.setDescription('Search for the desired network.')
 	// 			.setRequired(true)
 	// 			.setAutocomplete(true)),
-	async autocomplete(interaction) {
-		// handle the autocompletion response (more on how to do that below)
-		const focusedOption = interaction.options.getFocused(true);
+	// async autocomplete(interaction) {
+	// 	// handle the autocompletion response (more on how to do that below)
+	// 	const focusedOption = interaction.options.getFocused(true);
 
-		let choices;
+	// 	let choices;
 
-		if (focusedOption.name === 'name') {
-			choices = availableNetworks;
-		}
+	// 	if (focusedOption.name === 'name') {
+	// 		choices = availableNetworks;
+	// 	}
 
 
-		const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filtered.map(choice => ({ name: `${choice.name}`, value: choice.id })),
-		);
-	},
+	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+	// 	await interaction.respond(
+	// 		filtered.map(choice => ({ name: `${choice.name}`, value: choice.id })),
+	// 	);
+	// },
 	async execute(interaction) {
 
 		const network_id = interaction.options.getInteger('title');
@@ -83,9 +83,7 @@ module.exports = {
 
 			i.customId === backId ? (currentIndex -= listSize) : (currentIndex += listSize);
 
-			// const current = collection.parts.slice(currentIndex, currentIndex + listSize);
 			const networkEmbed = await createCompanyAltListEmbed(currentIndex, listSize, networkList);
-			// const moreDetailBtns = current.map((media, index) => createButton(`${media.title}`, ButtonStyle.Secondary, `${media.id}`, getEmoji(currentIndex + (index + 1))));
 
 
 			await i.update({
@@ -98,17 +96,14 @@ module.exports = {
 						// forward button if it isn't the end
 						...(currentIndex + listSize < networkList.length ? [forwardButton.setDisabled(false)] : [forwardButton.setDisabled(true)]),
 					] }),
-					// new ActionRowBuilder({ components:  moreDetailBtns }),
 				],
 			});
 
-			// selectMenucollector.resetTimer([{ idle: 30000 }]);
 		});
 		buttonCollector.on(MyEvents.Dispose, i => {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
