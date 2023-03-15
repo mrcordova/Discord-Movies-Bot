@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
+const { ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { createButton } = require('../../components/button.js');
 const { searchForTV } = require('../../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
+const { file } = require('../../load-data.js');
 const { createNoResultEmbed, createEmbed, createRatingsEmbed } = require('../../components/embed');
 const { MyEvents } = require('../../events/DMB-Events');
 const { createSelectMenu } = require('../../components/selectMenu');

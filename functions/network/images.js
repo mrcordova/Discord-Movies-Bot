@@ -1,7 +1,7 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
 const { createNoResultEmbed, createImageEmbed } = require('../../components/embed.js');
-const { file, availableNetworks } = require('../../load-data.js');
+const { file } = require('../../load-data.js');
 const axios = require('axios');
 const { MyEvents } = require('../../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
