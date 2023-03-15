@@ -76,7 +76,7 @@ module.exports = {
 		let currentIndex = 0;
 		let collection;
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Collections matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -87,7 +87,6 @@ module.exports = {
 
 			const collectionResponse = await axios.get(`${api_url}${collection_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}`);
 			collection = collectionResponse.data;
-			// console.log(company);
 
 
 			const current = collection.parts.slice(currentIndex, currentIndex + listSize);
@@ -124,7 +123,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
@@ -176,7 +174,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
