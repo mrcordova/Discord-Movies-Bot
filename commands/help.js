@@ -1,4 +1,4 @@
-const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode } = require('discord.js');
+const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode, bold, underscore } = require('discord.js');
 // const fs = require('node:fs');
 // const path = require('node:path');
 // Here are the available commands:
@@ -171,26 +171,27 @@ module.exports = {
 		if (cmdName) {
 			const command = commandsInfo.find(({ name }) => name == cmdName);
 
-			embed = await new EmbedBuilder({
+			embed = new EmbedBuilder({
 				color: Colors.Green,
 				title: `${command.name}`,
-				description: 'Get collection info.',
-				fields: await Promise.all(Object.entries(command.subcmds).map(async (key, value) => {
-					const [cmd, options ] = key;
+				description: `${command.value}`,
+				fields: await Promise.all(Object.entries(command.subcmds).map(async (key) => {
+					const [cmd, options] = key;
 					// console.log(options);
 					return {
-						name: `${inlineCode(cmd)}`,
-						value: `${options}`,
+						name: `${bold(cmd) }`,
+						value: options.map(option => `${underscore(option)}: ${optionDescDict[option]}\n`).join(''),
 					};
-				},
+				}
 				)),
 				timestamp: new Date(),
-				// footer: {
-				//     text: tmdbName,
-				//     icon_url: tmdbIconUrl,
-				// },
+				footer: {
+					text: '"<>" is required, "()" is optional',
+					// icon_url: tmdbIconUrl,
+				},
 			});
-		} else {
+		}
+		else {
 			embed = await new EmbedBuilder({
 				color: Colors.Green,
 				title: 'List of Commands',
@@ -198,8 +199,8 @@ module.exports = {
 				fields: await Promise.all(commandsInfo.map(async (cmd) => {
 					// const filePath = path.join(commandsPath, file);
 					// const command = require(filePath);
-	
-	
+
+
 					return {
 						name: `${inlineCode(cmd.name)}`,
 						value: `${cmd.value}`,
