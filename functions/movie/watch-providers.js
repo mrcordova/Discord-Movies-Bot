@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
+const { ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const axios = require('axios');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
 const { createButton } = require('../../components/button.js');
 const { searchForMovie } = require('../../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file, availableProviders, justWatchFile } = require('../../load-data.js');
+const { file, justWatchFile } = require('../../load-data.js');
 const { createNoResultEmbed, createEmbed, createWatchProviderListEmbed } = require('../../components/embed');
 const { MyEvents } = require('../../events/DMB-Events');
 const { createSelectMenu } = require('../../components/selectMenu');

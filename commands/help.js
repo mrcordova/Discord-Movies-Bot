@@ -1,6 +1,6 @@
 const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode } = require('discord.js');
-const fs = require('node:fs');
-const path = require('node:path');
+// const fs = require('node:fs');
+// const path = require('node:path');
 // Here are the available commands:
 
 // - /movie <title> - Displays information about a movie with the given title.
@@ -11,9 +11,9 @@ const path = require('node:path');
 
 // <> - required, () - optional
 // description, usage
-const commandsPath = path.join(__dirname);
+// const commandsPath = path.join(__dirname);
 // get folders and concat together
-const commandFiles = fs.readdirSync(commandsPath);
+// const commandFiles = fs.readdirSync(commandsPath);
 
 const commandsInfo = [
 	{
@@ -25,7 +25,7 @@ const commandsInfo = [
 		value: 'Displays information about a company with the given title.',
 	},
 	{
-		name: '/help <title>',
+		name: '/help',
 		value: 'Displays information about all available commands',
 	},
 	{
