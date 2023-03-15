@@ -39,7 +39,11 @@ module.exports = {
 								arry.push({ name: dept, value: dept });
 								return arry;
 							}, []))
-						.setRequired(true)),
+						.setRequired(true))
+				.addStringOption(option =>
+					option.setName('language')
+						.setDescription('Search for the desired translation.')
+						.setAutocomplete(true)),
 		)
 		.addSubcommand(subcommand =>
 			subcommand

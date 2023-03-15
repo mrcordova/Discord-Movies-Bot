@@ -3,8 +3,8 @@ const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode } = require('disco
 // const path = require('node:path');
 // Here are the available commands:
 
-// - /movie <title> - Displays information about a movie with the given title.
-// - /tv <title> - Displays information about a person with the given name.
+// - /movie  - Displays information about a movie with the given title.
+// - /tv  - Displays information about a person with the given name.
 // - /network <name> - Displays information about a TV network with the given name.
 // - /company <name> - Displays information about a production company with the given name.
 // - /person <name> - Displays information about a person with the given name.
@@ -17,40 +17,120 @@ const { Colors, EmbedBuilder, SlashCommandBuilder, inlineCode } = require('disco
 
 const commandsInfo = [
 	{
-		name: '/collection <title>',
+		name: '/collection',
 		value: 'Displays information about a collection with the given title.',
+		subcmds: {
+			'images': ['<title>', '(languag)'],
+			'translation': ['<title>', '(languag)'],
+			'search': ['<title>', '(languag)'],
+		},
 	},
 	{
-		name: '/company <title>',
+		name: '/company',
 		value: 'Displays information about a company with the given title.',
+		subcmds: {
+			'images': ['<title>'],
+			'translation': ['<title>'],
+			'search': ['<title>'],
+		},
 	},
 	{
-		name: '/help',
+		name: '/help (command-name)',
 		value: 'Displays information about all available commands',
+		subcmds: {
+
+		},
 	},
 	{
-		name: '/movie <title>',
+		name: '/movie',
 		value: 'Displays information about a movie with the given title.',
+		subcmds: {
+			'alt-titles': ['<title>', '(country)'],
+			'availability': ['<title>', '(language)', '(region)', '(platform)', '(content-type)', '(release-type)'],
+			'credits':  ['<title>', '<department>', '(language)'],
+			'external-link': ['<title>', '(langauge)', '(site)'],
+			'images': ['<title>', '(language)', '(region)', '(release-year)', '(image-language)'],
+			'lists': ['<title>', '(language)'],
+			'now-playing': ['(language)', '(region)'],
+			'popular': ['(language)', '(region)'],
+			'recommendations': ['<title>', '(language)', '(region)', '(release-year)'],
+			'release-date': ['<title>', '<release-type>', '(language)', '(region)', '(release-year)'],
+			'reviews': ['<title>', '(language)', '(region)', '(release-year)'],
+			'search':  ['<title>', '(language)', '(region)', '(release-year)'],
+			'similar': ['<title>', '(language)', '(region)', '(release-year)'],
+			'top-rated':  ['(language)', '(region)'],
+			'translations': ['<title>', '(language)', '(region)', '(release-year)'],
+			'upcoming': ['(language)', '(region)'],
+			'videos':  ['<title>', '(video-type)', '(site)', '(language)', '(region)', '(release-year)', '(video-language)'],
+		},
 	},
 	{
-		name: '/network <title>',
+		name: '/network',
 		value: 'Displays information about a TV network with the given name.',
+		subcmds: {
+			'images': ['<title>'],
+			'alt-titles': ['<title>'],
+			'search': ['<title>'],
+		},
 	},
 	{
-		name: '/people <title>',
+		name: '/people',
 		value: 'Displays information about a person with the given name.',
+		subcmds: {
+			'images': ['<title>', '(language)', '(region)'],
+			'credits': ['<title>', '(department)', '(media-type)', '(language)'],
+			'external-link': ['<title>', '(language)', '(site)', '(region)'],
+			'popular': ['(language)'],
+			'search': ['<title>', '(language)', '(region)'],
+			'translations': ['<title>', '(language)', '(region)'],
+		},
 	},
 	{
-		name: '/tv-episode <title>',
+		name: '/tv-episode',
 		value: 'Displays information about a tv episode with the given title.',
+		subcmds: {
+			'credits': ['<title>', '<season>', '<episode>', '<department>', '(language)'],
+			'external-link': ['<title>', '<season>', '<episode>', '(language)', '(site)', '(region)', '(release-year)'],
+			'images': ['<title>', '<season>', '<episode>', '(language)', '(region)', '(release-year)', '(image_language)'],
+			'search': ['<title>', '<season>', '<episode>', '(language)', '(region)', '(release-year)'],
+			'translations': ['<title>', '<season>', '<episode>', '(language)', '(region)', '(release-year)'],
+			'videos': ['<title>', '<season>', '<episode>', '(video-type)', '(site)', '(language)', '(region)', '(release-year)', '(video_language)'],
+		},
 	},
 	{
-		name: '/tv-season <title>',
+		name: '/tv-season',
 		value: 'Displays information about a tv season with the given name.',
+		subcmds: {
+			'credits': ['<title>', '<season>', '<department>', '(language)'],
+			'external-link': ['<title>', '<season>', '(language)', '(site)', '(region)', '(release-year)'],
+			'images': ['<title>', '<season>', '(language)', '(region)', '(release-year)', '(image_language)'],
+			'search': ['<title>', '<season>', '(language)', '(region)', '(release-year)'],
+			'translations': ['<title>', '<season>', '(language)', '(region)', '(release-year)'],
+			'videos': ['<title>', '<season>', '(video-type)', '(site)', '(language)', '(region)', '(release-year)', '(video_language)'],
+		},
 	},
 	{
-		name: '/tv <title>',
+		name: '/tv',
 		value: 'Displays information about a tv with the given name.',
+		subcmds: {
+			'airing-today': ['(language)', '(region)', '(language)'],
+			'alt-titles': ['<title>', '(country)'],
+			'availability': ['<title>', '(language)', '(region)', '(platform)', '(content-type)', '(release-type)'],
+			'credits': ['<title>', '<department>', '(language)'],
+			'external-link': ['<title>', '(language)', '(site)', '(region)', '(release-year)'],
+			'images': ['<title>', '(language)', '(region)', '(release-year)', '(image_language)'],
+			'lists': ['<title>', '(lanuage)'],
+			'on-the-air': ['(language)', '(region)'],
+			'popular': ['(language)', '(region)'],
+			'ratings': ['<title>', '(language)', '(region)', '(release-year)'],
+			'recommendations': ['<title>', '(language)', '(region)', '(release-year)'],
+			'reviews': ['<title>', '(language)', '(region)', '(release-year)'],
+			'search': ['<title>', '(language)', '(region)', '(release-year)'],
+			'similar': ['<title>', '(language)', '(region)', '(release-year)'],
+			'top-rated': ['(language)', '(region)'],
+			'translations': ['<title>', '(language)', '(region)', '(release-year)'],
+			'videos': ['<title>', '(video-type)', '(site)', '(language)', '(region)', '(release-year)', '(video_language)'],
+		},
 	},
 ];
 
@@ -66,6 +146,7 @@ module.exports = {
 				)),
 	async execute(interaction) {
 
+		const cmdName = interaction.options.getString('command-name');
 
 		const embed = await new EmbedBuilder({
 			color: Colors.Green,
