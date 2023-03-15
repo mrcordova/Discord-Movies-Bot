@@ -1,26 +1,16 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors, ButtonStyle } = require('discord.js');
+const { ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
-const { createEmbed, createNoResultEmbed, createTvSeasonDetailEmbed, createEpisodeDetailEmbed } = require('../../components/embed.js');
+const { createEmbed, createNoResultEmbed, createEpisodeDetailEmbed } = require('../../components/embed.js');
 const { searchForTV } = require('../../helpers/search-for.js');
-const { countryDict, translationsCodeDict, file } = require('../../load-data.js');
+const { file } = require('../../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../../components/selectMenu');
 const { getCast, getCrewMember } = require('../../helpers/get-production-info');
 const { MyEvents } = require('../../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
 const { getOptionsForTvSelectMenu } = require('../../helpers/get-options');
-const { createButton } = require('../../components/button');
-const { getEmoji } = require('../../helpers/get-emoji');
 const tv_details = '/tv';
 
-
-
-
-const backId = 'back';
-const forwardId = 'forward';
-
-const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
-const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
 	// data: new SlashCommandBuilder()

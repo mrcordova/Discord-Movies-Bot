@@ -1,15 +1,9 @@
-const { SlashCommandBuilder, Colors, ButtonStyle } = require('discord.js');
+const { Colors } = require('discord.js');
 // eslint-disable-next-line no-unused-vars
-const { createEmbed, createMovieDetailEmbed, createNoResultEmbed, createCompanyDetailEmbed, createCollectionDetailEmbed, createCollectionListEmbed, createNetworkDetailEmbed } = require('../../components/embed.js');
+const { createNoResultEmbed } = require('../../components/embed.js');
 const { searchForNetwork } = require('../../helpers/search-for.js');
-const { file, availableNetworks } = require('../../load-data.js');
-const { createButton } = require('../../components/button');
+const { file } = require('../../load-data.js');
 
-const backId = 'back';
-const forwardId = 'forward';
-
-const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅️');
-const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
 	// data: new SlashCommandBuilder()
@@ -48,9 +42,6 @@ module.exports = {
 			return;
 		}
 
-		const networkDetailEmbed = createNetworkDetailEmbed(networkInfo, interaction.user);
-
-		const message = await interaction.reply({ content: 'List of Networks matching your query.', ephemeral: false, embeds: [networkDetailEmbed], components: [] });
 
 	},
 };
