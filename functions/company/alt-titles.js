@@ -55,7 +55,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Companies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Companies matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenuCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, idle: 30000 });
 		const buttonCollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, idle: 30000 });
 
@@ -71,7 +71,6 @@ module.exports = {
 			const results = company.results;
 			const companyName = companyResponse.data.name;
 
-			// console.log(results);
 			const newSelectMenu = createSelectMenu('List of Companies', companyName, 1, options);
 
 			const altListEmbed = await createCompanyAltListEmbed(currentIndex, listSize, results);
@@ -95,7 +94,6 @@ module.exports = {
 			console.log(`select menu dispose: ${i}`);
 		});
 		selectMenuCollector.on(MyEvents.Ignore, args => {
-			// console.log(`select menu ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars
@@ -126,7 +124,6 @@ module.exports = {
 			console.log(`button dispose: ${i}`);
 		});
 		buttonCollector.on(MyEvents.Ignore, args => {
-			// console.log(`button ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 		// eslint-disable-next-line no-unused-vars

@@ -45,7 +45,7 @@ module.exports = {
 		const filter = ({ user }) => interaction.user.id == user.id;
 
 		// if no film is found for certain year.
-		const message = await interaction.reply({ content: 'List of Companies matching your query.', ephemeral: true, embeds: [embed], components: [row] });
+		const message = await interaction.reply({ content: 'List of Companies matching your query.', ephemeral: false, embeds: [embed], components: [row] });
 		const selectMenucollector = message.createMessageComponentCollector({ filter, componentType: ComponentType.StringSelect, customId:'menu', idle: 30000 });
 
 		selectMenucollector.on(MyEvents.Collect, async i => {
@@ -54,7 +54,6 @@ module.exports = {
 
 			const companyResponse = await axios.get(`${api_url}${company_details}/${selected}?api_key=${MOVIE_API_KEY}`);
 			const company = companyResponse.data;
-			// console.log(company);
 
 
 			const companyDetailsEmbed = createCompanyDetailEmbed(company, i.user);
@@ -67,7 +66,6 @@ module.exports = {
 				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
 				files: [file],
 			});
-			// collector.resetTimer([{time: 15000}]);
 		});
 
 		selectMenucollector.on(MyEvents.Dispose, i => {
@@ -78,7 +76,6 @@ module.exports = {
 			getEditReply(interaction, r);
 		});
 		selectMenucollector.on(MyEvents.Ignore, args => {
-			// console.log(`ignore: ${args}`);
 			getPrivateFollowUp(args);
 		});
 
