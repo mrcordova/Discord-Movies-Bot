@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
+const { ActionRowBuilder, ButtonStyle, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
 const { createEmbed, createNoResultEmbed, createCompanyAltListEmbed } = require('../../components/embed.js');
 const { file } = require('../../load-data.js');
@@ -26,12 +26,12 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 module.exports = {
 	// data: new SlashCommandBuilder()
-		// .setName('company-alt-titles')
-		// .setDescription('Get the alternative names of a company.')
-		// .addStringOption(option =>
-		// 	option.setName('title')
-		// 		.setDescription('Search for the desired company.')
-		// 		.setRequired(true)),
+	// .setName('company-alt-titles')
+	// .setDescription('Get the alternative names of a company.')
+	// .addStringOption(option =>
+	// 	option.setName('title')
+	// 		.setDescription('Search for the desired company.')
+	// 		.setRequired(true)),
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');

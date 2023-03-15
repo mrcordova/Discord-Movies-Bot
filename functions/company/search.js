@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require('discord.js');
+const { ActionRowBuilder, ComponentType, Colors } = require('discord.js');
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
 const { createEmbed, createNoResultEmbed, createCompanyDetailEmbed } = require('../../components/embed.js');
 const { searchForCompany } = require('../../helpers/search-for.js');
