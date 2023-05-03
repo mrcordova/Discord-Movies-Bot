@@ -76,6 +76,7 @@ class Gender {
 
     static Woman = new Gender(1)
     static Man = new Gender(2)
+    static NonBinary = new Gender(3)
 
     constructor(value) {
       this.value = value;
@@ -87,6 +88,8 @@ class Gender {
          return 'Woman';
         case Gender.Man.value:
          return 'Man'
+        case Gender.NonBinary.value:
+         return 'Non-binary'
         default:
           return 'N/A'
       }
