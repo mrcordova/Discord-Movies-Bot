@@ -65,7 +65,7 @@ module.exports = {
 		const peopleNames = response.data.results;
 
 		if (!peopleNames.length) {
-			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No People Found', 'Please make a new command with a different year')], files: [file] });
+			await interaction.reply({ embeds: [createNoResultEmbed(Colors.Red, 'No People Found', 'Please make a new command')], files: [file] });
 			return;
 		}
 		const options = getOptionsForPeopleSelectMenu(peopleNames);
