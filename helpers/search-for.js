@@ -29,7 +29,7 @@ async function searchForTV(query, language = 'en-US', region = 'US', primaryRele
 	return await axios.get(`${api_url}${search_tv}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false&primary_release_year=${primaryReleaseYear}`);
 }
 async function searchForPeople(query, language = 'en-US', region = 'US', page = 1) {
-	return await axios.get(`${api_url}${search_people}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=false`);
+	return await axios.get(`${api_url}${search_people}?api_key=${MOVIE_API_KEY}&language=${language}&region=${region}&query=${query.toLowerCase().trim()}&page=${page}&include_adult=true`);
 }
 async function searchForCompany(query, page = 1) {
 	return await axios.get(`${api_url}${search_company}?api_key=${MOVIE_API_KEY}&query=${query.toLowerCase().trim()}&page=${page}`);
