@@ -1,3 +1,4 @@
+const { Gender } = require('../events/DMB-Events');
 const { countryCodeDict } = require('../load-data');
 
 function getOptionsForSelectMenu(movieTitles, language = 'en-US') {
@@ -27,7 +28,7 @@ function getOptionsForPeopleSelectMenu(people) {
 
 	for (const peopleInfo of people) {
 		// known_for_department
-		options.push({ label: `${peopleInfo.name.slice(0, 81)} (${peopleInfo.gender})`, description: `known for ${peopleInfo.known_for_department}`, value: `${peopleInfo.id}` });
+		options.push({ label: `${peopleInfo.name.slice(0, 81)} (${ new Gender(peopleInfo.gender).toString})`, description: `known for ${peopleInfo.known_for_department}`, value: `${peopleInfo.id}` });
 	}
 	return options;
 }

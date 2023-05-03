@@ -1,4 +1,4 @@
-const { EmbedBuilder, Colors, SlashCommandBuilder, hyperlink, inlineCode } = require('discord.js');
+const { EmbedBuilder, Colors, SlashCommandBuilder, inlineCode } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('info')

@@ -1,5 +1,5 @@
 const { EmbedBuilder, Colors, bold, underscore, italic, hyperlink, time } = require('discord.js');
-const { EpisodeGroupTypes } = require('../events/DMB-Events.js');
+const { EpisodeGroupTypes, Gender } = require('../events/DMB-Events.js');
 const { countryCodeDict, images, movieRatings, langCodeDict, tvRatings } = require('../load-data.js');
 
 const tmdbIconUrl = 'attachment://TMDb-logo.jpg';
@@ -660,7 +660,7 @@ function createPersonDetailEmbed(person, credits, user) {
 			},
 			{
 				name: 'Gender',
-				value: `${person.gender ?? 'N/A'}`,
+				value: `${new Gender(person.gender).toString}`,
 				inline: true,
 			},
 		],
