@@ -92,11 +92,11 @@ module.exports = {
 			const credits = people.combined_credits.cast.concat(people.combined_credits.crew);
 
 			const movieDetailsEmbed = createPersonDetailEmbed(people, credits, i.user);
-			const newSelectMenu = createSelectMenu('List of Movies', people.name.slice(0, 81), 1, options);
+			const newSelectMenu = createSelectMenu('List of People', people.name.slice(0, 81), 1, options);
 
 
 			await i.update({
-				content: 'Selected Movie:',
+				content: 'Selected Person:',
 				embeds: [movieDetailsEmbed],
 				components: [new ActionRowBuilder().addComponents(newSelectMenu)],
 				files: [file],

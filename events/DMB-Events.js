@@ -55,7 +55,7 @@ class EpisodeGroupTypes {
         case EpisodeGroupTypes.OriginalAirDate.value:
          return 'Original airdate';
         case EpisodeGroupTypes.Absolute.value:
-         return 'Absolute'
+         return 'Absolute';
         case EpisodeGroupTypes.DVD.value:
          return 'DVD';
         case EpisodeGroupTypes.Digital.value:
@@ -68,6 +68,27 @@ class EpisodeGroupTypes {
           return 'TV';
         default:
           console.log('Eps Group not defined')
+      }
+    }
+  }
+
+class Gender {
+
+    static Woman = new Gender(1)
+    static Man = new Gender(2)
+
+    constructor(value) {
+      this.value = value;
+    }
+
+    get toString() {
+      switch (this.value) {
+        case Gender.Woman.value:
+         return 'Woman';
+        case Gender.Man.value:
+         return 'Man'
+        default:
+          return 'N/A'
       }
     }
 }
@@ -85,4 +106,4 @@ class EpisodeGroupTypes {
   //   TV : 6,
   //   })
 
-  module.exports = { MyEvents, ReleaseTypes, EpisodeGroupTypes};
+  module.exports = { MyEvents, ReleaseTypes, EpisodeGroupTypes, Gender};
