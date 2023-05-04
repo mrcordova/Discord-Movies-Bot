@@ -18,32 +18,7 @@ const person_details = '/person';
 // const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('people-external-link')
-	// 	.setDescription('Get the external links for a person.')
-	// 	.addStringOption(option =>
-	// 		option.setName('title')
-	// 			.setDescription('Search for the desired person.')
-	// 			.setRequired(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('language')
-	// 			.setDescription('Search for the desired translation.')
-	// 			.setAutocomplete(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('site')
-	// 			.setDescription('Select the type of site')
-	// 			.setChoices(
-	// 				...siteArray.concat([{ name: 'Tiktok', value: 'tiktok' }, { name: 'YouTube', value: 'youtube' }]),
-	// 			))
-	// 	.addStringOption(option =>
-	// 		option.setName('region')
-	// 			.setDescription('Search for the desired region.')
-	// 			.setAutocomplete(true))
-	// 	.addIntegerOption(option =>
-	// 		option.setName('release-year')
-	// 			.setDescription('Search for the desired year.')
-	// 			.setMinValue(1800)
-	// 			.setMaxValue(3000)),
+
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
