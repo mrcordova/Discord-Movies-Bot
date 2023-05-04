@@ -22,32 +22,7 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('people-popular')
-	// 	.setDescription('Get the list of popular people on TMDB. This list updates daily.')
-	// 	.addStringOption(option =>
-	// 		option.setName('language')
-	// 			.setDescription('Search for the desired language.')
-	// 			.setMinLength(2)
-	// 			.setAutocomplete(true)),
 
-	// async autocomplete(interaction) {
-	// 	// handle the autocompletion response (more on how to do that below)
-	// 	const focusedOption = interaction.options.getFocused(true);
-	// 	let choices;
-
-	// 	if (focusedOption.name === 'language') {
-	// 		choices = translationsCodeDict;
-	// 	}
-	// 	if (focusedOption.name === 'region') {
-	// 		choices = countryDict;
-	// 	}
-
-	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-	// 	await interaction.respond(
-	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-	// 	);
-	// },
 	async execute(interaction) {
 		const language = interaction.options.getString('language') ?? 'en-US';
 
