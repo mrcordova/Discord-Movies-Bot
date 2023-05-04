@@ -31,33 +31,7 @@ const backButton = createButton('Previous', ButtonStyle.Secondary, backId, '⬅�
 const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, '➡️');
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('people-credits')
-	// 	.setDescription('Search for a person\'s credits')
-	// 	.addStringOption(option =>
-	// 		option.setName('title')
-	// 			.setDescription('Search for the desired film.')
-	// 			.setRequired(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('department')
-	// 			.setDescription('Choose desired dept.')
-	// 			.setChoices(
-	// 				...depts.reduce((arry, dept) => {
-	// 					arry.push({ name: dept, value: dept });
-	// 					return arry;
-	// 				}, []))
-	// 			)
-	// 	.addStringOption(option =>
-	// 		option.setName('media-type')
-	// 			.setDescription('Select the type of media')
-	// 			.setChoices(
-	// 				{ name: 'Tv', value: 'tv' },
-	// 				{ name: 'Movie', value: 'movie' },
-	// 			))
-	// 	.addStringOption(option =>
-	// 		option.setName('language')
-	// 			.setDescription('Search for the desired translation.')
-	// 			.setAutocomplete(true)),
+
 	async autocomplete(interaction) {
 		// handle the autocompletion response (more on how to do that below)
 		const focusedOption = interaction.options.getFocused(true);
