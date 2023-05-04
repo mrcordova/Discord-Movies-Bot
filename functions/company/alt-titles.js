@@ -25,13 +25,7 @@ const forwardButton = createButton('Next', ButtonStyle.Secondary, forwardId, 'âž
 
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// .setName('company-alt-titles')
-	// .setDescription('Get the alternative names of a company.')
-	// .addStringOption(option =>
-	// 	option.setName('title')
-	// 		.setDescription('Search for the desired company.')
-	// 		.setRequired(true)),
+
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
