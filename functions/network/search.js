@@ -1,6 +1,6 @@
 const { Colors } = require('discord.js');
 // eslint-disable-next-line no-unused-vars
-const { createNoResultEmbed } = require('../../components/embed.js');
+const { createNoResultEmbed, createNetworkDetailEmbed } = require('../../components/embed.js');
 const { searchForNetwork } = require('../../helpers/search-for.js');
 const { file } = require('../../load-data.js');
 
@@ -42,6 +42,8 @@ module.exports = {
 			return;
 		}
 
+		const networkDetailEmbed = createNetworkDetailEmbed(networkInfo, interaction.user);
+		const message = await interaction.reply({ ephemeral: false, embeds: [networkDetailEmbed], components: [] });
 
 	},
 };
