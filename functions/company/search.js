@@ -12,13 +12,7 @@ const company_details = '/company';
 
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('company-search')
-	// 	.setDescription('Search for companies.')
-	// 	.addStringOption(option =>
-	// 		option.setName('title')
-	// 			.setDescription('Search for the desired company.')
-	// 			.setRequired(true)),
+
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
