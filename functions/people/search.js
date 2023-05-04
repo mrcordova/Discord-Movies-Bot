@@ -21,39 +21,7 @@ const people_details = '/person';
 // primary_release_year Integer optional - oldest release date
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('people-search')
-	// 	.setDescription('Search for people based on a text query.')
-	// 	.addStringOption(option =>
-	// 		option.setName('title')
-	// 			.setDescription('Search for the desired people.')
-	// 			.setRequired(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('language')
-	// 			.setDescription('Search for the desired translation.')
-	// 			.setAutocomplete(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('region')
-	// 			.setDescription('Search for the desired region.')
-	// 			.setAutocomplete(true)),
-	// async autocomplete(interaction) {
-	// 	// handle the autocompletion response (more on how to do that below)
-	// 	const focusedOption = interaction.options.getFocused(true);
 
-	// 	let choices;
-
-	// 	if (focusedOption.name === 'language') {
-	// 		choices = translationsCodeDict;
-	// 	}
-	// 	if (focusedOption.name === 'region') {
-	// 		choices = countryDict;
-	// 	}
-
-	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-	// 	await interaction.respond(
-	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-	// 	);
-	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
