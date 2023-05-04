@@ -2,14 +2,13 @@ const { SlashCommandBuilder, ActionRowBuilder, ComponentType, Colors } = require
 const { api_url, MOVIE_API_KEY } = require('../../config.json');
 const { createNoResultEmbed } = require('../../components/embed.js');
 const { searchForMovie } = require('../../helpers/search-for.js');
-const { translationsCodeDict, file, countryDict, siteArray, siteDict } = require('../../load-data.js');
+const { file, siteDict } = require('../../load-data.js');
 const axios = require('axios');
 const { createSelectMenu } = require('../../components/selectMenu');
 const { MyEvents } = require('../../events/DMB-Events');
 const { getEditReply, getPrivateFollowUp } = require('../../helpers/get-reply');
 const { getOptionsForSelectMenu } = require('../../helpers/get-options');
 const movie_details = '/movie';
-
 
 
 module.exports = {
