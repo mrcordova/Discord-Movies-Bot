@@ -13,52 +13,7 @@ const tv_details = '/tv';
 
 
 module.exports = {
-	// data: new SlashCommandBuilder()
-	// 	.setName('tv-episode-search')
-	// 	.setDescription('Get the TV episode details')
-	// 	.addStringOption(option =>
-	// 		option.setName('title')
-	// 			.setDescription('Search for the desired episode of TV Show.')
-	// 			.setRequired(true))
-	// 	.addIntegerOption(option =>
-	// 		option.setName('season')
-	// 			.setDescription('Search for the desired season.')
-	// 			.setRequired(true))
-	// 	.addIntegerOption(option =>
-	// 		option.setName('episode')
-	// 			.setDescription('Search for the desired episode.')
-	// 			.setRequired(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('language')
-	// 			.setDescription('Search for the desired translation.')
-	// 			.setAutocomplete(true))
-	// 	.addStringOption(option =>
-	// 		option.setName('region')
-	// 			.setDescription('Search for the desired region.')
-	// 			.setAutocomplete(true))
-	// 	.addIntegerOption(option =>
-	// 		option.setName('release-year')
-	// 			.setDescription('Search for the desired year.')
-	// 			.setMinValue(1800)
-	// 			.setMaxValue(3000)),
-	// async autocomplete(interaction) {
-	// 	// handle the autocompletion response (more on how to do that below)
-	// 	const focusedOption = interaction.options.getFocused(true);
 
-	// 	let choices;
-
-	// 	if (focusedOption.name === 'language') {
-	// 		choices = translationsCodeDict;
-	// 	}
-	// 	if (focusedOption.name === 'region') {
-	// 		choices = countryDict;
-	// 	}
-
-	// 	const filtered = choices.filter(choice => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()) || choice.value.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
-	// 	await interaction.respond(
-	// 		filtered.map(choice => ({ name: `${choice.name} (${choice.value.toUpperCase()})`, value: choice.value })),
-	// 	);
-	// },
 	async execute(interaction) {
 
 		const query = interaction.options.getString('title');
