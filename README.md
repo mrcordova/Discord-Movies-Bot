@@ -20,7 +20,7 @@ If you'd like to contribute to CineBot, feel free to fork this repository and su
 
 ## Credits
 
-CineBot was created by [Your Name Here]. It uses the [TMDB API](https://www.themoviedb.org/documentation/api) to provide information about the entertainment industry.
+CineBot was created by MrCordova. It uses the [TMDB API](https://www.themoviedb.org/documentation/api) to provide information about the entertainment industry.
 
 ## License
 
