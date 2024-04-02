@@ -58,7 +58,7 @@ module.exports = {
 
 			const movieResponse = await axios.get(`${api_url}${movie_details}/${selected}?api_key=${MOVIE_API_KEY}&language=${language}&append_to_response=credits,release_dates`);
 			const movie = movieResponse.data;
-			// console.log(movieDetails.release_dates.results);
+			// console.log(movie);
 			let movieRating;
 			// || tv.origin_country.includes(iso_3166_1)
 			try {
@@ -80,11 +80,13 @@ module.exports = {
 			}
 			movie.rating = movieRating;
 
+
 			const formatter = createCurrencyFormatter();
 			const prod = getProductionCompany(movie['production_companies']);
 			const directors = getCrewMember(movie.credits['crew'], 'director');
 			const actors = getCast(movie.credits['cast'], 3);
 
+			// console.log(movie.release_date);
 			const movieDetailsEmbed = createMovieDetailEmbed({ user: i.user, movie, prod, directors, actors, formatter, color: Colors.Aqua });
 			const newSelectMenu = createSelectMenu('List of Movies', movie.title.slice(0, 81), 1, options);
 

@@ -522,6 +522,8 @@ function createImageEmbed(title, mediaImages, user, noResultText) {
 function createMovieDetailEmbed({ user, movie, prod, directors, actors, formatter, color }) {
 
 	const releaseDate = new Date(movie.release_date);
+	// console.log(movie.release_date);
+
 	return {
 		color: color,
 		title: movie.title,
