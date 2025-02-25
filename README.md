@@ -14,7 +14,7 @@ To use CineBot on your Discord server, you'll need to have Node.js and Discord.j
 
 Once the bot is up and running, you can use the `/help` command to see a list of available commands. Examples of other commands include `/movie`, `/tv`, `/person`, `/network`, `/company`, and `/collection`, which will return information about the specified topic.
 
-## Contributions
+## Contributing
 
 If you'd like to contribute to CineBot, feel free to fork this repository and submit a pull request with your changes. You can also open an issue if you encounter any bugs or have ideas for new features.
 
